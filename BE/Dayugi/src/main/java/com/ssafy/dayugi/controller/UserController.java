@@ -28,7 +28,7 @@ public class UserController {
         Optional<User> user = userService.login(map);
         if(user.isPresent()){
             result.put("success", "success");
-            result.put("user", user);
+            result.put("data", user);
         }
         else{
             result.put("success", "fail");
@@ -92,10 +92,9 @@ public class UserController {
         Map result = new HashMap();
         ResponseEntity entity = null;
         Optional<User> user = userService.userInfo(email);
-        System.out.println(email);
         if(user.isPresent()){
             result.put("success", "success");
-            result.put("user", user);
+            result.put("data", user);
         }
         else{
             result.put("success", "fail");
@@ -104,5 +103,20 @@ public class UserController {
         return entity;
     }
 
+    @PutMapping(value = "")
+    @ApiOperation(value = "회원정보 수정", notes = "이미 가입한 유저정보를 입력받아 db내용 수정")
+    private ResponseEntity modifyUser(@RequestBody User user) throws Exception{
+        Map result = new HashMap();
+        ResponseEntity entity = null;
+        boolean checkSuccess = userService.changeUserInfo(user);
+        if(checkSuccess){
+            result.put("success", "success");
+        }
+        else{
+            result.put("success", "fail");
+        }
+        entity = new ResponseEntity<>(result, HttpStatus.OK);
+        return entity;
+    }
 
 }

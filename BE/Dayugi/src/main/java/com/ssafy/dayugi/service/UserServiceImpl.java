@@ -2,7 +2,6 @@ package com.ssafy.dayugi.service;
 
 import com.ssafy.dayugi.model.entity.User;
 import com.ssafy.dayugi.repository.UserRepository;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,4 +64,19 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+    @Override
+    public boolean changeUserInfo(User user) throws Exception{
+        Optional<User> checkPresent = userRepository.findUserByEmail(user.getEmail());
+        if(checkPresent.isPresent()){
+            checkPresent.get().setEmail(user.getEmail());
+            checkPresent.get().setPassword(user.getPassword());
+            checkPresent.get().setNickname(user.getNickname());
+            checkPresent.get().setBirth(user.getBirth());
+            userRepository.save(checkPresent.get());
+            return true;
+        }
+        return false;
+    }
+
 }
