@@ -51,6 +51,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>2.4.4</version>
+        </dependency>
+
         <!-- Swagger2 -->
         <dependency>
             <groupId>io.springfox</groupId>
