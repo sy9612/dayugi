@@ -2,6 +2,8 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import { Calendar } from 'react-native-calendars';
+import Separator from '../components/Separator';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class DiaryCalendarPage extends React.Component{
     constructor() {
@@ -30,8 +32,11 @@ class DiaryCalendarPage extends React.Component{
                 hideExtraDays={false}
                 firstDay={1}
             />
-            <View style={styles.diaryContent}>
-                <Text>DAYUGI 일기</Text>
+            <Separator />
+            <View style={styles.diaryContentContainer}>
+                <Text style={styles.diaryDate}>2000-01-01</Text>
+                <Separator />
+                <Text style={styles.diaryContent}>DAYUGI 일기 이런 일이 있었습니다</Text>
             </View>
         </View>
         )
@@ -43,12 +48,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     width: '100%',
+    height: '100%',
+  },
+  diaryContentContainer: {
+    height: '100%',
+    width: '100%',
+  },
+  diaryDate: {
+    fontSize: 14,
+    marginLeft: 8,
   },
   diaryContent: {
-    backgroundColor: '#eee',
-    marginTop: 12,
-    height: '100%'
-  }
+    fontSize: 16,
+    marginLeft: 8,
+  },
 });
 
 export default DiaryCalendarPage;
