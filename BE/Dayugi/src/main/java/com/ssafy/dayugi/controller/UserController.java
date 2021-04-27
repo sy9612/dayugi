@@ -19,7 +19,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // 로그인
     @PostMapping(value = "")
     @ApiOperation(value = "로그인", notes = "email, password를 받아 정보 확인 후 유저정보 반환")
     private ResponseEntity login(@RequestBody Map map) throws Exception {
