@@ -14,6 +14,8 @@ import javax.activation.DataContentHandler;
 import java.util.HashSet;
 import java.util.Set;
 
+// http://localhost:8080/dayugi/swagger-ui.html#
+
 @Configuration
 @EnableSwagger2
 public class SwaggerConfiguration{
