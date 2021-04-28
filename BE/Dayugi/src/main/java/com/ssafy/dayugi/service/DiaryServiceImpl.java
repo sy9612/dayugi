@@ -2,15 +2,10 @@ package com.ssafy.dayugi.service;
 
 import com.ssafy.dayugi.model.entity.Diary;
 import com.ssafy.dayugi.repository.DiaryRepository;
-import org.hibernate.annotations.NamedQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -19,28 +14,24 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Autowired
     private DiaryRepository diaryRepository;
-//    private PlantRepository plantRepository;
 
     @Override
-    public boolean writeDiary(Diary diary) throws Exception {
+    public int writeDiary(Diary diary) throws Exception {
         //한줄평 전처리는 어떻게 되는거지??
         //사진 올릴 경우도 생각해야함
         diaryRepository.save(diary);//다이어리 저장
-//        Optional<Plant> plant = plantRepository.findPlantByUid(uid);
-//        int experience = plant.get().getExpereience(); //식물 경험치
-//        plant.get().setExpereince();
-        //디비에 저장할 때 경험치 상승
-        //경험치 다 차면 레벨 상승, 다육이 이벤트 추가
-        return false;
+        return 1;
     }
 
     @Override
     public boolean updateDiary(Diary diary) throws Exception {
-//        Optional<Diary> prevDiary = diaryRepository.findDiaryByDid();
-//        if(prevDiary.isPresent()){
-//            prevDiary.get().setDiary_date(diary.getDiary_date());
-//            prevDiary.get().setDiary_content(diary.getDiary_content());
-//        }
+        Optional<Diary> curDiary = diaryRepository.findDiaryByDid(diary.getDid());
+        if(curDiary.isPresent()){
+            curDiary.get().setDiary_date(diary.getDiary_date());
+            curDiary.get().setDiary_content(diary.getDiary_content());
+            diaryRepository.save(curDiary.get());
+            return true;
+        }
         return false;
     }
 
@@ -72,9 +63,10 @@ public class DiaryServiceImpl implements DiaryService{
     //완료
     @Override
     public boolean deleteAllDiary(int uid) throws Exception {
-        List<Optional<Diary>> diaries = diaryRepository.findDiariesByUid(uid);
+        List<Optional<Diary>> diaries = diaryRepository.findDiariesByUser_Uid(uid);
         if(!diaries.isEmpty()){
-            diaryRepository.deleteDiariesByUid(uid);
+            System.out.println(diaries);
+            diaryRepository.deleteDiariesByUser_Uid(uid);
             return true;
         }
         return false;
