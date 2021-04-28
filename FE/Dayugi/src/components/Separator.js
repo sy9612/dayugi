@@ -8,7 +8,7 @@ const Separator = () => (
 const styles = StyleSheet.create({
     separator: {
       marginVertical: 8,
-      borderBottomColor: '#737373',
+      borderBottomColor: '#eee',
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
 });
