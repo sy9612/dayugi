@@ -101,8 +101,12 @@ class DiaryArchivePage extends React.Component {
           <View style={styles.modalContainer}>
             <MonthPicker
               selectedDate={new moment(this.state.currentYear + '-' + this.state.currentMonth,'YYYY-MM')}
-              onYearChange={this.yearChanged}
-              onMonthChange={this.closeModal}
+              initialView={new moment(this.state.currentYear + '-' + this.state.currentMonth,'YYYY-MM')}
+              onMonthChange={(date) => {
+                this.state.currentYear = moment(date).format('YYYY');
+                this.state.currentMonth = moment(date).format('MM');
+                this.closeModal()
+              }}
               seperatorColor='#eee'
               nextText='>  '
               prevText='  <'
