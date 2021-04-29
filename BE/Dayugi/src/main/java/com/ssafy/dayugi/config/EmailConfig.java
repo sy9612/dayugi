@@ -21,7 +21,8 @@ public class EmailConfig {
     private boolean starttls;
     @Value("${AdminMail.id}")
     private String id;
-    private final String password = "ssafy.a206dev";
+    @Value("${AdminMail.password}")
+    private String password;
 
     @Bean
     public JavaMailSender javaMailSender() {
