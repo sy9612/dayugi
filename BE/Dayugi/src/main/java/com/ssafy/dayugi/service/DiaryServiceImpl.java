@@ -1,6 +1,7 @@
 package com.ssafy.dayugi.service;
 
 import com.ssafy.dayugi.model.entity.Diary;
+import com.ssafy.dayugi.repository.DiaryFileRepository;
 import com.ssafy.dayugi.repository.DiaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,14 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Autowired
     private DiaryRepository diaryRepository;
-
+    private DiaryFileRepository diaryFileRepository;
     @Override
     public int writeDiary(Diary diary) throws Exception {
         //한줄평 전처리는 어떻게 되는거지??
-        //사진 올릴 경우도 생각해야함
+        //diary.setReview_content();
         diaryRepository.save(diary);//다이어리 저장
+        //사진 올릴 경우도 생각해야함
+        diaryFileRepository.save();
         return 1;
     }
 
