@@ -1,15 +1,16 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import MonthPicker from 'react-native-month-picker';
+import moment from 'moment';
 
 class DiaryArchivePage extends React.Component {
   state = {
-    current: {
-      year: '',
-      month: '',
-    },
+    currentYear: '',
+    currentMonth: '',
+    isModalOpen: false,
     contents:[
       {
           diaryDate:"2021-04-01",
@@ -63,30 +64,53 @@ class DiaryArchivePage extends React.Component {
   }
 
   componentDidMount() {
-    var that = this;
-    var currentYear = new Date().getFullYear(); 
-    var currentMonth = ("0" + (1 + new Date().getMonth())).slice(-2);
+    var y = new Date().getFullYear(); 
+    var m = ("0" + (1 + new Date().getMonth())).slice(-2);
     
-    that.setState({
-      current: {
-        year: currentYear,
-        month : currentMonth
-      }
+    this.setState({
+      currentYear: y,
+      currentMonth : m
     });
   }
+
+  openModal = () => {
+    this.setState({ isModalOpen: true });
+  };
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
 
   render() {
     return (
       <View style={styles.container}>
         <CustomHeader navigation = {this.props.navigation}/>
         <View style = {styles.pickerContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={this.openModal}>
             <Text>
-              {this.state.current.year}-{this.state.current.month} 
+              {this.state.currentYear}-{this.state.currentMonth} 
               <Ionicons name="arrow-down"></Ionicons>
             </Text>
           </TouchableOpacity>
         </View>
+
+        <Modal
+          transparent
+          animationType="fade"
+          visible={this.state.isModalOpen}>
+          <View style={styles.modalContainer}>
+            <MonthPicker
+              selectedDate={new moment(this.state.currentYear + '-' + this.state.currentMonth,'YYYY-MM')}
+              onYearChange={this.yearChanged}
+              onMonthChange={this.closeModal}
+              seperatorColor='#eee'
+              nextText='>  '
+              prevText='  <'
+              monthFormat= "MM" 
+            />
+          </View>
+        </Modal>
+
         <FlatList
           style = {{ width : "100%", marginTop : 8 }}
           data = {this.state.contents}
@@ -125,6 +149,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     justifyContent: 'center', 
     alignItems: 'center',
+  },
+  modalContainer: {
+    position: 'absolute',
+    top: 120,
+    width: '100%',
   },
   drawerContentListItem:{
     backgroundColor : '#fff',
