@@ -4,8 +4,10 @@ import com.ssafy.dayugi.model.entity.User;
 import com.ssafy.dayugi.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -19,15 +21,29 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     @PostMapping(value = "")
     @ApiOperation(value = "로그인", notes = "email, password를 받아 정보 확인 후 유저정보 반환")
     private ResponseEntity login(@RequestBody Map map) throws Exception {
         Map result = new HashMap();
         ResponseEntity entity = null;
         Optional<User> user = userService.login(map);
+        HttpHeaders httpHeaders = new HttpHeaders();
         if(user.isPresent()){
             result.put("success", "success");
             result.put("user", user);
+
+            System.out.println("있는 아이디");
+
+//            UsernamePasswordAuthenticationToken authenticationToken =
+//                    new UsernamePasswordAuthenticationToken(user.get().getEmail(), user.get().getPassword());
+//
+//            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//            String jwt = tokenProvider.createToken(authentication);
+//            httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
         }
         else{
             result.put("success", "fail");
