@@ -5,15 +5,16 @@ import { AnalysisPage, DiaryArchivePage, DiaryCalendarPage, GalleryPage, GrowthD
 
 const Drawer = createDrawerNavigator(
     {
+      Tutorial : { screen : TutorialPage },
       DiaryCalendar : { screen : DiaryCalendarPage },
       DiaryArchive : { screen : DiaryArchivePage },
-      Tutorial : { screen : TutorialPage },
+      GrowthDiary : { screen : GrowthDiaryPage },
       Gallery : { screen : GalleryPage },
       Analysis : { screen : AnalysisPage },
       Setting : { screen : SettingPage },
     },
     {
-      initialRouteName: "DiaryCalendar",
+      initialRouteName: "Tutorial",
       unmountInactiveRoutes: true,
       headerMode: "none",
       contentComponent: props => <DrawerContent {...props} />
