@@ -22,7 +22,7 @@ public class DiaryServiceImpl implements DiaryService{
         //diary.setReview_content();
         diaryRepository.save(diary);//다이어리 저장
         //사진 올릴 경우도 생각해야함
-        diaryFileRepository.save();
+//        diaryFileRepository.save();
         return 1;
     }
 
