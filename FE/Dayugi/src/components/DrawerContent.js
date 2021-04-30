@@ -37,7 +37,7 @@ class DrawerContent extends React.Component {
                 <View style={styles.drawerContentTop}></View>
                 <View style={styles.drawerContentDivider}></View>
                 <FlatList
-                    style = {{ width : "100%", marginLeft : 30 }}
+                    style = {{ width : "50%", marginLeft : 30 }}
                     data = {this.state.routes}
                     renderItem = {({ item }) => 
                         <Item
