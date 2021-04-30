@@ -1,13 +1,13 @@
 import React from 'react';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import DrawerContent from '../components/DrawerContent';
-import { AnalysisPage, DiaryArchivePage, DiaryCalendarPage, GalleryPage, GrowthDiaryPage, SettingPage } from '../screens/index';
+import { AnalysisPage, DiaryArchivePage, DiaryCalendarPage, GalleryPage, GrowthDiaryPage, SettingPage, TutorialPage } from '../screens/index';
 
 const Drawer = createDrawerNavigator(
     {
       DiaryCalendar : { screen : DiaryCalendarPage },
       DiaryArchive : { screen : DiaryArchivePage },
-      GrowthDiary : { screen : GrowthDiaryPage },
+      Tutorial : { screen : TutorialPage },
       Gallery : { screen : GalleryPage },
       Analysis : { screen : AnalysisPage },
       Setting : { screen : SettingPage },

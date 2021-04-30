@@ -13,8 +13,8 @@ class DrawerContent extends React.Component {
                 text:"모아보기",
             },
             {
-                name:"GrowthDiary",
-                text:"성장일지",
+                name:"Tutorial",
+                text:"튜토리얼",
             },
             {
                 name:"Gallery",
