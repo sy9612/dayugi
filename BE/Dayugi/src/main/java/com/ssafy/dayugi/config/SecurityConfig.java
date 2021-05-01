@@ -58,7 +58,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers(HttpMethod.DELETE,"/*/user**", "/*/user/**").authenticated()
 				.antMatchers(HttpMethod.PUT,"/user").authenticated()
 
-				.antMatchers("/diary/**").authenticated()
+				.antMatchers("/diary").authenticated()
+				.antMatchers( "/diary/**").authenticated()
+				.antMatchers("/*/diary**").authenticated()
+				.antMatchers( "/*/diary/**").authenticated()
+				.antMatchers("*/diary**").authenticated()
+				.antMatchers("*/diary/**").authenticated()
+
+
 				.anyRequest().permitAll()
 
 //				.antMatchers("/email").permitAll()

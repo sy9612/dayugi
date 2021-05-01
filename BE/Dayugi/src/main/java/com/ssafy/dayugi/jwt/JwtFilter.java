@@ -30,6 +30,7 @@ public class JwtFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         // 헤더에서 JWT 를 받아옵니다.
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+//        System.out.println(token);
         String requestURI = ((HttpServletRequest) request).getRequestURI();
 
 //        System.out.println("Method  "+ ((HttpServletRequest) request).getMethod());
@@ -45,14 +46,5 @@ public class JwtFilter extends GenericFilterBean {
             logger.debug("유효한 Jwt 토큰이 없습니다, uri: {}", requestURI);
         }
         chain.doFilter(request, response);
-    }
-
-    // Request Header에서 토큰 정보를 꺼내오기 위한 메소드
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
     }
 }
