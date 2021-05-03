@@ -1,11 +1,18 @@
 package com.ssafy.dayugi.controller;
 
+import com.ssafy.dayugi.util.JwtTokenProvider;
 import com.ssafy.dayugi.model.entity.User;
 import com.ssafy.dayugi.service.UserService;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -13,27 +20,49 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+//@RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    private JwtTokenProvider jwtTokenProvider;
+
+    public UserController(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @PostMapping(value = "")
     @ApiOperation(value = "로그인", notes = "email, password를 받아 정보 확인 후 유저정보 반환")
     private ResponseEntity login(@RequestBody Map map){
         Map result = new HashMap();
         ResponseEntity entity = null;
+        HttpHeaders httpHeaders = new HttpHeaders();
+//        System.out.println(map.get("email")+"  /   "+map.get("password"));
         try {
             Optional<User> user = userService.login(map);
             if (user.isPresent()) {
                 result.put("success", "success");
                 result.put("data", user);
+
+                String token = jwtTokenProvider.createToken(user.get().getUid());
+//                System.out.println(user.get().getUid());
+//                System.out.println(token);
+
+                if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+                    Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    logger.info("{} 로그인 정보를 저장했습니다", user.get().getEmail());
+                }
+
+                httpHeaders.add("Authorization", "Bearer " + token);
             } else {
                 result.put("success", "fail");
                 result.put("message", "ID 또는 비밀번호를 확인하세요.");
             }
-            entity = new ResponseEntity<>(result, HttpStatus.OK);
+            entity = new ResponseEntity<>(result,httpHeaders, HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
             result.put("success", "error");
@@ -153,4 +182,15 @@ public class UserController {
         return entity;
     }
 
+
+    //JWT 필터링 테스트
+    @GetMapping(value = "/test")
+    private ResponseEntity test(){
+        ResponseEntity entity = null;
+        Map result = new HashMap();
+
+        result.put("data","TEST API");
+        entity = new ResponseEntity<>(result, HttpStatus.OK);
+        return entity;
+    }
 }

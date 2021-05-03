@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.ssafy.dayugi.model.entity.MatterMostMessageDto;
 import com.ssafy.dayugi.model.entity.MattermostProperties;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,8 +19,10 @@ import org.springframework.web.client.RestTemplate;
 public class MatterMostSender {
     private Logger log = LoggerFactory.getLogger(MatterMostSender.class);
 
-    private boolean mmEnabled = true;
-    private String webhookUrl = "https://meeting.ssafy.com/hooks/j6tqi61cm7gd88hd5gc8tm98eh";
+    @Value("${notification.mattermost.enabled}")
+    private boolean mmEnabled;
+    @Value("${notification.mattermost.webhook-url}")
+    private String webhookUrl;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final MattermostProperties mmProperties;
