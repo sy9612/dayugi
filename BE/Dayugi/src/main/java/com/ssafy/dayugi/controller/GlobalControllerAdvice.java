@@ -6,21 +6,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
-@ControllerAdvice
-public class GrobalControllerAdvice {
+@RestControllerAdvice
+public class GlobalControllerAdvice{
     @Autowired
     private NotificationManager notificationManager;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity exceptionTest(Exception e, HttpServletRequest req) {
         e.printStackTrace();
+        Map result = new HashMap();
         notificationManager.sendNotification(e, req.getRequestURI(), getParams(req));
+        result.put("success", "error");
+        result.put("message", e.getClass());
+        result.put("reason", e.getMessage());
 
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private String getParams(HttpServletRequest req) {
