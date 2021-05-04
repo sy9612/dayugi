@@ -1,3 +1,8 @@
+tokenizers==0.8.1.rc1
+kogpt2-transformers==0.3.1
+kobert-transformers
+transformers==3.0.2
+torch==1.8.1+cu102 -f https://download.pytorch.org/whl/torch_stable.html
 click==7.1.2
 Flask==1.1.2
 itsdangerous==1.1.0
