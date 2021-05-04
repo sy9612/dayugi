@@ -32,7 +32,7 @@ output_size = 200 # 출력하고자 하는 토큰 갯수
 while 1:
 # for i in range(5):
   sent = input('Question: ')  # '요즘 기분이 우울한 느낌이에요'
-  tokenized_indexs = tokenizer.encode(sent)
+  tokenized_indexs = tokenizer.encode(sent[:60])
 
   input_ids = torch.tensor([tokenizer.bos_token_id,]  + tokenized_indexs +[tokenizer.eos_token_id]).unsqueeze(0)
   # set top_k to 50

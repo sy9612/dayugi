@@ -12,17 +12,17 @@ from transformers import (
 from model.koelectra import koElectraForSequenceClassification,koelectra_input
 
 if __name__ == "__main__":
-  # root_path = str(pathlib.Path(__file__).parent.absolute())
-  root_path = "."
+  root_path = str(pathlib.Path(__file__).parent.absolute())
+  print(root_path)
   checkpoint_path =f"{root_path}/checkpoint"
-  save_ckpt_path = f"checkpoint/koelectra-wellness-text-classification.pth"
+  save_ckpt_path = f"{checkpoint_path}/koelectra-wellness-text-classification.pth"
   # save_ckpt_path = "C:/Users/multicampus/Desktop/programs/kogpt2/WEB_Ask_06devbros/ai/chatbot/checkpoint/koelectra-wellness-text-classification.pth"
   model_name_or_path = "monologg/koelectra-base-discriminator"
 
   #답변과 카테고리 불러오기
   category = []
   idx = -1
-  with open(root_path+'/data/wellness_data_for_text_classification.txt', 'r', encoding='utf-8') as f:
+  with open(root_path+'/datasets/wellness_data_for_text_classification.txt', 'r', encoding='utf-8') as f:
     while True:
       line = f.readline()
       if not line:
