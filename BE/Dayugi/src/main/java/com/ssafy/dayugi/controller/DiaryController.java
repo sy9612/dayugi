@@ -16,23 +16,23 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/diary")
 public class DiaryController {
-    
+
     @Autowired
     private DiaryService diaryService;
-    
+
     @PostMapping(value = "")
     @ApiOperation(value="다이어리 작성", notes="다이어리 작성, 한줄평 저장")
-    private ResponseEntity writeDiary(@RequestBody Diary diary){
+    private ResponseEntity writeDiary(@RequestBody Map map){
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
-           if(diaryService.writeDiary(diary) == 1){
-               result.put("success", "success");
-               result.put("diary", diary);
-           }else{
-               result.put("success", "fail");
-           }
-           entity = new ResponseEntity<>(result, HttpStatus.OK);
+            if(diaryService.writeDiary(map) == 1){
+                result.put("success", "success");
+                result.put("diary", map);
+            }else{
+                result.put("success", "fail");
+            }
+            entity = new ResponseEntity<>(result, HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
             result.put("success", "error");

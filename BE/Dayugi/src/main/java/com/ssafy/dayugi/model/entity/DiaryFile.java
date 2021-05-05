@@ -11,9 +11,11 @@ public class DiaryFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int fid;
+
     @ManyToOne
-    @JoinColumn(name="did")
+    @JoinColumn(name = "did")
     private Diary diary;
     @NotNull
-    private int file;
+    @Lob
+    private String file;
 }

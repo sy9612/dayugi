@@ -13,6 +13,7 @@ import java.util.List;
 public class Diary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="did")
     private int did;
     @NotNull
     private String diary_content;
@@ -20,8 +21,12 @@ public class Diary {
     private String review_content;
     @NotNull
     private Date diary_date;
+
+
+//    @JoinColumn(name="uid")
+//    private User user;
     @ManyToOne
-    @JoinColumn(name="uid")
+    @JoinColumn(name="uid", referencedColumnName = "uid", nullable = true)
     private User user;
 
 //    private User user;
