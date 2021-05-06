@@ -3,7 +3,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import { Calendar } from 'react-native-calendars';
 import Separator from '../components/Separator';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import checkFirstLaunch from '../utils/CheckFirstLaunch';
 
 class DiaryCalendarPage extends React.Component{
     constructor() {
@@ -12,6 +12,17 @@ class DiaryCalendarPage extends React.Component{
         this.state = {
             
         };
+    }
+
+    async componentDidMount() {
+      const isFirstLaunch = await checkFirstLaunch();
+      
+      if(isFirstLaunch){
+        this.props.navigation.navigate("Tutorial");
+      }
+      else{
+        
+      }
     }
 
     render(){
