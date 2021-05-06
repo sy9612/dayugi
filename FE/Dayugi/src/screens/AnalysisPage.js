@@ -6,7 +6,7 @@ class AnalysisPage extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <CustomHeader navigation = {this.props.navigation}/>
+        <CustomHeader navigation={this.props.navigation} />
         <Text>분석 페이지</Text>
       </View>
     );
@@ -21,4 +21,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AnalysisPage
+export default AnalysisPage;
