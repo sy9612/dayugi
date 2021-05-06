@@ -1,18 +1,22 @@
 package com.ssafy.dayugi.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.google.common.base.Predicate;
+
+import springfox.documentation.builders.*;
+import springfox.documentation.schema.ModelRef;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import javax.activation.DataContentHandler;
-import java.util.HashSet;
-import java.util.Set;
 
 // http://localhost:8080/dayugi/swagger-ui.html#
 
@@ -20,35 +24,61 @@ import java.util.Set;
 @EnableSwagger2
 public class SwaggerConfiguration{
 
-	private ApiInfo apiInfo(){
-		return new ApiInfoBuilder()
-				.title("Dayugi")
-				.description("Api")
-				.version("1.0")
-				.build();
-	}
-
-	private Set<String> getConsumeContentTypes(){
-		Set<String> consumes = new HashSet<>();
-		consumes.add("application/json;charset=UTF-8");
-		consumes.add("application/x-www-form-urlencoded");
-		return consumes;
-	}
-
-	private Set<String> getProduceContentTypes(){
-		Set<String> produces = new HashSet<>();
-		produces.add("application/json;charset=UTF-8");
-		return produces;
-	}
+	private String version = "V1.0";
+	private String title = "A206 API " + version;
 
 	@Bean
-	public Docket commonApi(){
+	public Docket api() {
+		List<ResponseMessage> responseMessages = new ArrayList<>();
+		responseMessages.add(new ResponseMessageBuilder().code(200).message("Success").build());
+		responseMessages.add(new ResponseMessageBuilder().code(202).message("Accepted").build());
+		responseMessages.add(new ResponseMessageBuilder().code(500).message("Server Error").responseModel(new ModelRef("Error")).build());
+		responseMessages.add(new ResponseMessageBuilder().code(404).message("Page Not Found").build());
+
 		return new Docket(DocumentationType.SWAGGER_2)
-				.consumes(getConsumeContentTypes())
-				.produces(getProduceContentTypes())
 				.apiInfo(apiInfo())
+				.groupName(version)
 				.select()
-				.apis(RequestHandlerSelectors.any())
+				.apis(RequestHandlerSelectors.basePackage("com.ssafy.dayugi.controller"))
+				.paths(postPaths()).build()
+				.useDefaultResponseMessages(false)
+				.globalResponseMessage(RequestMethod.GET,responseMessages)
+				.securityContexts(Arrays.asList(securityContext()))
+				.securitySchemes(Arrays.asList(apiKey()));
+	}
+
+	private Predicate<String> postPaths() {
+		return PathSelectors.any();
+//		return or(regex("/user/.*"), regex("/article/.*"), regex("/memo/.*"));
+//		return regex("/admin/.*");
+	}
+	//
+	private ApiKey apiKey() {
+		return new ApiKey("authorization", "authorization", "header");
+	}
+
+	private SecurityContext securityContext() {
+		return springfox
+				.documentation
+				.spi
+				.service
+				.contexts
+				.SecurityContext
+				.builder()
+				.securityReferences(defaultAuth())
+				.forPaths(PathSelectors.any())
 				.build();
+	}
+
+	List<SecurityReference> defaultAuth(){
+		AuthorizationScope aScope = new AuthorizationScope("global", "accessEverything");
+		AuthorizationScope[] aScopes = new AuthorizationScope[1];
+		aScopes[0] = aScope;
+		return Arrays.asList(new SecurityReference("authorization", aScopes));
+	}
+	private ApiInfo apiInfo() {
+		return new ApiInfoBuilder().title(title)
+				.description("<h1>Dayugi</h1>")
+				.version("1.0").build();
 	}
 }
