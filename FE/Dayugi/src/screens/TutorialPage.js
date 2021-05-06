@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text, Button, StatusBar } from 'react-native'
+import { StyleSheet, View, Text, Button, StatusBar,  TouchableOpacity} from 'react-native'
 import ViewPager from "@react-native-community/viewpager"
 
 class TutorialPage extends React.Component {
@@ -47,11 +47,9 @@ class TutorialPage extends React.Component {
                     <Text style={{ fontSize: 16 }}>이제 일기 쓰러 가요</Text>
                 </View>
                 <View style={styles.tutorialButton}>
-                    <Button
-                        color='#fff'
-                        title="시작하기"
-                        onPress={() => {this.props.navigation.navigate("DiaryCalendar")}}
-                    />
+                    <TouchableOpacity onPress={() => {this.props.navigation.navigate("DiaryCalendar")}}>
+                      <Text style={{color: 'white'}}>시작하기</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ViewPager>
