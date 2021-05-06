@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 class SignUpPage extends React.Component {
   state = {
@@ -14,6 +15,9 @@ class SignUpPage extends React.Component {
     sendEmail: false,
     authCode: "",
     inputCode: "",
+    date: new Date(),
+    mode: 'date',
+    show: false,
   };
 
   handleEmail = text => {
@@ -39,7 +43,18 @@ class SignUpPage extends React.Component {
     this.setState({ nickName: text });
   };
   
+  handleDate = Date => {
+    this.setState({ date: Date })
+    console.log(this.state.date);
+  }
 
+  handleMode = text => {
+    this.setState({ mode: text })
+  }
+
+  handleShow = Boolean => {
+    this.setState({ show: Boolean })
+  }
 
   validateEmail = (mail) => {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
@@ -59,7 +74,7 @@ class SignUpPage extends React.Component {
         if(success == "success"){
           let uid = responseJson.data['uid'];
           let email= responseJson.data['email'];
-          let nickName = responseJson.data.['nickname'];
+          let nickName = responseJson.data['nickname'];
           alert("uid: " + uid + ", email: " + email + ", nickName: " + nickName);
         }
         else {
@@ -123,7 +138,24 @@ class SignUpPage extends React.Component {
     else {
       alert('인증번호를 다시 확인해주세요.');
     }
-  }
+  };
+
+  onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || this.state.date;
+    this.handleShow(Platform.OS === 'ios');
+    this.handleDate(currentDate);
+  };
+
+  showMode = (currentMode) => {
+    this.handleShow(true);
+    this.handleMode(currentMode);
+  };
+
+  showDatepicker = () => {
+    this.showMode('date');
+  };
+  
+
   render() {
     return (
       <View style={styles.container}>
@@ -180,40 +212,51 @@ class SignUpPage extends React.Component {
               </TouchableOpacity>
             }
           </View>
-          <TextInput
-            style={styles.input}
-            underlineColorAndroid="transparent"
-            placeholder=" Password"
-            placeholderTextColor="#9a73ef"
-            autoCapitalize="none"
-            secureTextEntry = { true }
-            onChangeText={this.handlePassword}
-          />
-          <TextInput
-            style={styles.input}
-            underlineColorAndroid="transparent"
-            placeholder=" PasswordCheck"
-            placeholderTextColor="#9a73ef"
-            autoCapitalize="none"
-            secureTextEntry={true}
-            onChangeText={this.handleCheckPassword}
-          />
-          <TextInput
-            style={styles.input}
-            underlineColorAndroid="transparent"
-            placeholder=" nickName"
-            placeholderTextColor="#9a73ef"
-            autoCapitalize="none"
-            onChangeText={this.handleNickName}
-          />
-          <TextInput
-            style={styles.input}
-            underlineColorAndroid="transparent"
-            dataDetectorTypes="calendarEvent"
-            placeholderTextColor="#9a73ef"
-            autoCapitalize="none"
-          />
-        </View>
+            <TextInput
+              style={styles.input}
+              underlineColorAndroid="transparent"
+              placeholder=" Password"
+              placeholderTextColor="#9a73ef"
+              autoCapitalize="none"
+              secureTextEntry = { true }
+              onChangeText={this.handlePassword}
+            />
+            <TextInput
+              style={styles.input}
+              underlineColorAndroid="transparent"
+              placeholder=" PasswordCheck"
+              placeholderTextColor="#9a73ef"
+              autoCapitalize="none"
+              secureTextEntry={true}
+              onChangeText={this.handleCheckPassword}
+            />
+            <TextInput
+              style={styles.input}
+              underlineColorAndroid="transparent"
+              placeholder=" nickName"
+              placeholderTextColor="#9a73ef"
+              autoCapitalize="none"
+              onChangeText={this.handleNickName}
+            />
+            <View>
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={() => this.showDatepicker()}
+              >
+                <Text style={styles.submitButtonText}>Show date picker!</Text>
+              </TouchableOpacity>
+            </View>
+            { this.state.show && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={this.state.date}
+                mode={this.state.mode}
+                is24Hour={true}
+                display="default"
+                onChange={this.onChange}
+              />
+            )}
+          </View>
         
         <View style={styles.Btn}>
           {
