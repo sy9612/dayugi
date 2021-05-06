@@ -1,7 +1,6 @@
 package com.ssafy.dayugi.service;
 
 import com.ssafy.dayugi.model.entity.Diary;
-import com.ssafy.dayugi.model.entity.DiaryFile;
 import com.ssafy.dayugi.model.entity.User;
 import com.ssafy.dayugi.repository.DiaryFileRepository;
 import com.ssafy.dayugi.repository.DiaryRepository;
@@ -9,11 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.sql.Date;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -24,22 +19,22 @@ public class DiaryServiceImpl implements DiaryService {
     private DiaryFileRepository diaryFileRepository;
 
     @Override
-    public int writeDiary(Map map) throws Exception {
+    public int writeDiary(Diary diary) throws Exception {
         //한줄평 전처리는 어떻게 되는거지??
-        Diary diary = new Diary();
-        int uid = (int) map.get("uid");
-        User user = new User();
-        user.setUid(uid);
-        diary.setUser(user);
-        //diary_date 저장
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        String str = map.get("diary_date").toString();
-        java.sql.Date date = new java.sql.Date(formatter.parse(str).getTime());
-
-        diary.setDid((int) map.get("did"));
-        diary.setDiary_content(map.get("diary_content").toString());
-        diary.setReview_content(map.get("review_content").toString());
-        diary.setDiary_date(date);
+//        Diary diary = new Diary();
+//        int uid = (int) map.get("uid");
+//        User user = new User();
+//        user.setUid(uid);
+//        diary.setUser(user);
+//        //diary_date 저장
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+//        String str = map.get("diary_date").toString();
+//        java.sql.Date date = new java.sql.Date(formatter.parse(str).getTime());
+//
+//        diary.setDid((int) map.get("did"));
+//        diary.setDiary_content(map.get("diary_content").toString());
+//        diary.setReview_content(map.get("review_content").toString());
+//        diary.setDiary_date(date);
         diaryRepository.save(diary);//다이어리 저장
         return 1;
     }
@@ -91,5 +86,14 @@ public class DiaryServiceImpl implements DiaryService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int findDiaryId(int uid, Date diary_date) throws Exception {
+        int result = diaryRepository.findDiaryByUser_UidAndDiary_date(uid, diary_date);
+        if(result != 0)
+            return result;
+        else
+            return 0;
     }
 }

@@ -2,8 +2,8 @@ package com.ssafy.dayugi.model.entity;
 
 import com.sun.istack.NotNull;
 import lombok.Data;
-
 import javax.persistence.*;
+
 
 @Data
 @Entity
@@ -15,7 +15,11 @@ public class DiaryFile {
     @ManyToOne
     @JoinColumn(name = "did")
     private Diary diary;
+
     @NotNull
-    @Lob
-    private String file;
+    private String fileName;
+    @NotNull
+    private String fileOrigName;
+    @NotNull
+    private String filePath;
 }

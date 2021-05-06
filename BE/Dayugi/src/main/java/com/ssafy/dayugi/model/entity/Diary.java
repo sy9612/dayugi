@@ -2,11 +2,10 @@ package com.ssafy.dayugi.model.entity;
 
 import com.sun.istack.NotNull;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
@@ -19,6 +18,7 @@ public class Diary {
     private String diary_content;
     @Lob
     private String review_content;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull
     private Date diary_date;
 

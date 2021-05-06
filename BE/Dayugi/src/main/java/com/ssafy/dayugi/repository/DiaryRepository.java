@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +21,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     public int deleteDiaryByDid(int did);//다이어리 한 개 삭제
     @Transactional
     public int deleteDiariesByUser_Uid(int uid);//사용자가 작성한 다이어리 전체 삭제
+    @Transactional
+    public int findDiaryByUser_UidAndDiary_date(int uid, Date diary_date);//did 찾기
+
 }

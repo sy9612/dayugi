@@ -1,30 +1,31 @@
 package com.ssafy.dayugi.service;
 
-import com.ssafy.dayugi.model.entity.Diary;
 import com.ssafy.dayugi.model.entity.DiaryFile;
 import com.ssafy.dayugi.repository.DiaryFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.Optional;
 
-public class FileServiceImpl implements FileService{
+public class FileServiceImpl implements FileService {
     @Autowired
-    private DiaryFileRepository diaryFileRepository;
+    private DiaryFileRepository fileRepository;
 
     @Override
-    public Long saveFiles(List<DiaryFile> files) {
-        return diaryFileRepository.save(files);
+    public int saveFiles(List<DiaryFile> files) {
+        fileRepository.saveAll(files);
+        return 1;
     }
 
     @Override
-    public Long saveFile(DiaryFile file) {
-        return diaryFileRepository.save(file);
+    public int saveFile(DiaryFile file) {
+        fileRepository.save(file);
+        return 1;
     }
 
+
     @Override
-    public DiaryFile getFile(int fid) {
-        Optional<Diary> diaryfile = diaryFileRepository.find(fid);
-        return diaryfile;
+    public DiaryFile getFile(Long fid) {
+        DiaryFile file = fileRepository.findById(fid).get();
+        return file;
     }
 }
