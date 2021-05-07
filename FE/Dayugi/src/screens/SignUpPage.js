@@ -15,9 +15,11 @@ class SignUpPage extends React.Component {
     sendEmail: false,
     authCode: "",
     inputCode: "",
-    date: new Date(),
+    rawDate: new Date(),
+    date: "",
     mode: 'date',
     show: false,
+    navigation: this.props,
   };
 
   handleEmail = text => {
@@ -43,9 +45,8 @@ class SignUpPage extends React.Component {
     this.setState({ nickName: text });
   };
   
-  handleDate = Date => {
-    this.setState({ date: Date })
-    console.log(this.state.date);
+  handleRawDate = date => {
+    this.setState({ rawDate: date })
   }
 
   handleMode = text => {
@@ -56,26 +57,38 @@ class SignUpPage extends React.Component {
     this.setState({ show: Boolean })
   }
 
+  handleDate = Date => {
+    this.setState({ date: this.getFormatDate(Date) })
+    console.log(this.state.date);
+  }
+
   validateEmail = (mail) => {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
       return (true)
     return (false)
   }
   
-  signUp = (email, password) => {
-    let dataObj= {email:email, password:password, uid:0};
-    fetch('http://k4a206.p.ssafy.io:8080/dayugi/user', {
+  signUp = (email, password, nickname, birth, selectedDate) => {
+    if (password != this.state.checkPassword) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+    if (selectedDate > new Date()) {
+      alert("설정된 생일 날짜를 다시 확인해주세요.");
+      return;
+    }
+    let dataObj= {email:email, password:password, nickname:nickname, birth:birth, uid:0};
+    fetch('http://k4a206.p.ssafy.io:8080/dayugi/user/join', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dataObj),
       }).then(response => response.json())
       .then(responseJson => {
+        console.log(responseJson);
         let success = responseJson.success;
         if(success == "success"){
-          let uid = responseJson.data['uid'];
-          let email= responseJson.data['email'];
-          let nickName = responseJson.data['nickname'];
-          alert("uid: " + uid + ", email: " + email + ", nickName: " + nickName);
+          alert("회원가입에 성공했습니다! 로그인 페이지로 이동합니다.");
+          this.props.navigation.navigate('Login');
         }
         else {
           alert("Id 또는 비밀번호를 확인해주세요.");
@@ -108,8 +121,7 @@ class SignUpPage extends React.Component {
   };
 
   sendAuthMail = (email) => {
-    let dataObj = { userEmail : email };
-    fetch('http://k4a206.p.ssafy.io:8080/dayugi/email/mail?userEmail=' + this.state.email, {
+    fetch('http://k4a206.p.ssafy.io:8080/dayugi/email/mail?userEmail=' + email, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     }).then(response => response.json())
@@ -141,8 +153,9 @@ class SignUpPage extends React.Component {
   };
 
   onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || this.state.date;
+    const currentDate = selectedDate || this.state.rawDate;
     this.handleShow(Platform.OS === 'ios');
+    this.handleRawDate(currentDate);
     this.handleDate(currentDate);
   };
 
@@ -155,6 +168,14 @@ class SignUpPage extends React.Component {
     this.showMode('date');
   };
   
+  getFormatDate = (date) => {
+    var year = date.getFullYear();
+    var month = (1 + date.getMonth());
+    month = month >= 10 ? month : '0' + month;
+    var day = date.getDate();
+    day = day >= 10 ? day : '0' + day;
+    return year + '-' + month + '-' + day;
+  }
 
   render() {
     return (
@@ -238,32 +259,41 @@ class SignUpPage extends React.Component {
               autoCapitalize="none"
               onChangeText={this.handleNickName}
             />
-            <View>
+          <View>
+            <TextInput
+              style={styles.input}
+              underlineColorAndroid="transparent"
+              value={this.state.date}
+              placeholder="birth"
+              placeholderTextColor="#9a73ef"
+              autoCapitalize="none"
+              editable={false}
+            />
               <TouchableOpacity
                 style={styles.submitButton}
                 onPress={() => this.showDatepicker()}
               >
-                <Text style={styles.submitButtonText}>Show date picker!</Text>
+                <Text style={styles.submitButtonText}>생일 설정</Text>
               </TouchableOpacity>
             </View>
             { this.state.show && (
               <DateTimePicker
                 testID="dateTimePicker"
-                value={this.state.date}
+                value={this.state.rawDate}
                 mode={this.state.mode}
                 is24Hour={true}
                 display="default"
                 onChange={this.onChange}
               />
             )}
-          </View>
+            </View>
         
         <View style={styles.Btn}>
           {
             this.state.authorizedEmail &&
             <TouchableOpacity
               style={styles.submitButton}
-              onPress={() => this.signUp(this.state.email, this.state.password)}
+              onPress={() => this.signUp(this.state.email, this.state.password, this.state.nickName, this.state.date, this.state.rawDate)}
             >
               <Text style={styles.submitButtonText}>회원가입</Text>
             </TouchableOpacity>
