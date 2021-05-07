@@ -49,6 +49,7 @@ public class UserController extends GlobalControllerAdvice{
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 logger.info("{} 로그인 정보를 저장했습니다", user.get().getEmail());
+                result.put("Authorization",("Bearer " + token));
                 entity = new ResponseEntity<>(result,httpHeaders, HttpStatus.OK);
             }
             httpHeaders.add("Authorization", "Bearer " + token);
