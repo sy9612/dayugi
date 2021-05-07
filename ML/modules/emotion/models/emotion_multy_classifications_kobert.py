@@ -40,8 +40,8 @@ bertmodel, vocab = get_pytorch_kobert_model()
 
 """## Load Data"""
 
-data1 = pd.read_csv('Dataset/Emotion/4차_14606.csv', encoding="CP949")
-data2 = pd.read_csv('Dataset/Emotion/5차_10011.csv', encoding="CP949")
+data1 = pd.read_csv('../datasets/4차_14606.csv', encoding="CP949")
+data2 = pd.read_csv('../datasets/5차_10011.csv', encoding="CP949")
 data = pd.concat([data1, data2])
 
 """### Preprocessing Data
