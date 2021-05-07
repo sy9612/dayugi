@@ -7,16 +7,13 @@ import gluonnlp as nlp
 import numpy as np
 import pandas as pd
 
-from models.kobert.utils import get_tokenizer
-from models.kobert.pytorch_kobert import get_pytorch_kobert_model
+from module.model.kobert.utils import get_tokenizer
+from module.model.kobert.pytorch_kobert import get_pytorch_kobert_model
 
 ##GPU 사용 시
-# device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
-device = torch.device("cpu")
+device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
 bertmodel, vocab = get_pytorch_kobert_model()
-
-d = {"Surprise" : 7, "Happiness": 6, "Disgust": 5, "Neutral": 4, "Fear": 3, "Angry": 2, "Sadness": 1}
 
 tokenizer = get_tokenizer()
 tok = nlp.data.BERTSPTokenizer(tokenizer, vocab, lower=False)
@@ -74,23 +71,38 @@ class BERTClassifier(nn.Module):
             out = self.dropout(pooler)
         return self.classifier(out)
 
-root_path = str(pathlib.Path(__file__).parent.absolute())
-model = torch.load(f'{root_path}\\checkpoints\\kobert_emotion_classification.pth')
+mapping = {0: 'Angry',
+           1: 'Disgust',
+           2: 'Fear',
+           3: 'Happiness',
+           4: 'Neutral',
+           5: 'Sadness',
+           6: 'Surprise'}
+
+# 문장 예측
+def extract_emotion(sentence, model):
+    # sentence = "기분 최고야"
+    label = 7
+
+    unseen_test = pd.DataFrame([[sentence, label]], columns = [['발화문', '상황']])
+    unseen_values = unseen_test.values
+    test_set = BERTDataset(unseen_values, 0, 1, tok, max_len, True, False)
+    test_input = DataLoader(test_set, batch_size=1, num_workers=5)
+
+    for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(test_input):
+        token_ids = token_ids.long().to(device)
+        segment_ids = segment_ids.long().to(device)
+        valid_length= valid_length
+        output = model(token_ids, valid_length, segment_ids)
+        result = {}
+        for idx, element in enumerate(output[0]):
+            result[mapping[idx]] = element.item()
+        return result
 
 
-# 테스트 문장 예측
-# def test(test_sentence):
-test_sentence = "기분 최고야"
-test_label = 7 # 실제 질병
-
-unseen_test = pd.DataFrame([[test_sentence, test_label]], columns = [['발화문', '상황']])
-unseen_values = unseen_test.values
-test_set = BERTDataset(unseen_values, 0, 1, tok, max_len, True, False)
-test_input = DataLoader(test_set, batch_size=1, num_workers=5)
-
-for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(test_input):
-    token_ids = token_ids.long().to(device)
-    segment_ids = segment_ids.long().to(device)
-    valid_length= valid_length
-    out = model(token_ids, valid_length, segment_ids)
-    print(out)
+if __name__ == '__main__':
+    root_path = str(pathlib.Path(__file__).parent.absolute())
+    model = torch.load(f'{root_path}/checkpoint/kobert_emotion_classification.pth', map_location=device)
+    while True:
+        sentence = input('sentence : ')
+        print(extract_emotion(sentence))

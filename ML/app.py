@@ -1,13 +1,20 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 from module.dbModule import Database
+
+from module.emotion import extract_emotion, BERTClassifier
+import torch
+
+model = torch.load('module/checkpoint/kobert_emotion_classification.pth', map_location='cpu')
 
 
 app = Flask(__name__)
 
-@app.route('/emotion')
+@app.route('/emotion', methods=['POST'])
 def emotion():
-    return 'emotion'
+    sentence = request.json.get('sentence')
+    result = extract_emotion(sentence, model)
+    return result
 
 @app.route('/comment')
 def comment():
