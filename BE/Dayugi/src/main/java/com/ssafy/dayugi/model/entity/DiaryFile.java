@@ -16,10 +16,14 @@ public class DiaryFile {
     @JoinColumn(name = "did")
     private Diary diary;
 
+    @ManyToOne
+    @JoinColumn(name = "uid")
+    private User User;
+
     @NotNull
-    private String fileName;
+    private String file_name;
     @NotNull
-    private String fileOrigName;
+    private String file_origname;
     @NotNull
-    private String filePath;
+    private String file_path;
 }

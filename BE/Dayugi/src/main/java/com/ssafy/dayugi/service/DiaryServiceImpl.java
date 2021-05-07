@@ -59,6 +59,12 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
+    public List<Optional<Diary>> AllDiary(int uid) throws Exception {
+        List<Optional<Diary>> diaries = diaryRepository.findDiariesByUser_Uid(uid);
+        return diaries;
+    }
+
+    @Override
     public List<Optional<Diary>> monthDiary(int uid, int year, int month) throws Exception {
         List<Optional<Diary>> diaries = diaryRepository.findByUserAndDate(uid, year, month);
         return diaries;
@@ -81,19 +87,10 @@ public class DiaryServiceImpl implements DiaryService {
     public boolean deleteAllDiary(int uid) throws Exception {
         List<Optional<Diary>> diaries = diaryRepository.findDiariesByUser_Uid(uid);
         if (!diaries.isEmpty()) {
-            System.out.println(diaries);
+//            System.out.println(diaries);
             diaryRepository.deleteDiariesByUser_Uid(uid);
             return true;
         }
         return false;
-    }
-
-    @Override
-    public int findDiaryId(int uid, Date diary_date) throws Exception {
-        int result = diaryRepository.findDiaryByUser_UidAndDiary_date(uid, diary_date);
-        if(result != 0)
-            return result;
-        else
-            return 0;
     }
 }

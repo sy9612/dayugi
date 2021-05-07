@@ -9,16 +9,19 @@ import com.ssafy.dayugi.util.MD5Generator;
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @RestController
 @RequestMapping("/diary")
@@ -26,6 +29,7 @@ public class DiaryController {
 
     @Autowired
     private DiaryService diaryService;
+    @Autowired
     private FileService fileService;
 
     @PostMapping(value = "")
@@ -58,14 +62,30 @@ public class DiaryController {
         }
 
         try{
+            List<DiaryFile> diaryFiles = new ArrayList<>();
             if (filess != null) {
-                System.out.println("$$$$$$$$$$$$$$$$$$$$$$");
-                System.out.println(diary.getUser().getUid());
-                System.out.println(diary.getDiary_date());
+//                System.out.println("$$$$$$$$$$$$$$$$$$$$$$");
+//                System.out.println(diary.getUser().getUid());
+                //System.out.println( diary.getDiary_date());
 
-//                int did = diaryService.findDiaryId(diary.getUser().getUid(), diary.getDiary_date());
-                System.out.println("########## did ############");
-                System.out.println(did);
+//                String textDate = diary.getDiary_date().toString();
+//                Date strDate = null;
+//
+//                SimpleDateFormat recvSimpleFormat = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+//                // 여기에 원하는 포맷을 넣어주면 된다
+//                SimpleDateFormat tranSimpleFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+//
+//                try {
+//                    Date data = recvSimpleFormat.parse(textDate);
+//                    System.out.println(data);
+//                    strDate = tranSimpleFormat.parse(data.toString());
+//                    System.out.println(strDate);
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+                //int did = 0;
+                //int did = diaryService.findDiaryId(diary.getUser().getUid(), data);
+
                 for (MultipartFile files : filess) {
                     String origFilename = files.getOriginalFilename();
                     System.out.println("########## origFilename ############");
@@ -89,20 +109,39 @@ public class DiaryController {
                     files.transferTo(new File(filePath));
 
                     DiaryFile diaryFile = new DiaryFile();
-                    diaryFile.setFileOrigName(origFilename);
-                    diaryFile.setFileName(filename);
-                    diaryFile.setFilePath(filePath);
-                    System.out.println(diary.getDid());
-                    Diary tempDiary = new Diary();
-                    tempDiary.setDid(did);
-                    diaryFile.setDiary(tempDiary);
-                    System.out.println("########## diaryFile ############");
-                    System.out.println(diaryFile);
-                    int fileId = fileService.saveFile(diaryFile);
-                    diaryFile.setFid(fileId);
-                    fileService.saveFile(diaryFile);
+                    diaryFile.setFile_origname(origFilename);
+                    diaryFile.setFile_name(filename);
+                    diaryFile.setFile_path(filePath);
+//                    System.out.println("########## did ############");
+//                    System.out.println(diary.getDid());
+//                    int did = diary.getDid();
+//                    Diary tempDiary = new Diary();
+//                    tempDiary.setDid(did);
+                    diaryFile.setDiary(diary);
+                    diaryFile.setUser(diary.getUser());
+//                    System.out.println("########## diaryFile ############");
+//                    System.out.println(diaryFile);
+                    diaryFiles.add(diaryFile);
                 }
             }
+
+            System.out.println("########## diaryFiles ############");
+            System.out.println(diaryFiles);
+
+            try {
+                if (fileService.saveFiles(diaryFiles) == 1) {
+                    result.put("success", "success");
+                    result.put("diary", diary);
+                } else {
+                    result.put("success", "fail");
+                }
+                entity = new ResponseEntity<>(result, HttpStatus.OK);
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.put("success", "error");
+                entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+
         }catch (Exception e) {
             e.printStackTrace();
             result.put("success", "error");
@@ -140,7 +179,8 @@ public class DiaryController {
         ResponseEntity entity = null;
         try {
             boolean checkSuccess = diaryService.deleteDiary(did);
-            if (checkSuccess) {
+            boolean checkFileSuccess = fileService.deleteAllFile(did);
+            if (checkSuccess && checkFileSuccess) {
                 result.put("success", "success");
             } else {
                 result.put("success", "fail");
@@ -161,11 +201,13 @@ public class DiaryController {
         ResponseEntity entity = null;
         try {
             boolean checkSuccess = diaryService.deleteAllDiary(uid);
+            boolean checkFileSuccess = fileService.deleteUserFile(uid);
             System.out.println(checkSuccess);
-            if (checkSuccess) {
+            if (checkSuccess && checkFileSuccess) {
                 result.put("success", "success");
             } else {
                 result.put("success", "fail");
+                result.put("message", "fail to delete all diary");
             }
             entity = new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
@@ -188,6 +230,7 @@ public class DiaryController {
                 result.put("diary", diary);
             } else {
                 result.put("success", "fail");
+                result.put("message", "No Data");
             }
             entity = new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
@@ -205,6 +248,28 @@ public class DiaryController {
         ResponseEntity entity = null;
         try {
             List<Optional<Diary>> diaries = diaryService.monthDiary(uid, year, month);
+            if (!diaries.isEmpty()) {
+                result.put("success", "success");
+                result.put("data", diaries);
+            } else {
+                result.put("success", "fail");
+            }
+            entity = new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", "error");
+            entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+        return entity;
+    }
+
+    @GetMapping(value = "/all")
+    @ApiOperation(value = "다이어리 전체 조회", notes = "사용자가 작성한 다이어리 전체 조회")
+    private ResponseEntity monthDiary(@RequestParam int uid) {
+        Map result = new HashMap();
+        ResponseEntity entity = null;
+        try {
+            List<Optional<Diary>> diaries = diaryService.AllDiary(uid);
             if (!diaries.isEmpty()) {
                 result.put("success", "success");
                 result.put("data", diaries);
