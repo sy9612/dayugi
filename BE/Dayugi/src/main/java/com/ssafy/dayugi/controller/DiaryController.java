@@ -178,12 +178,19 @@ public class DiaryController {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
-            boolean checkSuccess = diaryService.deleteDiary(did);
             boolean checkFileSuccess = fileService.deleteAllFile(did);
-            if (checkSuccess && checkFileSuccess) {
+            if (checkFileSuccess) {
                 result.put("success", "success");
             } else {
                 result.put("success", "fail");
+                result.put("message", "fail to delete files of diary");
+            }
+            boolean checkSuccess = diaryService.deleteDiary(did);
+            if (checkSuccess) {
+                result.put("success", "success");
+            } else {
+                result.put("success", "fail");
+                result.put("message", "fail to delete diary");
             }
             entity = new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
@@ -200,10 +207,15 @@ public class DiaryController {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
-            boolean checkSuccess = diaryService.deleteAllDiary(uid);
             boolean checkFileSuccess = fileService.deleteUserFile(uid);
-            System.out.println(checkSuccess);
-            if (checkSuccess && checkFileSuccess) {
+            if (checkFileSuccess) {
+                result.put("success", "success");
+            } else {
+                result.put("success", "fail");
+                result.put("message", "fail to delete files");
+            }
+            boolean checkSuccess = diaryService.deleteAllDiary(uid);
+            if (checkSuccess) {
                 result.put("success", "success");
             } else {
                 result.put("success", "fail");

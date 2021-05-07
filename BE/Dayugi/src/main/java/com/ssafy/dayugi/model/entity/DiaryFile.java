@@ -18,7 +18,7 @@ public class DiaryFile {
 
     @ManyToOne
     @JoinColumn(name = "uid")
-    private User User;
+    private User user;
 
     @NotNull
     private String file_name;
