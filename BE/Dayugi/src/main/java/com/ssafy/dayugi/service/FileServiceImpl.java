@@ -1,5 +1,6 @@
 package com.ssafy.dayugi.service;
 
+import com.ssafy.dayugi.model.entity.Diary;
 import com.ssafy.dayugi.model.entity.DiaryFile;
 import com.ssafy.dayugi.repository.DiaryFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,6 @@ public class FileServiceImpl implements FileService {
         diaryFileRepository.saveAll(files);
         return 1;
     }
-
-    @Override
-    public int saveFile(DiaryFile file) {
-        diaryFileRepository.save(file);
-        return 1;
-    }
-
 
     @Override
     public DiaryFile getFile(Long fid) {
@@ -62,5 +56,18 @@ public class FileServiceImpl implements FileService {
     public boolean deleteUserFile(int uid) throws Exception {
        diaryFileRepository.deleteDiaryFilesByUser_Uid(uid);
        return true;
+    }
+
+    @Override
+    public boolean updateFiles(int did, List<DiaryFile> newFiles) throws Exception {
+        List<DiaryFile> diaryFiles = diaryFileRepository.findDiaryFilesByDiary_Did(did);
+        if(!diaryFiles.isEmpty()){
+            diaryFileRepository.deleteDiaryFilesByDiary_Did(did);
+            if(!newFiles.isEmpty()) {
+                diaryFileRepository.saveAll(newFiles);
+                return true;
+            }
+        }
+        return false;
     }
 }
