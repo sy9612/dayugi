@@ -6,7 +6,7 @@ if __name__ == "__main__":
     root_path = str(pathlib.Path(__file__).parent.absolute())
 
     kogpt2_file_id = '1jcVcLnnV2jL-j0gGKishdwfZywqg8R80'
-    konert_file_id = '1uJzQzktpNaI9-PtWe2i4VQguLmMml8zh'
+    kobert_file_id = '1uJzQzktpNaI9-PtWe2i4VQguLmMml8zh'
 
     kogpt2_destination = root_path + '/kogpt2-wellness-auto-regressive.pth'
     kobert_destination = root_path + '/kobert_emotion_classification.pth'

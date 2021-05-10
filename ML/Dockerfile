@@ -8,7 +8,7 @@ COPY . .
 
 # install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
-# RUN python module/checkpoint/download.py
+RUN python module/checkpoint/download.py
 
 # tell the port number the container should expose
 EXPOSE 5000
