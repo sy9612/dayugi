@@ -11,4 +11,5 @@ public interface UserService {
     public boolean checkEmail(String email) throws Exception;
     public Optional<User> userInfo(String email) throws Exception;
     public boolean deleteUser(String email) throws Exception;
+    public boolean changeUserInfo(User user) throws Exception;
 }

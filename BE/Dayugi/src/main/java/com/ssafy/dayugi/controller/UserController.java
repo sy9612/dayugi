@@ -1,11 +1,18 @@
 package com.ssafy.dayugi.controller;
 
+import com.ssafy.dayugi.util.JwtTokenProvider;
 import com.ssafy.dayugi.model.entity.User;
 import com.ssafy.dayugi.service.UserService;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -13,27 +20,44 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+//@RequiredArgsConstructor
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends GlobalControllerAdvice{
 
     @Autowired
     private UserService userService;
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    // 로그인
+    private JwtTokenProvider jwtTokenProvider;
+
+    public UserController(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     @PostMapping(value = "")
     @ApiOperation(value = "로그인", notes = "email, password를 받아 정보 확인 후 유저정보 반환")
-    private ResponseEntity login(@RequestBody Map map) throws Exception {
+    private ResponseEntity login(@RequestBody Map map) throws Exception{
         Map result = new HashMap();
         ResponseEntity entity = null;
+        HttpHeaders httpHeaders = new HttpHeaders();
         Optional<User> user = userService.login(map);
-        if(user.isPresent()){
+        if (user.isPresent()) {
             result.put("success", "success");
-            result.put("user", user);
-        }
-        else{
+            result.put("data", user);
+            String token = jwtTokenProvider.createToken(user.get().getUid());
+            if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                logger.info("{} 로그인 정보를 저장했습니다", user.get().getEmail());
+                result.put("Authorization",("Bearer " + token));
+                entity = new ResponseEntity<>(result,httpHeaders, HttpStatus.OK);
+            }
+            httpHeaders.add("Authorization", "Bearer " + token);
+        } else {
             result.put("success", "fail");
+            result.put("message", "ID 또는 비밀번호를 확인하세요.");
+            entity = new ResponseEntity<>(result,httpHeaders, HttpStatus.ACCEPTED);
         }
-        entity = new ResponseEntity<>(result, HttpStatus.OK);
         return entity;
     }
 
@@ -45,28 +69,28 @@ public class UserController {
         ResponseEntity entity = null;
         if(userService.join(user) == 1){
             result.put("success", "success");
+            entity = new ResponseEntity<>(result, HttpStatus.CREATED);
         }
         else{
             result.put("success", "fail");
+            entity = new ResponseEntity<>(result, HttpStatus.OK);
         }
-        entity = new ResponseEntity<>(result, HttpStatus.OK);
         return entity;
     }
 
     @GetMapping(value = "/check")
     @ApiOperation(value = "email중복 확인", notes = "email을 받아 이메일 중복 확인")
-    private ResponseEntity checkEmail(String email) throws Exception {
+    private ResponseEntity checkEmail(String email) throws Exception{
         Map result = new HashMap();
         ResponseEntity entity = null;
         boolean checkDuplicate = userService.checkEmail(email);
-        if(checkDuplicate){
+        if (!checkDuplicate) {
             result.put("success", "success");
-        }
-        else{
+            entity = new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
             result.put("success", "fail");
+            entity = new ResponseEntity<>(result, HttpStatus.ACCEPTED);
         }
-
-        entity = new ResponseEntity<>(result, HttpStatus.OK);
         return entity;
     }
 
@@ -76,13 +100,13 @@ public class UserController {
         Map result = new HashMap();
         ResponseEntity entity = null;
         boolean checkSuccess = userService.deleteUser(email);
-        if(checkSuccess){
+        if (checkSuccess) {
             result.put("success", "success");
-        }
-        else{
+            entity = new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
             result.put("success", "fail");
+            entity = new ResponseEntity<>(result, HttpStatus.ACCEPTED);
         }
-        entity = new ResponseEntity<>(result, HttpStatus.OK);
         return entity;
     }
 
@@ -92,17 +116,45 @@ public class UserController {
         Map result = new HashMap();
         ResponseEntity entity = null;
         Optional<User> user = userService.userInfo(email);
-        System.out.println(email);
         if(user.isPresent()){
             result.put("success", "success");
-            result.put("user", user);
+            result.put("data", user);
+            entity = new ResponseEntity<>(result, HttpStatus.OK);
         }
         else{
             result.put("success", "fail");
+            entity = new ResponseEntity<>(result, HttpStatus.ACCEPTED);
         }
-        entity = new ResponseEntity<>(result, HttpStatus.OK);
+        return entity;
+    }
+
+    @PutMapping(value = "")
+    @ApiOperation(value = "회원정보 수정", notes = "이미 가입한 유저정보를 입력받아 db내용 수정")
+    private ResponseEntity modifyUser(@RequestBody User user) throws Exception{
+        Map result = new HashMap();
+        ResponseEntity entity = null;
+        boolean checkSuccess = userService.changeUserInfo(user);
+        if(checkSuccess){
+            result.put("success", "success");
+            entity = new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        else{
+            result.put("success", "fail");
+            entity = new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+        }
+
         return entity;
     }
 
 
+    //JWT 필터링 테스트
+//    @GetMapping(value = "/test")
+//    private ResponseEntity test(){
+//        ResponseEntity entity = null;
+//        Map result = new HashMap();
+//
+//        result.put("data","TEST API");
+//        entity = new ResponseEntity<>(result, HttpStatus.OK);
+//        return entity;
+//    }
 }
