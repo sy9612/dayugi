@@ -44,9 +44,14 @@ def emotion(did, diary):
                 analysis[key] += value
 
     db_class = Database()
-
-    sql = f"""INSERT INTO dayugi.emotion_rate(did,{','.join([emotion for emotion in analysis.keys()])})
-    VALUES ({did},{','.join([str(score) for score in analysis.values()])})"""
+    sql = f"""SELECT count(did) FROM dayugi.emotion_rate WHERE did={did}"""
+    row = db_class.executeAll(sql)
+    print(row[0]['count(did)'])
+    if row[0]['count(did)']:
+        sql = f"""UPDATE dayugi.emotion_rate SET {','.join([emotion + '=' + str(score) for emotion, score in analysis.items()])}"""
+    else:
+        sql = f"""INSERT INTO dayugi.emotion_rate(did,{','.join([emotion for emotion in analysis.keys()])})
+        VALUES ({did},{','.join([str(score) for score in analysis.values()])})"""
 
     db_class.execute(sql)
     db_class.commit()
