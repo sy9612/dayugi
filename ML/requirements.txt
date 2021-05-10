@@ -7,3 +7,4 @@ gluonnlp==0.10.0
 pandas==1.2.4
 kogpt2-transformers==0.3.1
 networkx==2.5.1
+googledrivedownloader==0.4
