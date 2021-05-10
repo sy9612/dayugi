@@ -10,8 +10,9 @@ import pandas as pd
 from module.model.kobert.utils import get_tokenizer
 from module.model.kobert.pytorch_kobert import get_pytorch_kobert_model
 
-##GPU 사용 시
-device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
+
+ctx = "cuda" if torch.cuda.is_available() else "cpu"
+device = torch.device(ctx)
 
 bertmodel, vocab = get_pytorch_kobert_model()
 
@@ -79,9 +80,14 @@ mapping = {0: 'Angry',
            5: 'Sadness',
            6: 'Surprise'}
 
+root_path = str(pathlib.Path(__file__).parent.absolute())
+checkpoint = torch.load(f"{root_path}/checkpoint/kobert_emotion_classification.pth", map_location=device)
+model = BERTClassifier()
+model.load_state_dict(checkpoint['model_state_dict'])
+
 # 문장 예측
 def extract_emotion(sentence, model):
-    # sentence = "기분 최고야"
+    # sentence = "군대에 세 번 가는 꿈을 꿨어..."
     label = 7
 
     unseen_test = pd.DataFrame([[sentence, label]], columns = [['발화문', '상황']])
@@ -103,6 +109,7 @@ def extract_emotion(sentence, model):
 if __name__ == '__main__':
     root_path = str(pathlib.Path(__file__).parent.absolute())
     model = torch.load(f'{root_path}/checkpoint/kobert_emotion_classification.pth', map_location=device)
+    model.eval()
     while True:
         sentence = input('sentence : ')
-        print(extract_emotion(sentence))
+        print(extract_emotion(sentence, model))
