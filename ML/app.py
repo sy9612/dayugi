@@ -8,22 +8,34 @@ from module.comment import generate_comment
 import torch
 
 
+# from flask_cors import CORS
+# from flask_restplus import Api, Resource, fields
+
+
+# @recomm.rount('/')
+
 app = Flask(__name__)
+
+# CORS(app)
+
+# api = Api(app, version='1.0', title='Recommendation API')
+
 
 emotion_model = torch.load('module/checkpoint/kobert_emotion_classification.pth', map_location='cpu')
 emotion_model.eval()
 
-@app.route('/emotion', methods=['POST'])
-def emotion():
-    diary = request.json.get('diary').split('\n')
-    print(diary)
-    analysis = {'Angry' : 0,
-                'Disgust' : 0,
-                'Fear' : 0,
-                'Happiness' : 0,
-                'Neutral' : 0,
-                'Sadness' : 0,
-                'Surprise' : 0}
+# @app.route('/emotion/', methods=['POST'])
+def emotion(did, diary):
+    # did = request.json.get('did')
+    # diary = request.json.get('diary').split('\n')
+    diary = diary.split('\n')
+    analysis = {'angry' : 0,
+                'disgust' : 0,
+                'fear' : 0,
+                'happiness' : 0,
+                'neutral' : 0,
+                'sadness' : 0,
+                'surprise' : 0}
                 
     for sentence in diary:
         if len(sentence) > 5:
@@ -31,19 +43,44 @@ def emotion():
             for key, value in result.items():
                 analysis[key] += value
 
+    db_class = Database()
+
+    sql = f"""INSERT INTO dayugi.emotion_rate(did,{','.join([emotion for emotion in analysis.keys()])})
+    VALUES ({did},{','.join([str(score) for score in analysis.values()])})"""
+
+    db_class.execute(sql)
+    db_class.commit()
+
     return analysis
 
 
-@app.route('/comment', methods=['POST'])
-def comment():
-    diary = request.json.get('diary')
+# @app.route('/comment/', methods=['POST'])
+def comment(did, diary):
+    # did = request.json.get('did')
+    # diary = request.json.get('diary')
     summaries = summarize_script(diary)
     answer = {}
     for summary in summaries:
         answer[summary] = generate_comment(summaries[0])
+    
+    for a in answer.values():
+        result = a.split('.')
 
+    db_class = Database()
+    sql = f"""UPDATE dayugi.diary SET review_content = '{result[0] + '.' + result[1]}' WHERE (did = '{did}')"""
+    db_class.execute(sql)
+    db_class.commit()
+    
     return answer
 
+@app.route('/diary/', methods=['POST'])
+def emotion_comment():
+    did = request.json.get('did')
+    diary = request.json.get('diary')
+    emotion(did, diary)
+    comment(did, diary)
+
+    return '성공적으로 저장되었습니다.'
 
 if __name__=="__main__":
     app.run(debug=True)

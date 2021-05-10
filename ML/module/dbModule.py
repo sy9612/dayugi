@@ -7,6 +7,7 @@ import pymysql
 class Database():
     def __init__(self):
         self.db = pymysql.connect(host='k4a206.p.ssafy.io',
+                                #   port='3306',
                                   user='ssafy',
                                   password='CAum7peyydEBa3Qy',
                                   db='dayugi',
@@ -26,5 +27,5 @@ class Database():
         row = self.cursor.fetchall()
         return row
 
-    def commit():
+    def commit(self):
         self.db.commit()

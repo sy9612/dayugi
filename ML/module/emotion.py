@@ -72,18 +72,19 @@ class BERTClassifier(nn.Module):
             out = self.dropout(pooler)
         return self.classifier(out)
 
-mapping = {0: 'Angry',
-           1: 'Disgust',
-           2: 'Fear',
-           3: 'Happiness',
-           4: 'Neutral',
-           5: 'Sadness',
-           6: 'Surprise'}
+mapping = {0: 'angry',
+           1: 'disgust',
+           2: 'fear',
+           3: 'happiness',
+           4: 'neutral',
+           5: 'sadness',
+           6: 'surprise'}
 
-root_path = str(pathlib.Path(__file__).parent.absolute())
-checkpoint = torch.load(f"{root_path}/checkpoint/kobert_emotion_classification.pth", map_location=device)
-model = BERTClassifier()
-model.load_state_dict(checkpoint['model_state_dict'])
+# root_path = str(pathlib.Path(__file__).parent.absolute())
+# checkpoint = torch.load(f"{root_path}/checkpoint/kobert_emotion_classification.pth", map_location=device)
+# model = BERTClassifier(bertmodel)
+# model.load_state_dict(checkpoint)
+# model.eval()
 
 # 문장 예측
 def extract_emotion(sentence, model):
