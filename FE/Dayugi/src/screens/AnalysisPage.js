@@ -1,15 +1,27 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
 import Separator from '../components/Separator';
 import CustomHeader from '../components/CustomHeader';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LineChart, PieChart } from 'react-native-chart-kit';
+import moment from 'moment';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 class AnalysisPage extends React.Component {
   state = {
     startDate: new Date(),
+    startDateString: '2021-05-11',
     startMode: 'date',
-    show: false,
+    startShow: false,
     screenWidth: Dimensions.get('window').width,
     data: {
       labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -20,7 +32,7 @@ class AnalysisPage extends React.Component {
           strokeWidth: 2, // optional
         },
       ],
-      legend: ['Rainy Days'], // optional
+      legend: ['긍/부정 그래프'], // optional
     },
     chartConfig: {
       backgroundGradientFrom: '#1E2923',
@@ -71,81 +83,108 @@ class AnalysisPage extends React.Component {
     ],
   };
 
-  handleDate = (Date) => {
+  // handleDateString = (startDateString) => {};
+
+  handleStartDate = (Date) => {
     this.setState({ startDate: Date });
-    console.log(this.state.startDate);
+    // console.log(this.state.startDate);
+    this.setState({
+      startDateString: moment(this.state.startDate).format('YYYY-MM-DD'),
+    });
   };
 
   onStartChange = (event, selectedDate) => {
     const currentDate = selectedDate || this.state.startDate;
-    this.handleShow(Platform.OS === 'ios');
-    this.handleDate(currentDate);
+    this.handleStartShow(Platform.OS === 'ios');
+    this.handleStartDate(currentDate);
   };
 
   handleMode = (text) => {
     this.setState({ startMode: text });
   };
 
-  showMode = (currentMode) => {
-    this.handleShow(true);
+  startShowMode = (currentMode) => {
+    this.handleStartShow(true);
     this.handleMode(currentMode);
   };
 
-  showDatepicker = () => {
-    this.showMode('date');
+  startShowDatepicker = () => {
+    this.startShowMode('date');
   };
 
-  handleShow = (Boolean) => {
-    this.setState({ show: Boolean });
+  handleStartShow = (Boolean) => {
+    this.setState({ startShow: Boolean });
   };
 
   render() {
     return (
-      <View style={styles.container}>
-        <CustomHeader navigation={this.props.navigation} />
-        <Text>분석 페이지</Text>
-        <Separator />
-        <Text>날짜</Text>
-        <View>
-          <TouchableOpacity style={styles.submitButton} onPress={() => this.showDatepicker()}>
-            <Text style={styles.submitButtonText}>start date picker</Text>
-          </TouchableOpacity>
-          {this.state.show && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={this.state.startDate}
-              mode={this.state.startMode}
-              is24Hour={true}
-              display="default"
-              onChange={this.onStartChange}
-            />
-          )}
-        </View>
-        <Separator />
-        <Text>곡선 그래프</Text>
-        <LineChart
-          data={this.state.data}
-          width={this.state.screenWidth}
-          height={256}
-          verticalLabelRotation={30}
-          chartConfig={this.state.chartConfig}
-          bezier
-        />
+      <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.scrollView}>
+          <CustomHeader navigation={this.props.navigation} />
+          <Text>분석 페이지</Text>
+          <Separator />
+          <Text>날짜</Text>
+          {/* <Text style={styles.text}>{this.state.startDateString}</Text> */}
+          {/* <Icon name="calendar" size={20} color="#3143e8" /> */}
+          <View>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={() => this.startShowDatepicker()}
+            >
+              {/* <Text style={styles.submitButtonText}>start date picker</Text> */}
+              <Text style={styles.text}>
+                {this.state.startDateString}
+                <Icon name="calendar" size={20} color="#3143e8" />
+              </Text>
+            </TouchableOpacity>
+            {this.state.startShow && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={this.state.startDate}
+                mode={this.state.startMode}
+                is24Hour={true}
+                display="default"
+                onChange={this.onStartChange}
+              />
+            )}
+          </View>
+          <Separator />
+          <Text>곡선 그래프</Text>
+          <LineChart
+            data={this.state.data}
+            width={this.state.screenWidth}
+            height={256}
+            verticalLabelRotation={30}
+            chartConfig={this.state.chartConfig}
+            bezier
+          />
 
-        <Separator />
-        <Text>파이 그래프</Text>
-        <PieChart
-          data={this.state.pieData}
-          width={this.state.screenWidth}
-          height={220}
-          chartConfig={this.state.chartConfig}
-          accessor={'population'}
-          backgroundColor={'transparent'}
-          paddingLeft={'15'}
-          center={[10, 50]}
-          absolute
-        />
-      </View>
+          <Separator />
+          <Text>파이 그래프</Text>
+          <PieChart
+            data={this.state.pieData}
+            width={this.state.screenWidth}
+            height={220}
+            chartConfig={this.state.chartConfig}
+            accessor={'population'}
+            backgroundColor={'transparent'}
+            paddingLeft={'15'}
+            center={[10, 50]}
+            absolute
+          />
+          <PieChart
+            data={this.state.pieData}
+            width={this.state.screenWidth}
+            height={220}
+            chartConfig={this.state.chartConfig}
+            accessor={'population'}
+            backgroundColor={'transparent'}
+            paddingLeft={'15'}
+            center={[10, 50]}
+            absolute
+          />
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 } //class
@@ -155,6 +194,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     width: '100%',
+    paddingTop: StatusBar.currentHeight,
+  },
+  scrollView: {
+    // backgroundColor: 'pink',
+    marginHorizontal: 20,
+  },
+  text: {
+    color: 'pink',
   },
 });
 
