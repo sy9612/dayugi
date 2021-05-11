@@ -7,7 +7,9 @@ import SettingPage from './SettingPage';
 import TutorialPage from './TutorialPage';
 import LoginPage from './LoginPage';
 import SignUpPage from './SignUpPage';
+import DiaryDetailPage from './DiaryDetailPage';
+import DiaryWritePage from './DiaryWritePage';
 import UserInfoPage from './UserInfoPage';
 
 export { AnalysisPage, DiaryArchivePage, DiaryCalendarPage, 
-    GalleryPage, GrowthDiaryPage, SettingPage, TutorialPage, LoginPage, SignUpPage, UserInfoPage };
+    GalleryPage, GrowthDiaryPage, SettingPage, TutorialPage, LoginPage, SignUpPage, DiaryDetailPage, DiaryWritePage, UserInfoPage };
