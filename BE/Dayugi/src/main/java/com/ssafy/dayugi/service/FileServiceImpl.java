@@ -33,6 +33,12 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public List<DiaryFile> getUserFiles(int uid) throws Exception {
+        List<DiaryFile> diaryFiles = diaryFileRepository.findDiaryFilesByUser_Uid(uid);
+        return diaryFiles;
+    }
+
+    @Override
     public boolean deleteAllFile(int did) throws Exception {
         List<DiaryFile> diaryFiles = diaryFileRepository.findDiaryFilesByDiary_Did(did);
         if(!diaryFiles.isEmpty()){
@@ -54,8 +60,8 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public boolean deleteUserFile(int uid) throws Exception {
-       diaryFileRepository.deleteDiaryFilesByUser_Uid(uid);
-       return true;
+        diaryFileRepository.deleteDiaryFilesByUser_Uid(uid);
+        return true;
     }
 
     @Override
