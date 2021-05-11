@@ -2,25 +2,17 @@ package com.ssafy.dayugi.controller;
 
 import com.ssafy.dayugi.model.entity.Diary;
 import com.ssafy.dayugi.model.entity.DiaryFile;
-import com.ssafy.dayugi.model.entity.DiaryVo;
 import com.ssafy.dayugi.service.DiaryService;
 import com.ssafy.dayugi.service.FileService;
 import com.ssafy.dayugi.util.MD5Generator;
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController

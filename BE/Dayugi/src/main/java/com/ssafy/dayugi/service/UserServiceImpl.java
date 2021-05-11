@@ -82,8 +82,10 @@ public class UserServiceImpl implements UserService {
     public boolean changeUserInfo(User user) throws Exception{
         Optional<User> checkPresent = userRepository.findUserByEmail(user.getEmail());
         if(checkPresent.isPresent()){
-            checkPresent.get().setPassword(passwordSecurity.encode(user.getPassword()));
-            checkPresent.get().setNickname(user.getNickname());
+            if(user.getPassword() != null && !user.getPassword().equals(""))
+                checkPresent.get().setPassword(passwordSecurity.encode(user.getPassword()));
+            if(user.getNickname() != null && !user.getNickname().equals(""))
+                checkPresent.get().setNickname(user.getNickname());
             userRepository.save(checkPresent.get());
             return true;
         }
