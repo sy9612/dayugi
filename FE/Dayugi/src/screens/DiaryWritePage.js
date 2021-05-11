@@ -17,7 +17,7 @@ class DiaryWritePage extends React.Component{
         <View style={styles.container}>
             <CustomHeader navigation = {this.props.navigation}/>
             <View style={styles.diaryContentContainer}>
-                <Text style={styles.diaryDate}>날짜</Text>
+                <Text style={styles.diaryDate}>{this.props.navigation.getParam('year')}{this.props.navigation.getParam('month')}{this.props.navigation.getParam('day')}</Text>
                 <Separator />
                 <Text style={styles.diaryContent}>작성 페이지</Text>
             </View>

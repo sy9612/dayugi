@@ -19,7 +19,7 @@ class DiaryDetailPage extends React.Component{
             <View style={styles.diaryContentContainer}>
                 <Text style={styles.diaryDate}>날짜</Text>
                 <Separator />
-                <Text style={styles.diaryContent}>조회 페이지</Text>
+                <Text style={styles.diaryContent}>{this.props.navigation.getParam('did')}</Text>
             </View>
         </View>
         )
