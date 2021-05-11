@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import { Calendar } from 'react-native-calendars';
 import Separator from '../components/Separator';
@@ -25,7 +25,7 @@ class DiaryCalendarPage extends React.Component{
         this.props.navigation.navigate("Tutorial");
       }
       else{
-        
+        this.getAllDiary();
       }
     }
 
@@ -56,7 +56,6 @@ class DiaryCalendarPage extends React.Component{
     };
 
     render(){
-      this.getAllDiary();
 
         return (
         <View style={styles.container}>
@@ -90,6 +89,7 @@ class DiaryCalendarPage extends React.Component{
                 <Separator />
                 <Text style={styles.diaryContent}>{this.state.selectedContent}</Text>
             </View>
+            {diaryNavigationButton(this.state.selectedContent != "작성한 내용이 없습니다.")}
         </View>
         )
     }
@@ -115,5 +115,20 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 });
+
+function diaryNavigationButton(diaryExists) {
+  if (diaryExists) {
+    return(
+      <TouchableOpacity onPress={() => {this.props.navigation.navigate("DiaryDetail")}}>
+        <Text style={{color: 'white'}}>상세조회</Text>
+      </TouchableOpacity>
+    );
+  }
+  return(
+    <TouchableOpacity onPress={() => {this.props.navigation.navigate("DiaryWrite")}}>
+      <Text style={{color: 'white'}}>작성하기</Text>
+    </TouchableOpacity>
+  );
+}
 
 export default DiaryCalendarPage;
