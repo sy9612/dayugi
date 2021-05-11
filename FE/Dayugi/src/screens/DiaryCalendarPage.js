@@ -95,7 +95,15 @@ class DiaryCalendarPage extends React.Component{
                 <Separator />
                 <Text style={styles.diaryContent}>{this.state.selectedContent}</Text>
             </View>
-            {diaryNavigationButton(this.state.selectedContent != "작성한 내용이 없습니다.")}
+            
+            <View style={this.state.selectedContent != '' ? styles.diaryNavigationButton : null}>
+              <TouchableOpacity onPress={() => {
+                this.state.selectedContent != "작성한 내용이 없습니다." ? this.props.navigation.navigate("DiaryDetail") : this.props.navigation.navigate("DiaryWrite") 
+                }}>
+                <Text style={{color: 'white'}}>{ this.state.selectedContent != "작성한 내용이 없습니다." ? "상세조회" : "작성하기" }</Text>
+              </TouchableOpacity>
+            </View>
+            
         </View>
         )
     }
@@ -120,21 +128,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 8,
   },
+  diaryNavigationButton: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    right: 8,
+    height: 40,
+    backgroundColor: '#007AFF',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
-
-function diaryNavigationButton(diaryExists) {
-  if (diaryExists) {
-    return(
-      <TouchableOpacity onPress={() => {this.props.navigation.navigate("DiaryDetail")}}>
-        <Text style={{color: 'white'}}>상세조회</Text>
-      </TouchableOpacity>
-    );
-  }
-  return(
-    <TouchableOpacity onPress={() => {this.props.navigation.navigate("DiaryWrite")}}>
-      <Text style={{color: 'white'}}>작성하기</Text>
-    </TouchableOpacity>
-  );
-}
 
 export default DiaryCalendarPage;
