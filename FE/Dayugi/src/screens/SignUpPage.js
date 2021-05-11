@@ -46,21 +46,21 @@ class SignUpPage extends React.Component {
   };
   
   handleRawDate = date => {
-    this.setState({ rawDate: date })
-  }
+    this.setState({ rawDate: date });
+  };
 
   handleMode = text => {
-    this.setState({ mode: text })
-  }
+    this.setState({ mode: text });
+  };
 
   handleShow = Boolean => {
-    this.setState({ show: Boolean })
-  }
+    this.setState({ show: Boolean });
+  };
 
   handleDate = Date => {
-    this.setState({ date: this.getFormatDate(Date) })
+    this.setState({ date: this.getFormatDate(Date) });
     console.log(this.state.date);
-  }
+  };
 
   validateEmail = (mail) => {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
@@ -69,32 +69,39 @@ class SignUpPage extends React.Component {
   }
   
   signUp = (email, password, nickname, birth, selectedDate) => {
-    if (password != this.state.checkPassword) {
+    if (password == '') {
+      alert('패스워드를 입력해주세요');
+    }
+    else if (password != this.state.checkPassword) {
       alert("비밀번호가 일치하지 않습니다.");
       return;
     }
-    if (selectedDate > new Date()) {
+    else if (nickname == '') {
+      alert('닉네임을 입력해주세요');
+    }
+    else if (selectedDate > new Date()) {
       alert("설정된 생일 날짜를 다시 확인해주세요.");
       return;
     }
-    let dataObj= {email:email, password:password, nickname:nickname, birth:birth, uid:0};
-    fetch('http://k4a206.p.ssafy.io:8080/dayugi/user/join', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dataObj),
-      }).then(response => response.json())
-      .then(responseJson => {
-        console.log(responseJson);
-        let success = responseJson.success;
-        if(success == "success"){
-          alert("회원가입에 성공했습니다! 로그인 페이지로 이동합니다.");
-          this.props.navigation.navigate('Login');
+    else{
+      let dataObj = { 'email': email, 'password':password, 'nickname':nickname, 'birth':birth, 'uid':0};
+      fetch('http://k4a206.p.ssafy.io:8080/dayugi/user/join', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataObj),
+        }).then(response => response.json())
+        .then(responseJson => {
+          let success = responseJson.success;
+          if(success == "success"){
+            alert("회원가입에 성공했습니다! 로그인 페이지로 이동합니다.");
+            this.props.navigation.navigate('Login');
+          }
+          else {
+            alert("Id 또는 비밀번호를 확인해주세요.");
+          }
         }
-        else {
-          alert("Id 또는 비밀번호를 확인해주세요.");
-        }
-      }
-    );
+      );
+    }
   };
 
   checkEmail = (email) => {

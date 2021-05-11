@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class LoginPage extends React.Component {
   state = {
@@ -26,10 +27,14 @@ class LoginPage extends React.Component {
       .then(responseJson => {
         let success = responseJson.success;
         if(success == "success"){
-          let uid = responseJson.data['uid'];
-          let email= responseJson.data['email'];
-          let nickName = responseJson.data.['nickname'];
-          alert("uid: " + uid + ", email: " + email + ", nickName: " + nickName);
+          let uid = String(responseJson.data['uid']);
+          let nickName = String(responseJson.data['nickname']);
+          let Authorization = String(responseJson.Authorization);
+          AsyncStorage.setItem('uid', uid);
+          AsyncStorage.setItem('email', this.state.email);
+          AsyncStorage.setItem('nickName', nickName);
+          AsyncStorage.setItem('Authorization', Authorization);
+          this.props.navigation.navigate("DiaryCalendar");
         }
         else {
           alert("Id 또는 비밀번호를 확인해주세요.");

@@ -4,66 +4,25 @@ import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MonthPicker from 'react-native-month-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
 class DiaryArchivePage extends React.Component {
   state = {
+    uid: '',
+    authorization: '',
     currentYear: '',
     currentMonth: '',
     isModalOpen: false,
     contents:[
-      {
-          diaryDate:"2021-04-01",
-          diaryContent:"안녕안녕",
-      },
-      {
-          diaryDate:"2021-04-21",
-          diaryContent:"안녕안녕안녕안녕",
-      },
-      {
-          diaryDate:"2021-05-01",
-          diaryContent:"안녕안녕안녕안녕안녕안녕",
-      },
-      {
-          diaryDate:"2021-05-03",
-          diaryContent:"안녕안녕안녕안녕안녕안녕안녕안녕안녕안녕안녕안녕",
-      },
-      {
-          diaryDate:"2021-05-04",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-05-08",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-07-03",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-08-03",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-09-03",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-10-03",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-11-03",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-12-03",
-          diaryContent:"1",
-      },
+      
     ]
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.state.uid = await AsyncStorage.getItem('uid');
+    this.state.authorization = await AsyncStorage.getItem('Authorization');
+
     var y = new Date().getFullYear(); 
     var m = ("0" + (1 + new Date().getMonth())).slice(-2);
     
@@ -73,15 +32,38 @@ class DiaryArchivePage extends React.Component {
     });
   }
 
+  getDiaryWithMonth = (year, month) => {
+    fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary/monthly?month=${encodeURIComponent(month)}&uid=${encodeURIComponent(this.state.uid)}&year=${encodeURIComponent(year)}`, {
+      method: "GET",
+      headers: {
+        "accept" : "*/*",
+        "authorization": this.state.authorization
+      },
+      }).then(response => response.json())
+      .then(responseJson => {
+        let success = responseJson.success;
+        if(success === "success"){
+          this.setState({contents : responseJson.diaries});
+        }
+        else if(success === "fail"){
+          this.setState({contents : [{diary_date : 0, diary_content : '작성한 내용이 없습니다.'}]});
+        }
+      }
+    );
+  };
+
   openModal = () => {
     this.setState({ isModalOpen: true });
   };
 
   closeModal = () => {
+    this.getDiaryWithMonth(this.state.currentYear, this.state.currentMonth);
     this.setState({ isModalOpen: false });
   };
 
   render() {
+    this.getDiaryWithMonth(this.state.currentYear, this.state.currentMonth);
+    
     return (
       <View style={styles.container}>
         <CustomHeader navigation = {this.props.navigation}/>
@@ -124,7 +106,7 @@ class DiaryArchivePage extends React.Component {
               navigation = {this.props.navigation}
             />
           }
-          keyExtractor = {item => item.diaryDate}
+          keyExtractor = {item => item.diary_date}
         />
       </View>
     );
@@ -133,10 +115,10 @@ class DiaryArchivePage extends React.Component {
 
 function Item({ item, navigation }) {
   return (
-    <TouchableOpacity style = {styles.drawerContentListItem} onPress={() => alert(item.diaryDate + " " + item.diaryContent)}>
-        <Text style = {styles.drawerContentItemDiaryDate}>{item.diaryDate}</Text>
+    <TouchableOpacity style = {styles.drawerContentListItem} onPress={() => alert(item.diary_content)}>
+        <Text style = {styles.drawerContentItemDiaryDate}>{(item.diary_date != 0) && moment(item.diary_date).format('YYYY-MM-DD')}</Text>
         <Separator />
-        <Text style = {styles.drawerContentItemDiaryContent}>{item.diaryContent}</Text>
+        <Text style = {styles.drawerContentItemDiaryContent}>{item.diary_content}</Text>
     </TouchableOpacity>
   );
 }
