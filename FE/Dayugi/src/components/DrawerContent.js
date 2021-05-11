@@ -17,6 +17,10 @@ class DrawerContent extends React.Component {
                 text:"회원가입",
             },
             {
+                name: "UserInfo",
+                text: "마이페이지"
+            },
+            {
                 name:"DiaryArchive",
                 text:"모아보기",
             },

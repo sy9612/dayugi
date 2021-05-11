@@ -9,6 +9,7 @@ import LoginPage from './LoginPage';
 import SignUpPage from './SignUpPage';
 import DiaryDetailPage from './DiaryDetailPage';
 import DiaryWritePage from './DiaryWritePage';
+import UserInfoPage from './UserInfoPage';
 
 export { AnalysisPage, DiaryArchivePage, DiaryCalendarPage, 
-    GalleryPage, GrowthDiaryPage, SettingPage, TutorialPage, LoginPage, SignUpPage, DiaryDetailPage, DiaryWritePage };
+    GalleryPage, GrowthDiaryPage, SettingPage, TutorialPage, LoginPage, SignUpPage, DiaryDetailPage, DiaryWritePage, UserInfoPage };
