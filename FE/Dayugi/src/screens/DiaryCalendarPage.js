@@ -14,6 +14,7 @@ class DiaryCalendarPage extends React.Component{
       contents:[
       
       ],
+      markedDate: {},
       selectedContent : '',
     }
 
@@ -24,15 +25,7 @@ class DiaryCalendarPage extends React.Component{
         this.props.navigation.navigate("Tutorial");
       }
       else{
-        var y = new Date().getFullYear(); 
-        var m = ("0" + (1 + new Date().getMonth())).slice(-2);
-        var d = ("0" + (new Date().getDate())).slice(-2);
-
-        this.setState({
-          currentYear: y,
-          currentMonth: m,
-          currentDay: d
-        });
+        
       }
     }
 
@@ -41,13 +34,19 @@ class DiaryCalendarPage extends React.Component{
         method: "GET",
         headers: {
           "accept" : "*/*",
-          "authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMCIsImlhdCI6MTYyMDYyNTkzMiwiZXhwIjoxNjIwNjMzMTMyfQ.lHMJGPtEUx36tFWQYf09UX3YeajoegG3XwaPNEq22aY" 
+          "authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMCIsImlhdCI6MTYyMDcwNzIxMiwiZXhwIjoxNjIwNzE0NDEyfQ.Lp6dsO18ffbaYrT-syH9qnipUjiYXrcQGT-1z9TU-tk" 
         },
         }).then(response => response.json())
         .then(responseJson => {
           let success = responseJson.success;
           if(success === "success"){
-            this.setState({contents : responseJson.data});
+            let mDate = {};
+            for (let i = 0; i < responseJson.diaries.length; i++) {
+              let date = moment(responseJson.diaries[i].diary_date).format('YYYY-MM-DD');
+              mDate[date] = {marked : true};
+            }
+            this.setState({markedDate : mDate});
+            this.setState({contents : responseJson.diaries});
           }
           else if(success === "fail"){
             this.setState({contents : []});
@@ -66,6 +65,7 @@ class DiaryCalendarPage extends React.Component{
                 theme={{
                     calendarBackground: '#fff',
                 }} 
+                markedDates={this.state.markedDate}
                 onDayPress={d => {
                   this.setState({
                     currentYear: d.year,
@@ -86,7 +86,7 @@ class DiaryCalendarPage extends React.Component{
             />
             <Separator />
             <View style={styles.diaryContentContainer}>
-                <Text style={styles.diaryDate}>{this.state.currentYear}-{this.state.currentMonth}-{this.state.currentDay}</Text>
+                <Text style={styles.diaryDate}>{this.state.currentYear}{this.state.currentYear != '' ? '-' : ''}{this.state.currentMonth}{this.state.currentYear != '' ? '-' : ''}{this.state.currentDay}</Text>
                 <Separator />
                 <Text style={styles.diaryContent}>{this.state.selectedContent}</Text>
             </View>
