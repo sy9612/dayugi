@@ -15,13 +15,20 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { LineChart, PieChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { floor } from 'react-native-reanimated';
 
 class AnalysisPage extends React.Component {
   state = {
     startDate: new Date(),
-    startDateString: '2021-05-11',
+    startDateString: moment(new Date()).format('YYYY-MM-DD'),
     startMode: 'date',
     startShow: false,
+
+    endDate: new Date(),
+    endDateString: moment(new Date()).format('YYYY-MM-DD'),
+    endMode: 'date',
+    endShow: false,
+
     screenWidth: Dimensions.get('window').width,
     data: {
       labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -34,6 +41,7 @@ class AnalysisPage extends React.Component {
       ],
       legend: ['긍/부정 그래프'], // optional
     },
+
     chartConfig: {
       backgroundGradientFrom: '#1E2923',
       backgroundGradientFromOpacity: 0,
@@ -91,6 +99,10 @@ class AnalysisPage extends React.Component {
     this.setState({
       startDateString: moment(this.state.startDate).format('YYYY-MM-DD'),
     });
+    if (this.state.startDate > this.state.endDate) {
+      //시작날짜가 종료 날짜보다 앞서면
+      this.handleEndDate(Date);
+    }
   };
 
   onStartChange = (event, selectedDate) => {
@@ -99,13 +111,13 @@ class AnalysisPage extends React.Component {
     this.handleStartDate(currentDate);
   };
 
-  handleMode = (text) => {
+  handleStartMode = (text) => {
     this.setState({ startMode: text });
   };
 
   startShowMode = (currentMode) => {
     this.handleStartShow(true);
-    this.handleMode(currentMode);
+    this.handleStartMode(currentMode);
   };
 
   startShowDatepicker = () => {
@@ -116,6 +128,66 @@ class AnalysisPage extends React.Component {
     this.setState({ startShow: Boolean });
   };
 
+  //----
+  handleEndDate = (Date) => {
+    this.setState({ endDate: Date });
+    // console.log(this.state.startDate);
+    this.setState({
+      endDateString: moment(this.state.endDate).format('YYYY-MM-DD'),
+    });
+  };
+
+  onEndChange = (event, selectedDate) => {
+    const currentDate = selectedDate || this.state.endDate;
+    this.handleEndShow(Platform.OS === 'ios');
+    this.handleEndDate(currentDate);
+  };
+
+  handleEndMode = (text) => {
+    this.setState({ endMode: text });
+  };
+
+  endShowMode = (currentMode) => {
+    this.handleEndShow(true);
+    this.handleEndMode(currentMode);
+  };
+
+  endShowDatepicker = () => {
+    this.endShowMode('date');
+  };
+
+  handleEndShow = (Boolean) => {
+    this.setState({ endShow: Boolean });
+  };
+
+  //---
+  analysis = (startDate, endDate) => {
+    let tmp = 'start date : ' + startDate + '   /    end date : ' + endDate;
+    alert(tmp);
+    // let dataObj = { email: email, password: password };
+    // fetch('http://k4a206.p.ssafy.io:8080/dayugi/user', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(dataObj),
+    // })
+    //   .then((response) => response.json())
+    //   .then((responseJson) => {
+    //     let success = responseJson.success;
+    //     if (success == 'success') {
+    //       let uid = String(responseJson.data['uid']);
+    //       let nickName = String(responseJson.data['nickname']);
+    //       let Authorization = String(responseJson.Authorization);
+    //       AsyncStorage.setItem('uid', uid);
+    //       AsyncStorage.setItem('email', this.state.email);
+    //       AsyncStorage.setItem('nickName', nickName);
+    //       AsyncStorage.setItem('Authorization', Authorization);
+    //       this.props.navigation.navigate('DiaryCalendar');
+    //     } else {
+    //       alert('Id 또는 비밀번호를 확인해주세요.');
+    //     }
+    //   });
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -123,20 +195,17 @@ class AnalysisPage extends React.Component {
           <CustomHeader navigation={this.props.navigation} />
           <Text>분석 페이지</Text>
           <Separator />
-          <Text>날짜</Text>
+          <Text>조회 날짜</Text>
           {/* <Text style={styles.text}>{this.state.startDateString}</Text> */}
           {/* <Icon name="calendar" size={20} color="#3143e8" /> */}
-          <View>
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={() => this.startShowDatepicker()}
-            >
-              {/* <Text style={styles.submitButtonText}>start date picker</Text> */}
+          <View style={styles.setDateText}>
+            <TouchableOpacity onPress={() => this.startShowDatepicker()}>
               <Text style={styles.text}>
-                {this.state.startDateString}
-                <Icon name="calendar" size={20} color="#3143e8" />
+                {this.state.startDateString}&nbsp;
+                <Icon name="calendar" size={15} color="#3143e8" />
               </Text>
             </TouchableOpacity>
+            <Text>&nbsp;&nbsp;~&nbsp;&nbsp;</Text>
             {this.state.startShow && (
               <DateTimePicker
                 testID="dateTimePicker"
@@ -147,6 +216,31 @@ class AnalysisPage extends React.Component {
                 onChange={this.onStartChange}
               />
             )}
+            <TouchableOpacity onPress={() => this.endShowDatepicker()}>
+              <Text style={styles.text}>
+                {this.state.endDateString}&nbsp;
+                <Icon name="calendar" size={15} color="#3143e8" />
+              </Text>
+            </TouchableOpacity>
+            {this.state.endShow && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={this.state.endDate}
+                mode={this.state.endMode}
+                is24Hour={true}
+                display="default"
+                onChange={this.onEndChange}
+                minimumDate={this.state.startDate}
+              />
+            )}
+            <View>
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={() => this.analysis(this.state.startDate, this.state.endDate)}
+              >
+                <Text style={styles.submitButtonText}>조회</Text>
+              </TouchableOpacity>
+            </View>
           </View>
           <Separator />
           <Text>곡선 그래프</Text>
@@ -201,7 +295,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   text: {
-    color: 'pink',
+    color: 'purple',
+  },
+  setDateText: {
+    flexDirection: 'row',
+  },
+  submitButton: {
+    backgroundColor: '#7a42f4',
+    padding: 2,
+    margin: 2,
+    height: 20,
+    marginRight: 0,
+  },
+  submitButtonText: {
+    color: 'white',
   },
 });
 
