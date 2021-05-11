@@ -4,10 +4,13 @@ import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MonthPicker from 'react-native-month-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
 class DiaryArchivePage extends React.Component {
   state = {
+    uid: '',
+    authorization: '',
     currentYear: '',
     currentMonth: '',
     isModalOpen: false,
@@ -16,7 +19,10 @@ class DiaryArchivePage extends React.Component {
     ]
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.state.uid = await AsyncStorage.getItem('uid');
+    this.state.authorization = await AsyncStorage.getItem('Authorization');
+
     var y = new Date().getFullYear(); 
     var m = ("0" + (1 + new Date().getMonth())).slice(-2);
     
@@ -27,11 +33,11 @@ class DiaryArchivePage extends React.Component {
   }
 
   getDiaryWithMonth = (year, month) => {
-    fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary/monthly?month=${encodeURIComponent(month)}&uid=20&year=${encodeURIComponent(year)}`, {
+    fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary/monthly?month=${encodeURIComponent(month)}&uid=${encodeURIComponent(this.state.uid)}&year=${encodeURIComponent(year)}`, {
       method: "GET",
       headers: {
         "accept" : "*/*",
-        "authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMCIsImlhdCI6MTYyMDcwNzIxMiwiZXhwIjoxNjIwNzE0NDEyfQ.Lp6dsO18ffbaYrT-syH9qnipUjiYXrcQGT-1z9TU-tk" 
+        "authorization": this.state.authorization
       },
       }).then(response => response.json())
       .then(responseJson => {

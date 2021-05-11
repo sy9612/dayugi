@@ -4,10 +4,13 @@ import CustomHeader from '../components/CustomHeader';
 import { Calendar } from 'react-native-calendars';
 import Separator from '../components/Separator';
 import checkFirstLaunch from '../utils/CheckFirstLaunch';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
 class DiaryCalendarPage extends React.Component{
     state = {
+      uid: '',
+      authorization: '',
       currentYear: '',
       currentMonth: '',
       currentDay: '',
@@ -16,10 +19,13 @@ class DiaryCalendarPage extends React.Component{
       ],
       markedDate: {},
       selectedContent : '',
+
     }
 
     async componentDidMount() {
       const isFirstLaunch = await checkFirstLaunch();
+      this.state.uid = await AsyncStorage.getItem('uid');
+      this.state.authorization = await AsyncStorage.getItem('Authorization');
       
       if(isFirstLaunch){
         this.props.navigation.navigate("Tutorial");
@@ -30,11 +36,11 @@ class DiaryCalendarPage extends React.Component{
     }
 
     getAllDiary = () => {
-      fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary/all?uid=20`, {
+      fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary/all?uid=${encodeURIComponent(this.state.uid)}`, {
         method: "GET",
         headers: {
           "accept" : "*/*",
-          "authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMCIsImlhdCI6MTYyMDcwNzIxMiwiZXhwIjoxNjIwNzE0NDEyfQ.Lp6dsO18ffbaYrT-syH9qnipUjiYXrcQGT-1z9TU-tk" 
+          "authorization": this.state.authorization
         },
         }).then(response => response.json())
         .then(responseJson => {
