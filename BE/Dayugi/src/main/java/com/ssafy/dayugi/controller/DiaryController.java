@@ -348,4 +348,26 @@ public class DiaryController {
         return entity;
     }
 
+    @GetMapping(value = "/diaryfile")
+    @ApiOperation(value = "다이어리 파일 조회", notes = "다이어리 파일 조회")
+    private ResponseEntity fileDiary(@RequestParam int uid) {
+        Map result = new HashMap();
+        ResponseEntity entity = null;
+        try {
+            List<DiaryFile> files = fileService.getUserFiles(uid);
+            if (!files.isEmpty()) {
+                result.put("success", "success");
+                result.put("diaries", files);
+            } else {
+                result.put("success", "fail");
+            }
+            entity = new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", "error");
+            entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+        return entity;
+    }
+
 }
