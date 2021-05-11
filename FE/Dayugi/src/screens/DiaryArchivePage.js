@@ -31,13 +31,13 @@ class DiaryArchivePage extends React.Component {
       method: "GET",
       headers: {
         "accept" : "*/*",
-        "authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMCIsImlhdCI6MTYyMDM3MzAwNSwiZXhwIjoxNjIwMzc2NjA1fQ.n_6sIVAaOSwZyybirPo97VWxz4zm0nKAH2V35KqcE3Y " 
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMCIsImlhdCI6MTYyMDcwNzIxMiwiZXhwIjoxNjIwNzE0NDEyfQ.Lp6dsO18ffbaYrT-syH9qnipUjiYXrcQGT-1z9TU-tk" 
       },
       }).then(response => response.json())
       .then(responseJson => {
         let success = responseJson.success;
         if(success === "success"){
-          this.setState({contents : responseJson.data});
+          this.setState({contents : responseJson.diaries});
         }
         else if(success === "fail"){
           this.setState({contents : [{diary_date : 0, diary_content : '작성한 내용이 없습니다.'}]});
