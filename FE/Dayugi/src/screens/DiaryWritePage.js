@@ -59,7 +59,7 @@ class DiaryWritePage extends React.Component{
             <TextInput 
               style={styles.diaryContent}
               underlineColorAndroid="transparent"
-              placeholder="내용을 입력하세요."
+              placeholder="내용을 입력해주세요."
               placeholderTextColor="#aaa"
               autoCapitalize="none"
               multiline={true}
@@ -67,9 +67,12 @@ class DiaryWritePage extends React.Component{
             />
         </View>
 
-        <View style={styles.diaryNavigationButton}>
+        <View style={this.state.diaryContent != '' ? styles.diaryNavigationButton : styles.diaryNavigationButtonDiabled }>
           <TouchableOpacity onPress={() => {
-              this.writeDiary();
+              if(this.state.diaryContent != '')
+                this.writeDiary();
+              else
+                alert("내용을 입력해주세요")
             }}>
             <Text style={{color: 'white'}}>작성하기</Text>
           </TouchableOpacity>
@@ -111,6 +114,17 @@ const styles = StyleSheet.create({
     right: 8,
     height: 40,
     backgroundColor: '#007AFF',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  diaryNavigationButtonDiabled: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    right: 8,
+    height: 40,
+    backgroundColor: '#aaa',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
