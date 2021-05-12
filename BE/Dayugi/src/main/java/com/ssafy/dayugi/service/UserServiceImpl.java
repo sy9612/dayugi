@@ -1,12 +1,17 @@
 package com.ssafy.dayugi.service;
 
+import com.ssafy.dayugi.model.entity.Diary;
 import com.ssafy.dayugi.model.entity.User;
+import com.ssafy.dayugi.repository.DiaryFileRepository;
+import com.ssafy.dayugi.repository.DiaryRepository;
+import com.ssafy.dayugi.repository.EmotionRateRepository;
 import com.ssafy.dayugi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -14,11 +19,19 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
+    DiaryRepository diaryRepository;
+    DiaryFileRepository diaryFileRepository;
+    EmotionRateRepository emotionRateRepository;
     PasswordEncoder passwordSecurity;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordSecurity) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordSecurity,
+                           DiaryRepository diaryRepository,  DiaryFileRepository diaryFileRepository,
+                            EmotionRateRepository emotionRateRepository) {
         this.userRepository = userRepository;
+        this.diaryRepository = diaryRepository;
+        this.diaryFileRepository = diaryFileRepository;
+        this.emotionRateRepository = emotionRateRepository;
         this.passwordSecurity = passwordSecurity;
     }
 
@@ -66,13 +79,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean deleteUser(String email) throws Exception {
-        Optional<User> user = userRepository.findUserByEmail(email);
+    public boolean deleteUser(int uid) throws Exception {
+        Optional<User> user = userRepository.findUserByUid(uid);
         if(user.isPresent()){
-            int check = userRepository.deleteUserByEmail(email);
-            // 삭제된 row가 존재하지 않는 경우
-            if(check == 0) return false;
-            return true;
+            // 다이어리 파일 삭제
+            diaryFileRepository.deleteDiaryFilesByUser_Uid(uid);
+
+            // 유저가 작성한 전체 다이어리 조회
+            List<Optional<Diary>> Diaries = diaryRepository.findDiariesByUser_Uid(uid);
+            if(!Diaries.isEmpty()){
+                for (Optional<Diary> diary : Diaries) {
+                    if (diary.isPresent()) {
+                        emotionRateRepository.deleteEmotionRateByDiary_Did(diary.get().getDid());
+                    }
+                }
+            }
+            // 유저가 작성한 전체 다이어리 삭제
+            diaryRepository.deleteDiariesByUser_Uid(uid);
+            int check = userRepository.deleteUserByUid(uid);
+            if(check != 0)
+                return true;
         }
         // 입력받은 email에 매칭되는 정보가 없는 경우
         return false;
