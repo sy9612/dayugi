@@ -15,10 +15,12 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { LineChart, PieChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { floor } from 'react-native-reanimated';
+// import { floor } from 'react-native-reanimated';
+import Plotly from 'react-native-plotly';
 
 class AnalysisPage extends React.Component {
   state = {
+    // setLoading: useState(true),
     startDate: new Date(),
     startDateString: moment(new Date()).format('YYYY-MM-DD'),
     startMode: 'date',
@@ -89,6 +91,26 @@ class AnalysisPage extends React.Component {
         legendFontSize: 15,
       },
     ],
+    radarData: [
+      // 차트에 들어갈 data를 먼저 지정해주고!
+      {
+        type: 'scatterpolar', // chart type
+        r: [39, 28, 8, 7, 28, 39], // data
+        theta: ['A', 'B', 'C', 'D', 'E', 'A'], // data category
+        fill: 'toself', // fill option
+        name: 'Group A', // data group name
+      },
+    ],
+    radarLayout: {
+      // data를 꾸며주는 layout을 지정!
+      polar: {
+        radialaxis: {
+          // 방사축이라는 의미인데 아래 그림에서 파란색으로 표시된 부분을 말한다!
+          visible: true, // 방사축 display
+          range: [0, 50], // 방사축의 시작값, 끝 값
+        },
+      },
+    },
   };
 
   // handleDateString = (startDateString) => {};
@@ -162,8 +184,9 @@ class AnalysisPage extends React.Component {
 
   //---
   analysis = (startDate, endDate) => {
-    let tmp = 'start date : ' + startDate + '   /    end date : ' + endDate;
+    let tmp = 'start date : ' + startDate + '/n' + 'end date : ' + endDate;
     alert(tmp);
+    console.log(this.state.radarData);
     // let dataObj = { email: email, password: password };
     // fetch('http://k4a206.p.ssafy.io:8080/dayugi/user', {
     //   method: 'POST',
@@ -243,6 +266,17 @@ class AnalysisPage extends React.Component {
             </View>
           </View>
           <Separator />
+          <View style={styles.chartRow}>
+            <Text>Rader Chart</Text>
+            {/* <Text>{this.state.radarData}</Text> */}
+            <Plotly
+              data={this.state.radarData}
+              layout={this.state.radarLayout}
+              debug
+              enableFullPlotly
+            />
+          </View>
+          <Separator />
           <Text>곡선 그래프</Text>
           <LineChart
             data={this.state.data}
@@ -252,29 +286,17 @@ class AnalysisPage extends React.Component {
             chartConfig={this.state.chartConfig}
             bezier
           />
-
           <Separator />
           <Text>파이 그래프</Text>
           <PieChart
             data={this.state.pieData}
             width={this.state.screenWidth}
-            height={220}
+            height={180}
             chartConfig={this.state.chartConfig}
             accessor={'population'}
             backgroundColor={'transparent'}
             paddingLeft={'15'}
-            center={[10, 50]}
-            absolute
-          />
-          <PieChart
-            data={this.state.pieData}
-            width={this.state.screenWidth}
-            height={220}
-            chartConfig={this.state.chartConfig}
-            accessor={'population'}
-            backgroundColor={'transparent'}
-            paddingLeft={'15'}
-            center={[10, 50]}
+            center={[10, 10]}
             absolute
           />
         </ScrollView>
@@ -309,6 +331,10 @@ const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: 'white',
+  },
+  chartRow: {
+    flex: 1,
+    width: '100%',
   },
 });
 
