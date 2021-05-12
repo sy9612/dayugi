@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -46,13 +46,16 @@ class LoginPage extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <CustomHeader navigation = {this.props.navigation}/>
+        <CustomHeader navigation={this.props.navigation} />
+        <View style={styles.logoImage}>
+          <Image source={require('../../assets/images/dayugi.png')} />
+          <Text>Dayugi</Text>
+        </View>
         <View>
           <TextInput
             style={styles.input}
             underlineColorAndroid="transparent"
             placeholder=" Email"
-            placeholderTextColor="#9a73ef"
             autoCapitalize="none"
             keyboardType="email-address"
             onChangeText={this.handleEmail}
@@ -61,7 +64,6 @@ class LoginPage extends React.Component {
             style={styles.input}
             underlineColorAndroid="transparent"
             placeholder=" Password"
-            placeholderTextColor="#9a73ef"
             autoCapitalize="none"
             secureTextEntry = { true }
             onChangeText={this.handlePassword}
@@ -83,13 +85,13 @@ class LoginPage extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#D7B397',
     width: '100%',
   },
   input: {
     margin: 15,
     height: 40,
-    borderColor: "#7a42f4",
+    borderColor: "#E5E5E5",
     borderWidth: 1
   },
   submitButton: {
@@ -99,7 +101,13 @@ const styles = StyleSheet.create({
     height: 40
   },
   submitButtonText: {
-    color: "white"
+    textAlign: "center",
+    color: "black"
+  },
+  logoImage: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center'
   }
 });
 

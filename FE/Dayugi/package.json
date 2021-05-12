@@ -7,6 +7,11 @@
     "web": "expo start --web",
     "eject": "expo eject"
   },
+  "rnpm":{
+    "assets": [
+      "./assets/fonts"
+    ]
+  },
   "dependencies": {
     "@expo/vector-icons": "^12.0.4",
     "@react-native-async-storage/async-storage": "^1.15.4",

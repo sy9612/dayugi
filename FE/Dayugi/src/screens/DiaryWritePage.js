@@ -24,6 +24,7 @@ class DiaryWritePage extends React.Component{
   }
 
   writeDiary = () => {
+    console.log("test");
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
     fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
       method: "POST",
