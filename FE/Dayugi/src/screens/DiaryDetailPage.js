@@ -11,6 +11,7 @@ class DiaryDetailPage extends React.Component{
       did : '',
       diary : {},
       dialogVisible : false,
+      authorization : '',
     }
 
     async componentDidMount() {
@@ -91,7 +92,7 @@ class DiaryDetailPage extends React.Component{
 
               <View style={styles.diaryUpdateButton}>
                 <TouchableOpacity onPress={() => {
-                    this.props.navigation.navigate("DiaryCalendar");
+                    this.props.navigation.navigate("DiaryUpdate", {diary : this.state.diary});
                   }}>
                   <Text style={{color: 'white'}}>수정하기</Text>
                 </TouchableOpacity>
