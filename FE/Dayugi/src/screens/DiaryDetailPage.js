@@ -86,7 +86,7 @@ class DiaryDetailPage extends React.Component{
                 <TouchableOpacity onPress={() => {
                     this.props.navigation.navigate("DiaryCalendar");
                   }}>
-                  <Text style={{color: 'white'}}>돌아가기</Text>
+                  <Text style={{color: 'white'}}>홈으로</Text>
                 </TouchableOpacity>
               </View>
 
