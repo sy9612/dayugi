@@ -2,7 +2,7 @@
 # pwd : /project_name/app/module/dbModule.py
 
 import pymysql
-from _security import db_password
+from module._security import db_password
 
 
 class Database():
