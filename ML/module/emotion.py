@@ -101,6 +101,7 @@ def extract_emotion(sentence, model):
         segment_ids = segment_ids.long().to(device)
         valid_length= valid_length
         output = model(token_ids, valid_length, segment_ids)
+        return output
         result = {}
         for idx, element in enumerate(output[0]):
             result[mapping[idx]] = element.item()
