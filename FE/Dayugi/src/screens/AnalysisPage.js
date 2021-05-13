@@ -16,7 +16,8 @@ import { LineChart, PieChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/AntDesign';
 // import { floor } from 'react-native-reanimated';
-import Plotly from 'react-native-plotly';
+import Plotly from 'react-native-plotly'; // 걍 안됨
+// import { Radar } from 'react-native-pathjs-charts'; //실행도 안됨
 
 class AnalysisPage extends React.Component {
   state = {
@@ -111,6 +112,42 @@ class AnalysisPage extends React.Component {
         },
       },
     },
+    // pathjsData: [
+    //   {
+    //     speed: 74,
+    //     balance: 29,
+    //     explosives: 40,
+    //     energy: 40,
+    //     flexibility: 30,
+    //     agility: 25,
+    //     endurance: 44,
+    //   },
+    // ],
+    // pathjsOptions: {
+    //   width: 290,
+    //   height: 290,
+    //   margin: {
+    //     top: 20,
+    //     left: 20,
+    //     right: 30,
+    //     bottom: 20,
+    //   },
+    //   r: 150,
+    //   max: 100,
+    //   fill: '#2980B9',
+    //   stroke: '#2980B9',
+    //   animate: {
+    //     type: 'oneByOne',
+    //     duration: 200,
+    //   },
+    //   label: {
+    //     fontFamily: 'Arial',
+    //     fontSize: 14,
+    //     fontWeight: true,
+    //     fill: '#34495E',
+    //     onLabelPress: this.onLabelPress,
+    //   },
+    // },
   };
 
   // handleDateString = (startDateString) => {};
@@ -217,6 +254,12 @@ class AnalysisPage extends React.Component {
         <ScrollView style={styles.scrollView}>
           <CustomHeader navigation={this.props.navigation} />
           <Text>분석 페이지</Text>
+          <Plotly
+            data={this.state.radarData}
+            layout={this.state.radarLayout}
+            debug
+            enableFullPlotly
+          />
           <Separator />
           <Text>조회 날짜</Text>
           {/* <Text style={styles.text}>{this.state.startDateString}</Text> */}
@@ -275,6 +318,7 @@ class AnalysisPage extends React.Component {
               debug
               enableFullPlotly
             />
+            {/* <Radar data={this.state.pathjsData} options={this.state.pathjsOptions} /> */}
           </View>
           <Separator />
           <Text>곡선 그래프</Text>
