@@ -29,26 +29,36 @@ def emotion(did, diary):
     # did = request.json.get('did')
     # diary = request.json.get('diary').split('\n')
     diary = diary.split('\n')
-    analysis = {'angry' : 0,
-                'disgust' : 0,
-                'fear' : 0,
-                'happiness' : 0,
-                'neutral' : 0,
-                'sadness' : 0,
-                'surprise' : 0}
-                
+
+    analysis = {}
+    mapping = ['angry', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise']
+
+    scores = torch.zeros(1, 7)
+    len_script = 0
     for sentence in diary:
         if len(sentence) > 5:
-            result = extract_emotion(sentence, emotion_model)
-            for key, value in result.items():
-                analysis[key] += value
+            len_script += 1
+            scores += extract_emotion(sentence, emotion_model)
+            # for key, value in output.items():
+            #     analysis[key] += value
+    
+    # SoftMax
+    # scores = torch.nn.functional.softmax(scores)
+
+    # Sigmoid
+    scores = torch.div(scores, len_script)
+    scores = torch.sigmoid(scores)
+    s = torch.sum(scores).item()
+    scores = torch.div(scores, s)
+
+    for idx, score in enumerate(scores[0]):
+        analysis[mapping[idx]] = score.item()
 
     db_class = Database()
     sql = f"""SELECT count(did) FROM dayugi.emotion_rate WHERE did={did}"""
     row = db_class.executeAll(sql)
-    print(row[0]['count(did)'])
     if row[0]['count(did)']:
-        sql = f"""UPDATE dayugi.emotion_rate SET {','.join([emotion + '=' + str(score) for emotion, score in analysis.items()])}"""
+        sql = f"""UPDATE dayugi.emotion_rate SET {','.join([emotion + '=' + str(score) for emotion, score in analysis.items()])} WHERE did={did}"""
     else:
         sql = f"""INSERT INTO dayugi.emotion_rate(did,{','.join([emotion for emotion in analysis.keys()])})
         VALUES ({did},{','.join([str(score) for score in analysis.values()])})"""
@@ -72,7 +82,7 @@ def comment(did, diary):
         result = a.split('.')
 
     db_class = Database()
-    sql = f"""UPDATE dayugi.diary SET review_content = '{result[0] + '.' + result[1]}' WHERE (did = '{did}')"""
+    sql = f"""UPDATE dayugi.diary SET review_content = '{result[0] + '.'}' WHERE (did = '{did}')"""
     db_class.execute(sql)
     db_class.commit()
     
@@ -88,6 +98,6 @@ def emotion_comment():
     return '성공적으로 저장되었습니다.'
 
 if __name__=="__main__":
-    app.run(debug=True)
+    # app.run(debug=True)
     # host 등을 직접 지정하고 싶다면
-    # app.run(host="127.0.0.1", port="5000", debug=True)
+    app.run(host="0.0.0.0", port="5000", debug=True)
