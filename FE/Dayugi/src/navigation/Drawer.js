@@ -2,7 +2,7 @@ import React from 'react';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import DrawerContent from '../components/DrawerContent';
 
-import { AnalysisPage, DiaryArchivePage, DiaryCalendarPage, GalleryPage, GrowthDiaryPage, SettingPage, TutorialPage, LoginPage, SignUpPage, DiaryDetailPage, DiaryWritePage, UserInfoPage } from '../screens/index';
+import { AnalysisPage, DiaryArchivePage, DiaryCalendarPage, GalleryPage, GrowthDiaryPage, SettingPage, TutorialPage, LoginPage, SignUpPage, DiaryDetailPage, DiaryWritePage, UserInfoPage, DiaryUpdatePage } from '../screens/index';
 
 const Routes = {
   Tutorial : { screen : TutorialPage },
@@ -17,6 +17,7 @@ const Routes = {
   Setting : { screen : SettingPage },
   DiaryDetail : { screen : DiaryDetailPage },
   DiaryWrite : { screen : DiaryWritePage },
+  DiaryUpdate : { screen : DiaryUpdatePage },
 }
 
 const Drawer = createDrawerNavigator(

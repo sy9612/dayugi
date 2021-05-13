@@ -5,42 +5,56 @@ import Separator from '../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
-class DiaryWritePage extends React.Component{
+class DiaryUpdatePage extends React.Component{
   state = {
     year : '',
     month : '',
     day : '',
     diaryContent : '',
     uid : '',
+    diary : {},
     authorization : '',
   }
 
   async componentDidMount() {
-    let y = this.props.navigation.getParam('year');
-    let m = this.props.navigation.getParam('month')
-    let d = this.props.navigation.getParam('day')
+    let diary = this.props.navigation.getParam('diary');
     this.state.uid = await AsyncStorage.getItem('uid');
     this.state.authorization = await AsyncStorage.getItem('Authorization');
-    this.setState({year : y, month : m, day : d});
+    this.setState({
+      diary : diary, 
+      diaryContent : diary.diary_content, 
+      year : moment(diary.diary_date).format('YYYY'), 
+      month : moment(diary.diary_date).format('MM'), 
+      day : moment(diary.diary_date).format('DD')
+    });
   }
 
-  writeDiary = () => {
-    console.log("test");
+  updateDiary = () => {
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
-    fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
-      method: "POST",
+    let dataObj = {
+      "diary_content" : this.state.diaryContent,
+      "diary_date" : date,
+      "did" : this.state.diary.did,
+      "user" : {
+        "uid" : this.state.uid
+      }
+    }
+    fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary`, {
+      method: "PUT",
       headers: {
-        "accept" : "*/*",
-        "authorization": this.state.authorization
+        "accept": "*/*",
+        "authorization": this.state.authorization,
+        "Content-Type": "application/json"
       },
+      body: JSON.stringify(dataObj),
       }).then(response => response.json())
       .then(responseJson => {
         let success = responseJson.success;
         if(success === "success"){
-          this.props.navigation.navigate("DiaryCalendar");
+          // ????
         }
         else if(success === "fail"){
-          alert("오류 발생!")
+          this.props.navigation.navigate("DiaryCalendar");
         }
       }
     );
@@ -61,23 +75,35 @@ class DiaryWritePage extends React.Component{
             <TextInput 
               style={styles.diaryContent}
               underlineColorAndroid="transparent"
-              placeholder="내용을 입력해주세요."
+              placeholder="내용을 입력하세요."
               placeholderTextColor="#aaa"
               autoCapitalize="none"
               multiline={true}
-              onChangeText={(text) => this.setState({diaryContent : text})}
-            />
+              onChangeText={(text) => this.setState({diaryContent : text})}>
+              {this.state.diaryContent}
+            </TextInput>
+            
         </View>
 
-        <View style={this.state.diaryContent != '' ? styles.diaryNavigationButton : styles.diaryNavigationButtonDisabled }>
-          <TouchableOpacity onPress={() => {
-              if(this.state.diaryContent != '')
-                this.writeDiary();
-              else
-                alert("내용을 입력해주세요")
-            }}>
-            <Text style={{color: 'white'}}>작성하기</Text>
-          </TouchableOpacity>
+        <View style={styles.buttons}>
+          <View style={styles.diaryNavigationButton}>
+            <TouchableOpacity onPress={() => {
+                this.props.navigation.navigate("DiaryCalendar");
+              }}>
+              <Text style={{color: 'white'}}>돌아가기</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={this.state.diaryContent != '' ? styles.diaryUpdateButton : styles.diaryUpdateButtonDiabled }>
+            <TouchableOpacity onPress={() => {
+                if(this.state.diaryContent != '')
+                  this.updateDiary();
+                else
+                  alert("내용을 입력해주세요")
+              }}>
+              <Text style={{color: 'white'}}>수정하기</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -109,23 +135,35 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 8,
   },
-  diaryNavigationButton: {
+  buttons: {
     position: 'absolute',
-    bottom: 8,
-    left: 8,
-    right: 8,
+    bottom : 8,
     height: 40,
+    width: '100%',
+    flexDirection: 'row',
+  },
+  diaryNavigationButton: {
+    flex: 1,
+    marginLeft: 8,
+    marginRight: 4,
     backgroundColor: '#007AFF',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  diaryNavigationButtonDisabled: {
-    position: 'absolute',
-    bottom: 8,
-    left: 8,
-    right: 8,
-    height: 40,
+  diaryUpdateButton: {
+    flex: 1,
+    marginLeft: 4,
+    marginRight: 8,
+    backgroundColor: '#007AFF',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  diaryUpdateButtonDisabled: {
+    flex: 1,
+    marginLeft: 4,
+    marginRight: 8,
     backgroundColor: '#aaa',
     borderRadius: 5,
     justifyContent: 'center',
@@ -133,4 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DiaryWritePage;
+export default DiaryUpdatePage;

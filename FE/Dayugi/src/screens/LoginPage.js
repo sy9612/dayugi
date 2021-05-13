@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 class LoginPage extends React.Component {
   state = {
     email: "",
-    password: ""
+    password: "",
   };
 
   handleEmail = text => {
@@ -16,6 +16,7 @@ class LoginPage extends React.Component {
   handlePassword = text => {
     this.setState({ password: text });
   };
+
 
   login = (email, password) => {
     let dataObj= {email:email, password:password};
@@ -49,7 +50,7 @@ class LoginPage extends React.Component {
         <CustomHeader navigation={this.props.navigation} />
         <View style={styles.logoImage}>
           <Image source={require('../../assets/images/dayugi.png')} />
-          <Text>Dayugi</Text>
+          <Text style={styles.logo}>Dayugi</Text>
         </View>
         <View>
           <TextInput
@@ -89,16 +90,23 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   input: {
-    margin: 15,
+    margin: 10,
+    marginBottom: 10,
+    marginLeft: 70,
+    marginRight: 70,
     height: 40,
     borderColor: "#E5E5E5",
-    borderWidth: 1
+    borderWidth: 1,
+    borderRadius: 5,
   },
   submitButton: {
     backgroundColor: "#7a42f4",
     padding: 10,
-    margin: 15,
-    height: 40
+    marginTop: 10,
+    marginLeft: 70,
+    marginRight: 70,
+    height: 40,
+    borderRadius: 5,
   },
   submitButtonText: {
     textAlign: "center",
@@ -108,6 +116,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center'
+  },
+  logo: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 30,
   }
 });
 

@@ -4,21 +4,24 @@ import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import Dialog from "react-native-dialog";
 
 class DiaryDetailPage extends React.Component{
     state = {
       did : '',
       diary : {},
+      dialogVisible : false,
+      authorization : '',
     }
 
     async componentDidMount() {
       this.state.did = this.props.navigation.getParam('did')
       this.state.authorization = await AsyncStorage.getItem('Authorization');
       
-      this.getDiaryFromDid();
+      this.getDiaryByDid();
     }
 
-    getDiaryFromDid = () => {
+    getDiaryByDid = () => {
       fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?did=${encodeURIComponent(this.state.did)}`, {
         method: "GET",
         headers: {
@@ -39,6 +42,27 @@ class DiaryDetailPage extends React.Component{
       );
     };
 
+    deleteDiaryByDid = () => {
+      fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?did=${encodeURIComponent(this.state.did)}`, {
+        method: "DELETE",
+        headers: {
+          "accept" : "*/*",
+          "authorization": this.state.authorization
+        },
+        }).then(response => response.json())
+        .then(responseJson => {
+          let success = responseJson.success;
+          if(success === "success"){
+            this.props.navigation.navigate("DiaryCalendar");
+          }
+          else if(success === "fail"){
+
+          }
+        }
+      );
+    };
+
+
     render(){
         return (
         <View style={styles.container}>
@@ -57,13 +81,38 @@ class DiaryDetailPage extends React.Component{
                 <Text style={styles.reviewContent}>{this.state.diary.review_content}</Text>
             </View>
 
-            <View style={styles.diaryNavigationButton}>
-              <TouchableOpacity onPress={() => {
-                  this.props.navigation.navigate("DiaryCalendar");
-                }}>
-                <Text style={{color: 'white'}}>메인으로</Text>
-              </TouchableOpacity>
+            <View style={styles.buttons}>
+              <View style={styles.diaryNavigationButton}>
+                <TouchableOpacity onPress={() => {
+                    this.props.navigation.navigate("DiaryCalendar");
+                  }}>
+                  <Text style={{color: 'white'}}>홈으로</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.diaryUpdateButton}>
+                <TouchableOpacity onPress={() => {
+                    this.props.navigation.navigate("DiaryUpdate", {diary : this.state.diary});
+                  }}>
+                  <Text style={{color: 'white'}}>수정하기</Text>
+                </TouchableOpacity>
+              </View>
+              
+              <View style={styles.diaryDeleteButton}>
+                <TouchableOpacity onPress={() => {
+                    this.setState({dialogVisible : true});
+                  }}>
+                  <Text style={{color: 'white'}}>삭제하기</Text>
+                </TouchableOpacity>
+              </View>
             </View>
+
+            <Dialog.Container visible={this.state.dialogVisible}>
+              <Dialog.Title>다이어리 삭제</Dialog.Title>
+              <Dialog.Description>삭제하시겠습니까?</Dialog.Description>
+              <Dialog.Button label="취소" onPress={() => this.setState({dialogVisible : false})}/>
+              <Dialog.Button label="삭제" onPress={() => this.deleteDiaryByDid()}/>
+            </Dialog.Container>
         </View>
         )
     }
@@ -99,12 +148,35 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     height: 100,
   },
-  diaryNavigationButton: {
+  buttons: {
     position: 'absolute',
-    bottom: 8,
-    left: 8,
-    right: 8,
+    bottom : 8,
     height: 40,
+    width: '100%',
+    flexDirection: 'row',
+  },
+  diaryUpdateButton: {
+    flex: 1,
+    marginLeft: 4,
+    marginRight: 4,
+    backgroundColor: '#007AFF',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  diaryDeleteButton: {
+    flex: 1,
+    marginLeft: 4,
+    marginRight: 8,
+    backgroundColor: '#FF4343',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  diaryNavigationButton: {
+    flex: 1,
+    marginLeft: 8,
+    marginRight: 4,
     backgroundColor: '#007AFF',
     borderRadius: 5,
     justifyContent: 'center',
