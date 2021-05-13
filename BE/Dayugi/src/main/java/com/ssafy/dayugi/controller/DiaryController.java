@@ -178,7 +178,7 @@ public class DiaryController {
 
     @DeleteMapping(value = "")
     @ApiOperation(value = "다이어리 삭제", notes = "did를 받아 선택한 다이어리 삭제")
-    private ResponseEntity deleteDiary(int did) {
+    private ResponseEntity deleteDiary(@RequestParam int did) {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
@@ -207,7 +207,7 @@ public class DiaryController {
 
     @DeleteMapping(value = "/all")
     @ApiOperation(value = "다이어리 전체 삭제", notes = "사용자가 작성한 다이어리 전체 삭제")
-    private ResponseEntity deleteAllDiary(int uid) {
+    private ResponseEntity deleteAllDiary(@RequestParam int uid) {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
@@ -236,7 +236,7 @@ public class DiaryController {
 
     @GetMapping(value = "")
     @ApiOperation(value = "다이어리 상세 조회", notes = "did를 받아 다이어리 1개 상세 조회")
-    private ResponseEntity readDiary(int did) {
+    private ResponseEntity readDiary(@RequestParam int did) {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
