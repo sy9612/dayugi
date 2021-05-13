@@ -42,8 +42,15 @@ class DiaryArchivePage extends React.Component {
       }).then(response => response.json())
       .then(responseJson => {
         let success = responseJson.success;
+        let diaries = responseJson.diaries;
+
+        diaries.sort(function(a, b) {
+          if(a.diary_date < b.diary_date) return -1;
+          if(a.diary_date > b.diary_date) return 1;
+        });
+
         if(success === "success"){
-          this.setState({contents : responseJson.diaries});
+          this.setState({contents : diaries});
         }
         else if(success === "fail"){
           this.setState({contents : [{diary_date : 0, diary_content : '작성한 내용이 없습니다.'}]});
@@ -115,7 +122,7 @@ class DiaryArchivePage extends React.Component {
 
 function Item({ item, navigation }) {
   return (
-    <TouchableOpacity style = {styles.drawerContentListItem} onPress={() => alert(item.diary_content)}>
+    <TouchableOpacity style = {styles.drawerContentListItem} onPress={() =>  navigation.navigate("DiaryDetail", {did : item.did}) }>
         <Text style = {styles.drawerContentItemDiaryDate}>{(item.diary_date != 0) && moment(item.diary_date).format('YYYY-MM-DD')}</Text>
         <Separator />
         <Text style = {styles.drawerContentItemDiaryContent}>{item.diary_content}</Text>
