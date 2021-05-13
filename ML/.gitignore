@@ -2,6 +2,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/venv,python,flask,windows,macos,visualstudiocode,jupyternotebooks
 # Edit at https://www.toptal.com/developers/gitignore?templates=venv,python,flask,windows,macos,visualstudiocode,jupyternotebooks
 
+### Security
+_security.py
+
+
 ### checkpoint ###
 *.pth
 

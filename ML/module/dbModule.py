@@ -2,6 +2,7 @@
 # pwd : /project_name/app/module/dbModule.py
 
 import pymysql
+from _security import db_password
 
 
 class Database():
@@ -9,7 +10,7 @@ class Database():
         self.db = pymysql.connect(host='k4a206.p.ssafy.io',
                                 #   port='3306',
                                   user='ssafy',
-                                  password='CAum7peyydEBa3Qy',
+                                  password=db_password(),
                                   db='dayugi',
                                   charset='utf8')
         self.cursor = self.db.cursor(pymysql.cursors.DictCursor)
