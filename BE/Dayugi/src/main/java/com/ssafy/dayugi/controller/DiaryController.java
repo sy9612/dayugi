@@ -2,25 +2,17 @@ package com.ssafy.dayugi.controller;
 
 import com.ssafy.dayugi.model.entity.Diary;
 import com.ssafy.dayugi.model.entity.DiaryFile;
-import com.ssafy.dayugi.model.entity.DiaryVo;
 import com.ssafy.dayugi.service.DiaryService;
 import com.ssafy.dayugi.service.FileService;
 import com.ssafy.dayugi.util.MD5Generator;
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -60,7 +52,7 @@ public class DiaryController {
                     String origFilename = file.getOriginalFilename();
                     String filename = new MD5Generator(origFilename).toString();
                     // 실행되는 위치의 'files' 폴더에 파일이 저장됩니다.
-                    String savePath = System.getProperty("user.dir") + "\\files";
+                    String savePath = "/home/ubuntu/share/nginx/html/";
                     // 파일이 저장되는 폴더가 없으면 폴더를 생성합니다.
                     if (!new File(savePath).exists()) {
                         try {
@@ -70,7 +62,7 @@ public class DiaryController {
                         }
                     }
                     String filePath = savePath + "\\" + filename;
-                    file.transferTo(new File(filePath));
+                    file.transferTo(new File(filePath));//지정한 경로에 파일 저장
 
                     DiaryFile diaryFile = new DiaryFile();
                     diaryFile.setFile_origname(origFilename);
