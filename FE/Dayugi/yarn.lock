@@ -5519,6 +5519,11 @@ react-native-dialog-input@^1.0.8:
   resolved "https://registry.yarnpkg.com/react-native-dialog-input/-/react-native-dialog-input-1.0.8.tgz#6813d3b158bbb85d83a94310f38695d9f2b02682"
   integrity sha512-W9YNMt6r+rUUMDEkOR1WMuGfSJw97ujB8H1xp8TjJTOnYVSlsf4aEP6t+J8tVk3XZaDcTawXgDjxH6E1WVWRog==
 
+react-native-dialog@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-dialog/-/react-native-dialog-8.0.1.tgz#8e554c4d7ee755c9e20d43bb0c5bb1a158060e57"
+  integrity sha512-shm0NE7nZJj5ubvMT/6Snt3fazzRPgDj/m9eIcYjo6JAQbxvg6Ym9o5GGahDn1d96LyAruPoP+N/IBzAI8Worg==
+
 react-native-elements@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/react-native-elements/-/react-native-elements-3.4.1.tgz#74ea15a9369b05abf4f7421f0ce236ca01fedfe1"

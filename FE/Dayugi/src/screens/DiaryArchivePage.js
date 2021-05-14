@@ -30,6 +30,8 @@ class DiaryArchivePage extends React.Component {
       currentYear: y,
       currentMonth : m
     });
+
+    this.getDiaryWithMonth(this.state.currentYear, this.state.currentMonth);
   }
 
   getDiaryWithMonth = (year, month) => {
@@ -42,8 +44,42 @@ class DiaryArchivePage extends React.Component {
       }).then(response => response.json())
       .then(responseJson => {
         let success = responseJson.success;
+        let diaries = responseJson.diaries;
+
         if(success === "success"){
-          this.setState({contents : responseJson.diaries});
+          diaries.sort(function(a, b) {
+            if(a.diary_date < b.diary_date) return -1;
+            if(a.diary_date > b.diary_date) return 1;
+          });
+
+          this.setState({contents : diaries});
+        }
+        else if(success === "fail"){
+          this.setState({contents : [{diary_date : 0, diary_content : '작성한 내용이 없습니다.'}]});
+        }
+      }
+    );
+  };
+
+  getAllDiary = () => {
+    fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary/all?uid=${encodeURIComponent(this.state.uid)}`, {
+      method: "GET",
+      headers: {
+        "accept" : "*/*",
+        "authorization": this.state.authorization
+      },
+      }).then(response => response.json())
+      .then(responseJson => {
+        let success = responseJson.success;
+        let diaries = responseJson.diaries;
+
+        if(success === "success"){
+          diaries.sort(function(a, b) {
+            if(a.diary_date < b.diary_date) return -1;
+            if(a.diary_date > b.diary_date) return 1;
+          });
+          
+          this.setState({contents : diaries});
         }
         else if(success === "fail"){
           this.setState({contents : [{diary_date : 0, diary_content : '작성한 내용이 없습니다.'}]});
@@ -56,21 +92,24 @@ class DiaryArchivePage extends React.Component {
     this.setState({ isModalOpen: true });
   };
 
-  closeModal = () => {
+  closeModalWithMonth = () => {
     this.getDiaryWithMonth(this.state.currentYear, this.state.currentMonth);
     this.setState({ isModalOpen: false });
   };
 
+  closeModalWithAll = () => {
+    this.getAllDiary();
+    this.setState({ isModalOpen: false });
+  }
+
   render() {
-    this.getDiaryWithMonth(this.state.currentYear, this.state.currentMonth);
-    
     return (
       <View style={styles.container}>
         <CustomHeader navigation = {this.props.navigation}/>
         <View style = {styles.pickerContainer}>
           <TouchableOpacity onPress={this.openModal}>
             <Text>
-              {this.state.currentYear}-{this.state.currentMonth} 
+              {this.state.currentYear != '0' ? this.state.currentYear + '-' + this.state.currentMonth : '전체보기'} 
               <Ionicons name="arrow-down"></Ionicons>
             </Text>
           </TouchableOpacity>
@@ -87,13 +126,21 @@ class DiaryArchivePage extends React.Component {
               onMonthChange={(date) => {
                 this.state.currentYear = moment(date).format('YYYY');
                 this.state.currentMonth = moment(date).format('MM');
-                this.closeModal()
+                this.closeModalWithMonth()
               }}
               seperatorColor='#eee'
               nextText='>  '
               prevText='  <'
               monthFormat= "MM" 
             />
+            <View style={styles.viewAllButton} >
+              <TouchableOpacity onPress={() => {
+                this.state.currentYear = '0';
+                this.closeModalWithAll();
+                }}>
+                <Text>전체보기</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </Modal>
 
@@ -115,7 +162,7 @@ class DiaryArchivePage extends React.Component {
 
 function Item({ item, navigation }) {
   return (
-    <TouchableOpacity style = {styles.drawerContentListItem} onPress={() => alert(item.diary_content)}>
+    <TouchableOpacity style = {styles.drawerContentListItem} onPress={() =>  navigation.navigate("DiaryDetail", {did : item.did}) }>
         <Text style = {styles.drawerContentItemDiaryDate}>{(item.diary_date != 0) && moment(item.diary_date).format('YYYY-MM-DD')}</Text>
         <Separator />
         <Text style = {styles.drawerContentItemDiaryContent}>{item.diary_content}</Text>
@@ -140,6 +187,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 120,
     width: '100%',
+  },
+  viewAllButton: {
+    backgroundColor : '#fff',
+    width: '100%',
+    height: 60,
+    justifyContent: 'center', 
+    alignItems: 'center',
   },
   drawerContentListItem:{
     backgroundColor : '#fff',
