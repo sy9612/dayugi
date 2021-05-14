@@ -23,20 +23,37 @@ class DiaryWritePage extends React.Component{
     let m = this.props.navigation.getParam('month')
     let d = this.props.navigation.getParam('day')
     this.state.uid = await AsyncStorage.getItem('uid');
-    this.state.authorization = await AsyncStorage.getItem('Authorization');
+    this.state.authorization = await AsyncStorage.getItem('Authorization' );
     this.setState({year : y, month : m, day : d});
   }
 
   writeDiary = () => {
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
+    let imageDataArray = [];
+
+    let localUri = this.state.image;
+    let filename = localUri.split('/').pop();
+  
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+  
+    let formData = new FormData();
+
+    formData.append('photo', { uri: localUri, name: filename, type });
+
+    imageDataArray.push(formData);
+
     fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
       method: "POST",
       headers: {
         "accept" : "*/*",
-        "authorization": this.state.authorization
+        "authorization": this.state.authorization,
+        "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundaryRApOxiG9s3BqghQQ"
       },
+      body: {files : imageDataArray},
       }).then(response => response.json())
       .then(responseJson => {
+        console.log(responseJson);
         let success = responseJson.success;
         if(success === "success"){
           this.props.navigation.navigate("DiaryCalendar");
@@ -51,9 +68,11 @@ class DiaryWritePage extends React.Component{
   _pickImage = async () => {
     const {status_roll} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
+      quality: 1,
+      base64: true,
     });
     if (!result.cancelled) {
       this.setState({ image: result.uri });
