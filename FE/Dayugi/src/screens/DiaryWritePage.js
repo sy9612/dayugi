@@ -1,5 +1,5 @@
 import React from 'react';
-import { Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -57,15 +57,25 @@ class DiaryWritePage extends React.Component{
             <Separator />
             <Text style={styles.title}>내용</Text>
             <Separator />
-            <TextInput 
-              style={styles.diaryContent}
-              underlineColorAndroid="transparent"
-              placeholder="내용을 입력해주세요."
-              placeholderTextColor="#aaa"
-              autoCapitalize="none"
-              multiline={true}
-              onChangeText={(text) => this.setState({diaryContent : text})}
-            />
+            <ScrollView>
+              <TextInput 
+                style={styles.diaryContent}
+                underlineColorAndroid="transparent"
+                placeholder="내용을 입력해주세요."
+                placeholderTextColor="#aaa"
+                autoCapitalize="none"
+                multiline={true}
+                onChangeText={(text) => this.setState({diaryContent : text})}
+              />
+            </ScrollView>
+            <Separator />
+            <Text style={styles.title}>이미지</Text>
+            <Separator />
+            <View style={styles.diaryImageContainer}>
+              <TouchableOpacity style={styles.diaryImage}>
+                <Text style={{color:'#aaa'}}>이미지 추가하기</Text>
+              </TouchableOpacity>
+            </View>
         </View>
 
         <View style={this.state.diaryContent != '' ? styles.diaryNavigationButton : styles.diaryNavigationButtonDisabled }>
@@ -107,6 +117,22 @@ const styles = StyleSheet.create({
   diaryContent: {
     fontSize: 16,
     marginLeft: 8,
+    height: '100%',
+  },
+  diaryImageContainer:{
+    height : 180,
+    margin : 8,
+    marginBottom : 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  diaryImage: {
+    backgroundColor: '#eee',
+    borderRadius : 5,
+    width: "100%",
+    height: "100%", 
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   diaryNavigationButton: {
     position: 'absolute',
