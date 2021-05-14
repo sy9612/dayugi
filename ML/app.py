@@ -8,8 +8,8 @@ from module.comment import generate_comment
 import torch
 
 
-# from flask_cors import CORS
-# from flask_restplus import Api, Resource, fields
+from flask_cors import CORS
+from flask_restplus import Api, Resource, fields
 
 
 # @recomm.rount('/')
@@ -111,7 +111,7 @@ def be_emotion():
               FROM diary left join emotion_rate on diary.did = emotion_rate.did
               where uid = {uid} and diary_date >= '{sdate}' and diary_date <= '{edate}'"""
     row = db_class.executeAll(sql)
-    return row[0]
+    return {'emotions':row}
 
 if __name__=="__main__":
     # app.run(debug=True)
