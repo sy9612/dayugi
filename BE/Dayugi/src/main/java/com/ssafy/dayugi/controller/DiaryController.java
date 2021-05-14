@@ -52,7 +52,7 @@ public class DiaryController {
                     String origFilename = file.getOriginalFilename();
                     String filename = new MD5Generator(origFilename).toString();
                     // 실행되는 위치의 'files' 폴더에 파일이 저장됩니다.
-                    String savePath = "./files";
+                    String savePath = "/home/ubuntu/share/nginx/html";
                     // 파일이 저장되는 폴더가 없으면 폴더를 생성합니다.
                     if (!new File(savePath).exists()) {
                         try {
