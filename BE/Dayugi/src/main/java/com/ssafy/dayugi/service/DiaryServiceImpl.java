@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -67,6 +69,15 @@ public class DiaryServiceImpl implements DiaryService {
     @Override
     public List<Optional<Diary>> monthDiary(int uid, int year, int month) throws Exception {
         List<Optional<Diary>> diaries = diaryRepository.findByUserAndDate(uid, year, month);
+        return diaries;
+    }
+
+    @Override
+    public List<Optional<Diary>> periodDiary(int uid, String startDate, String endDate) throws Exception {
+//        long start = Date.parse(startDate);
+//        long end = Date.parse(endDate);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        List<Optional<Diary>> diaries = diaryRepository.findByUserAndPeriod(uid, startDate, endDate);
         return diaries;
     }
 
