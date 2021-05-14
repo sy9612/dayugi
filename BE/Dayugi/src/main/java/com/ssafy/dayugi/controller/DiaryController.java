@@ -61,7 +61,7 @@ public class DiaryController {
                             e.getStackTrace();
                         }
                     }
-                    String filePath = savePath + "\\" + filename;
+                    String filePath = savePath + filename;
                     file.transferTo(new File(filePath));//지정한 경로에 파일 저장
 
                     DiaryFile diaryFile = new DiaryFile();
