@@ -55,6 +55,7 @@ public class DiaryController {
                     String savePath = "/home/ubuntu/share/nginx/html";
                     // 파일이 저장되는 폴더가 없으면 폴더를 생성합니다.
                     if (!new File(savePath).exists()) {
+                        System.out.println("~~no file~~");
                         try {
                             new File(savePath).mkdir();
                         } catch (Exception e) {
@@ -62,8 +63,10 @@ public class DiaryController {
                         }
                     }
                     
-                    String filePath = savePath + "/" + filename;
-                    file.transferTo(new File(filePath));
+                   
+                    String filePath = savePath + "/" + filename + ".jpg";
+                    File newfile = new File(filePath);
+                    file.transferTo(newfile);
              
                     DiaryFile diaryFile = new DiaryFile();
                     diaryFile.setFile_origname(origFilename);
