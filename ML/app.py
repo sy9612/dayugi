@@ -97,6 +97,23 @@ def emotion_comment():
 
     return '성공적으로 저장되었습니다.'
 
+@app.route('/emotion/', methods=['GET'])
+def be_emotion():
+    uid = request.json.get('uid')
+    sdate = request.json.get('sdate')
+    edate = request.json.get('edate')
+
+    db_class = Database()
+    sql = f"""SELECT diary.did, diary.uid, diary.diary_content, 
+              diary.review_content, diary.diary_date, emotion_rate.happiness, 
+              emotion_rate.angry,emotion_rate.disgust, emotion_rate.fear, 
+              emotion_rate.neutral,emotion_rate.sadness, emotion_rate.surprise
+              FROM diary left join emotion_rate on diary.did = emotion_rate.did
+              where uid = {uid} and diary_date >= '{sdate}' and diary_date <= '{edate}'"""
+    row = db_class.executeAll(sql)
+    print(row)
+    return str(row)
+
 if __name__=="__main__":
     # app.run(debug=True)
     # host 등을 직접 지정하고 싶다면
