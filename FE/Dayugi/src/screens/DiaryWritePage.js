@@ -1,9 +1,10 @@
 import React from 'react';
-import { Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 
 class DiaryWritePage extends React.Component{
   state = {
@@ -13,6 +14,8 @@ class DiaryWritePage extends React.Component{
     diaryContent : '',
     uid : '',
     authorization : '',
+    status : false,
+    image : null,
   }
 
   async componentDidMount() {
@@ -45,6 +48,30 @@ class DiaryWritePage extends React.Component{
     );
   };
 
+  _pickImage = async () => {
+    const {status_roll} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  };
+
+  imgAlert() {
+    Alert.alert(
+      null,
+      '이미지를 삭제하시겠습니까?',
+      [
+        {text: '삭제하기', onPress: () => this.setState({image : null})},
+        {text: '취소', onPress: () => {}},
+      ],
+      { cancelable: true }
+    )
+  }
+
   render(){
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -72,8 +99,16 @@ class DiaryWritePage extends React.Component{
             <Text style={styles.title}>이미지</Text>
             <Separator />
             <View style={styles.diaryImageContainer}>
-              <TouchableOpacity style={styles.diaryImage}>
-                <Text style={{color:'#aaa'}}>이미지 추가하기</Text>
+              <TouchableOpacity style={this.state.image == null ? styles.diaryImageLoadButtonBefore : null} onPress={() => {
+                this._pickImage();
+                }}>
+                <Text style={{color:'#aaa'}}>{this.state.image == null ? "이미지 불러오기" : null}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={this.state.image != null ? styles.diaryImageLoadButtonAfter : null} onPress={() => {
+                this.imgAlert();
+                }}>
+                <Image source={{ uri: this.state.image }} style={this.state.image != null ? styles.diaryImage : null}/>
               </TouchableOpacity>
             </View>
         </View>
@@ -122,15 +157,30 @@ const styles = StyleSheet.create({
   diaryImageContainer:{
     height : 180,
     margin : 8,
+    marginTop: 0,
     marginBottom : 150,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  diaryImage: {
+  diaryImageLoadButtonBefore: {
     backgroundColor: '#eee',
     borderRadius : 5,
     width: "100%",
     height: "100%", 
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  diaryImageLoadButtonAfter: {
+    backgroundColor: '#000',
+    borderRadius : 5,
+    width: "100%",
+    height: "100%", 
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  diaryImage: {
+    width: 180,
+    height: 180, 
     justifyContent: 'center',
     alignItems: 'center',
   },
