@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
+  Button,
 } from 'react-native';
 import Separator from '../components/Separator';
 import CustomHeader from '../components/CustomHeader';
@@ -96,8 +97,8 @@ class AnalysisPage extends React.Component {
       // 차트에 들어갈 data를 먼저 지정해주고!
       {
         type: 'scatterpolar', // chart type
-        r: [50, 15, 14, 25, 62, 50], // data
-        theta: ['A', 'B', 'C', 'D', 'E', 'A'], // data category
+        r: [50, 15, 14, 25, 62, 46, 50], // data
+        theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람', '행복'], // data category
         fill: 'toself', // fill option
         name: 'Group A', // data group name
       },
@@ -109,8 +110,24 @@ class AnalysisPage extends React.Component {
           // 방사축이라는 의미인데 아래 그림에서 파란색으로 표시된 부분을 말한다!
           visible: true, // 방사축 display
           range: [0, 100], // 방사축의 시작값, 끝 값
+          showticklabels: false, // @1-1
+          showline: false, // @1-2
+          ticklen: 0, // @1-3
         },
+        angularaxis: {
+          // 각축 꾸미기 시작!
+          // rotation: 210, // 차트 회전율! (KDA가 제일 위로 올 수 있도록 돌려주었당)
+          color: '#eee', // 각축의 선 색깔
+          ticklen: 0, // @2-1
+          tickfont: {
+            // @2-2
+            color: '#888',
+            size: 13,
+          },
+        },
+        gridshape: 'linear', // @3
       },
+      showlegend: false, // @4
     },
   };
 
@@ -223,12 +240,12 @@ class AnalysisPage extends React.Component {
         {/* <View style={styles.container}> */}
         <ScrollView style={styles.scrollView} contentContainerStyle={{ width: '100%' }}>
           <CustomHeader navigation={this.props.navigation} />
-          <Text>분석 페이지</Text>
+          <Text style={styles.headerText}>다이어리 분석</Text>
           <Separator />
-          <Text>조회 날짜</Text>
           {/* <Text style={styles.text}>{this.state.startDateString}</Text> */}
           {/* <Icon name="calendar" size={20} color="#3143e8" /> */}
           <View style={styles.setDateText}>
+            <Text>조회 기간 : &nbsp;</Text>
             <TouchableOpacity onPress={() => this.startShowDatepicker()}>
               <Text style={styles.text}>
                 {this.state.startDateString}&nbsp;
@@ -273,6 +290,18 @@ class AnalysisPage extends React.Component {
             </View>
           </View>
           <Separator />
+          <Text>곡선 그래프</Text>
+          <View style={styles.lineChartRow}>
+            <LineChart
+              data={this.state.data}
+              width={this.state.screenWidth}
+              height={256}
+              verticalLabelRotation={30}
+              chartConfig={this.state.chartConfig}
+              bezier
+            />
+          </View>
+          <Separator />
           <View>
             <Text>Rader Chart</Text>
             <View style={styles.chartRow}>
@@ -284,18 +313,6 @@ class AnalysisPage extends React.Component {
                 enableFullPlotly
               />
             </View>
-          </View>
-          <Separator />
-          <Text>곡선 그래프</Text>
-          <View style={styles.lineChartRow}>
-            <LineChart
-              data={this.state.data}
-              width={this.state.screenWidth}
-              height={256}
-              verticalLabelRotation={30}
-              chartConfig={this.state.chartConfig}
-              bezier
-            />
           </View>
           <Separator />
           <Text>파이 그래프</Text>
@@ -325,25 +342,37 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: StatusBar.currentHeight,
   },
+  headerText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: '#FF7E36',
+    fontSize: 20,
+  },
   scrollView: {
     // backgroundColor: 'pink',
     marginHorizontal: 20,
   },
   text: {
-    color: 'purple',
+    color: 'dimgray',
+    fontSize: 16,
   },
   setDateText: {
     flexDirection: 'row',
   },
   submitButton: {
-    backgroundColor: '#7a42f4',
-    padding: 2,
+    backgroundColor: '#FF7E36',
+    paddingBottom: 2,
+    paddingTop: 2,
+    paddingLeft: 5,
+    paddingRight: 5,
     margin: 2,
     height: 20,
     marginRight: 0,
+    borderRadius: 5,
   },
   submitButtonText: {
     color: 'white',
+    fontSize: 12,
   },
   chartRow: {
     flex: 1,
