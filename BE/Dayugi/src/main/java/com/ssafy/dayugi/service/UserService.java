@@ -10,6 +10,6 @@ public interface UserService {
     public int join(User user) throws Exception;
     public boolean checkEmail(String email) throws Exception;
     public Optional<User> userInfo(String email) throws Exception;
-    public boolean deleteUser(String email) throws Exception;
+    public boolean deleteUser(int uid) throws Exception;
     public boolean changeUserInfo(User user) throws Exception;
 }

@@ -95,11 +95,11 @@ public class UserController extends GlobalControllerAdvice{
     }
 
     @DeleteMapping(value = "")
-    @ApiOperation(value = "회원탈퇴", notes = "이메일을 입력받아 해당되는 유저정보 삭제")
-    private ResponseEntity delete(String email) throws Exception{
+    @ApiOperation(value = "회원탈퇴", notes = "uid을 입력받아 해당되는 유저정보 삭제")
+    private ResponseEntity delete(int uid) throws Exception{
         Map result = new HashMap();
         ResponseEntity entity = null;
-        boolean checkSuccess = userService.deleteUser(email);
+        boolean checkSuccess = userService.deleteUser(uid);
         if (checkSuccess) {
             result.put("success", "success");
             entity = new ResponseEntity<>(result, HttpStatus.OK);
