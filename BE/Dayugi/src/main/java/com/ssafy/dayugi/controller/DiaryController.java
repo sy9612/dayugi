@@ -27,16 +27,8 @@ public class DiaryController {
     @PostMapping(value = "")
     @ApiOperation(value = "다이어리 작성", notes = "다이어리 작성, 한줄평 저장")
     private ResponseEntity writeDiary(@ModelAttribute Diary diary, @RequestParam(required = false) List<MultipartFile> files) {
-//    private ResponseEntity writeDiary(@RequestBody DiaryVo diaryVo) {
-//        Diary diary = diaryVo.getDiary();
-//        MultipartFile filess = diaryVo.getMultipartFile();
         diary.getDiary_date();
         Map result = new HashMap();
-//        System.out.println("######################");
-//        System.out.println(diary);
-        System.out.println("######################");
-        System.out.println(files);
-
 
         ResponseEntity entity = null;
         try {
@@ -44,7 +36,7 @@ public class DiaryController {
                 result.put("success", "success");
                 result.put("diary", diary);
             } else {
-                result.put("success", "fail");
+                result.put("success", "fail to write diary");
             }
             entity = new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
@@ -56,39 +48,11 @@ public class DiaryController {
         try{
             List<DiaryFile> diaryFiles = new ArrayList<>();
             if (files != null) {
-//                System.out.println("$$$$$$$$$$$$$$$$$$$$$$");
-//                System.out.println(diary.getUser().getUid());
-                //System.out.println( diary.getDiary_date());
-
-//                String textDate = diary.getDiary_date().toString();
-//                Date strDate = null;
-//
-//                SimpleDateFormat recvSimpleFormat = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-//                // 여기에 원하는 포맷을 넣어주면 된다
-//                SimpleDateFormat tranSimpleFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-//
-//                try {
-//                    Date data = recvSimpleFormat.parse(textDate);
-//                    System.out.println(data);
-//                    strDate = tranSimpleFormat.parse(data.toString());
-//                    System.out.println(strDate);
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-                //int did = 0;
-                //int did = diaryService.findDiaryId(diary.getUser().getUid(), data);
-
                 for (MultipartFile file : files) {
                     String origFilename = file.getOriginalFilename();
-                    System.out.println("########## origFilename ############");
-                    System.out.println(origFilename);
                     String filename = new MD5Generator(origFilename).toString();
-                    System.out.println("########## filename ############");
-                    System.out.println(filename);
                     // 실행되는 위치의 'files' 폴더에 파일이 저장됩니다.
-                    String savePath = System.getProperty("user.dir") + "\\files";
-                    System.out.println("########## savePath ############");
-                    System.out.println(savePath);
+                    String savePath = "/home/ubuntu/share/nginx/html/";
                     // 파일이 저장되는 폴더가 없으면 폴더를 생성합니다.
                     if (!new File(savePath).exists()) {
                         try {
@@ -97,35 +61,25 @@ public class DiaryController {
                             e.getStackTrace();
                         }
                     }
-                    String filePath = savePath + "\\" + filename;
-                    file.transferTo(new File(filePath));
+                    String filePath = savePath + "/" + filename;
+                    file.transferTo(new File(filePath));//지정한 경로에 파일 저장
 
                     DiaryFile diaryFile = new DiaryFile();
                     diaryFile.setFile_origname(origFilename);
                     diaryFile.setFile_name(filename);
                     diaryFile.setFile_path(filePath);
-//                    System.out.println("########## did ############");
-//                    System.out.println(diary.getDid());
-//                    int did = diary.getDid();
-//                    Diary tempDiary = new Diary();
-//                    tempDiary.setDid(did);
                     diaryFile.setDiary(diary);
                     diaryFile.setUser(diary.getUser());
-//                    System.out.println("########## diaryFile ############");
-//                    System.out.println(diaryFile);
                     diaryFiles.add(diaryFile);
                 }
             }
-
-            System.out.println("########## diaryFiles ############");
-            System.out.println(diaryFiles);
 
             try {
                 if (fileService.saveFiles(diaryFiles) == 1) {
                     result.put("success", "success");
                     result.put("diary", diary);
                 } else {
-                    result.put("success", "fail");
+                    result.put("success", "fail to save file");
                 }
                 entity = new ResponseEntity<>(result, HttpStatus.OK);
             } catch (Exception e) {
@@ -197,7 +151,7 @@ public class DiaryController {
                     result.put("success", "success");
                     result.put("diary", files);
                 } else {
-                    result.put("success", "fail");
+                    result.put("success", "fail to update files");
                 }
                 entity = new ResponseEntity<>(result, HttpStatus.OK);
             } catch (Exception e) {
@@ -216,7 +170,7 @@ public class DiaryController {
 
     @DeleteMapping(value = "")
     @ApiOperation(value = "다이어리 삭제", notes = "did를 받아 선택한 다이어리 삭제")
-    private ResponseEntity deleteDiary(int did) {
+    private ResponseEntity deleteDiary(@RequestParam int did) {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
@@ -245,7 +199,7 @@ public class DiaryController {
 
     @DeleteMapping(value = "/all")
     @ApiOperation(value = "다이어리 전체 삭제", notes = "사용자가 작성한 다이어리 전체 삭제")
-    private ResponseEntity deleteAllDiary(int uid) {
+    private ResponseEntity deleteAllDiary(@RequestParam int uid) {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
@@ -274,7 +228,7 @@ public class DiaryController {
 
     @GetMapping(value = "")
     @ApiOperation(value = "다이어리 상세 조회", notes = "did를 받아 다이어리 1개 상세 조회")
-    private ResponseEntity readDiary(int did) {
+    private ResponseEntity readDiary(@RequestParam int did) {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
@@ -282,18 +236,19 @@ public class DiaryController {
             if (diary.isPresent()) {
                 result.put("success", "success");
                 result.put("diary", diary);
+                List<DiaryFile> diaryFiles = fileService.getFiles(did);
+                if (!diaryFiles.isEmpty()) {
+                    result.put("success", "success");
+                    result.put("diaryFiles", diaryFiles);
+                } else {
+                    result.put("success", "fail");
+                    result.put("message", "No File Data");
+                }
             } else {
                 result.put("success", "fail");
-                result.put("message", "No Data");
+                result.put("message", "No Diary Data");
             }
-            List<DiaryFile> diaryFiles = fileService.getFiles(did);
-            if (!diaryFiles.isEmpty()) {
-                result.put("success", "success");
-                result.put("diaryFiles", diaryFiles);
-            } else {
-                result.put("success", "fail");
-                result.put("message", "No Data");
-            }
+
 
             entity = new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
@@ -315,7 +270,29 @@ public class DiaryController {
                 result.put("success", "success");
                 result.put("diaries", diaries);
             } else {
-                result.put("success", "fail");
+                result.put("success", "No Diary Data");
+            }
+            entity = new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", "error");
+            entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+        return entity;
+    }
+
+    @GetMapping(value = "/period")
+    @ApiOperation(value = "다이어리 기간별 조회", notes = "사용자가 특정 연도,달, 일 기간에 작성한 다이어리 모두 조회")
+    private ResponseEntity periodDiary(@RequestParam int uid, String startDate, String endDate) {
+        Map result = new HashMap();
+        ResponseEntity entity = null;
+        try {
+            List<Optional<Diary>> diaries = diaryService.periodDiary(uid, startDate, endDate);
+            if (!diaries.isEmpty()) {
+                result.put("success", "success");
+                result.put("diaries", diaries);
+            } else {
+                result.put("success", "No Diary Data");
             }
             entity = new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
@@ -337,7 +314,7 @@ public class DiaryController {
                 result.put("success", "success");
                 result.put("diaries", diaries);
             } else {
-                result.put("success", "fail");
+                result.put("success", "No Diary Data");
             }
             entity = new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
