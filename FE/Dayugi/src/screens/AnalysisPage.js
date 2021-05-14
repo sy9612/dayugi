@@ -49,8 +49,8 @@ class AnalysisPage extends React.Component {
       backgroundGradientFrom: '#1E2923',
       backgroundGradientFromOpacity: 0,
       backgroundGradientTo: '#08130D',
-      backgroundGradientToOpacity: 0.5,
-      color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+      backgroundGradientToOpacity: 0.0,
+      color: (opacity = 1) => `rgba(224, 185, 126, ${opacity})`,
       strokeWidth: 2, // optional, default 3
       barPercentage: 0.5,
       useShadowColorFromDataset: false, // optional
@@ -59,36 +59,36 @@ class AnalysisPage extends React.Component {
       {
         name: '행복',
         population: 21500000,
-        color: 'rgba(131, 167, 234, 1)',
-        legendFontColor: '#7F7F7F',
+        color: 'rgba(250, 107, 107,0.8)',
+        legendFontColor: '#fa6b6b',
         legendFontSize: 15,
       },
       {
         name: '슬픔',
         population: 2800000,
-        color: '#F00',
-        legendFontColor: '#7F7F7F',
+        color: 'rgba(0, 28, 189, 0.8)',
+        legendFontColor: '#001cbd',
         legendFontSize: 15,
       },
       {
         name: '분노',
         population: 527612,
-        color: 'red',
-        legendFontColor: '#7F7F7F',
+        color: '#bd0000',
+        legendFontColor: '#bd0000',
         legendFontSize: 15,
       },
       {
         name: '공포',
         population: 8538000,
-        color: '#ffffff',
-        legendFontColor: '#7F7F7F',
+        color: 'rgba(74, 68, 67, 0.8)',
+        legendFontColor: '#4a4443',
         legendFontSize: 15,
       },
       {
         name: '우울',
         population: 11920000,
-        color: 'rgb(0, 0, 255)',
-        legendFontColor: '#7F7F7F',
+        color: 'rgba(85, 82, 171, 0.8)',
+        legendFontColor: '#5552ab',
         legendFontSize: 15,
       },
     ],
@@ -96,7 +96,7 @@ class AnalysisPage extends React.Component {
       // 차트에 들어갈 data를 먼저 지정해주고!
       {
         type: 'scatterpolar', // chart type
-        r: [39, 28, 8, 7, 28, 39], // data
+        r: [50, 15, 14, 25, 62, 50], // data
         theta: ['A', 'B', 'C', 'D', 'E', 'A'], // data category
         fill: 'toself', // fill option
         name: 'Group A', // data group name
@@ -108,46 +108,10 @@ class AnalysisPage extends React.Component {
         radialaxis: {
           // 방사축이라는 의미인데 아래 그림에서 파란색으로 표시된 부분을 말한다!
           visible: true, // 방사축 display
-          range: [0, 50], // 방사축의 시작값, 끝 값
+          range: [0, 100], // 방사축의 시작값, 끝 값
         },
       },
     },
-    // pathjsData: [
-    //   {
-    //     speed: 74,
-    //     balance: 29,
-    //     explosives: 40,
-    //     energy: 40,
-    //     flexibility: 30,
-    //     agility: 25,
-    //     endurance: 44,
-    //   },
-    // ],
-    // pathjsOptions: {
-    //   width: 290,
-    //   height: 290,
-    //   margin: {
-    //     top: 20,
-    //     left: 20,
-    //     right: 30,
-    //     bottom: 20,
-    //   },
-    //   r: 150,
-    //   max: 100,
-    //   fill: '#2980B9',
-    //   stroke: '#2980B9',
-    //   animate: {
-    //     type: 'oneByOne',
-    //     duration: 200,
-    //   },
-    //   label: {
-    //     fontFamily: 'Arial',
-    //     fontSize: 14,
-    //     fontWeight: true,
-    //     fill: '#34495E',
-    //     onLabelPress: this.onLabelPress,
-    //   },
-    // },
   };
 
   // handleDateString = (startDateString) => {};
@@ -248,18 +212,18 @@ class AnalysisPage extends React.Component {
     //   });
   };
 
+  //--
+  radarUpdate = (_, { data, layout, config }, plotly) => {
+    plotly.react(data, layout, config);
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollView}>
+        {/* <View style={styles.container}> */}
+        <ScrollView style={styles.scrollView} contentContainerStyle={{ width: '100%' }}>
           <CustomHeader navigation={this.props.navigation} />
           <Text>분석 페이지</Text>
-          <Plotly
-            data={this.state.radarData}
-            layout={this.state.radarLayout}
-            debug
-            enableFullPlotly
-          />
           <Separator />
           <Text>조회 날짜</Text>
           {/* <Text style={styles.text}>{this.state.startDateString}</Text> */}
@@ -309,40 +273,45 @@ class AnalysisPage extends React.Component {
             </View>
           </View>
           <Separator />
-          <View style={styles.chartRow}>
+          <View>
             <Text>Rader Chart</Text>
-            {/* <Text>{this.state.radarData}</Text> */}
-            <Plotly
-              data={this.state.radarData}
-              layout={this.state.radarLayout}
-              debug
-              enableFullPlotly
-            />
-            {/* <Radar data={this.state.pathjsData} options={this.state.pathjsOptions} /> */}
+            <View style={styles.chartRow}>
+              <Plotly
+                data={this.state.radarData}
+                layout={this.state.radarLayout}
+                update={this.radarUpdate}
+                debug
+                enableFullPlotly
+              />
+            </View>
           </View>
           <Separator />
           <Text>곡선 그래프</Text>
-          <LineChart
-            data={this.state.data}
-            width={this.state.screenWidth}
-            height={256}
-            verticalLabelRotation={30}
-            chartConfig={this.state.chartConfig}
-            bezier
-          />
+          <View style={styles.lineChartRow}>
+            <LineChart
+              data={this.state.data}
+              width={this.state.screenWidth}
+              height={256}
+              verticalLabelRotation={30}
+              chartConfig={this.state.chartConfig}
+              bezier
+            />
+          </View>
           <Separator />
           <Text>파이 그래프</Text>
-          <PieChart
-            data={this.state.pieData}
-            width={this.state.screenWidth}
-            height={180}
-            chartConfig={this.state.chartConfig}
-            accessor={'population'}
-            backgroundColor={'transparent'}
-            paddingLeft={'15'}
-            center={[10, 10]}
-            absolute
-          />
+          <View style={styles.pieChartRow}>
+            <PieChart
+              data={this.state.pieData}
+              width={this.state.screenWidth}
+              height={180}
+              chartConfig={this.state.chartConfig}
+              accessor={'population'}
+              backgroundColor={'transparent'}
+              paddingLeft={'15'}
+              center={[10, 10]}
+              absolute
+            />
+          </View>
         </ScrollView>
       </SafeAreaView>
     );
@@ -379,6 +348,17 @@ const styles = StyleSheet.create({
   chartRow: {
     flex: 1,
     width: '100%',
+    height: 400,
+  },
+  lineChartRow: {
+    flex: 1,
+    width: '100%',
+    height: 350,
+  },
+  pieChartRow: {
+    flex: 1,
+    width: '100%',
+    height: 280,
   },
 });
 
