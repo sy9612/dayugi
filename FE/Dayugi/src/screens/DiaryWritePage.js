@@ -29,7 +29,6 @@ class DiaryWritePage extends React.Component{
 
   writeDiary = () => {
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
-    let imageDataArray = [];
 
     let localUri = this.state.image;
     let filename = localUri.split('/').pop();
@@ -39,18 +38,15 @@ class DiaryWritePage extends React.Component{
   
     let formData = new FormData();
 
-    formData.append('photo', { uri: localUri, name: filename, type });
-
-    imageDataArray.push(formData);
+    formData.append('files', { uri: localUri, name: filename, type });
 
     fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
       method: "POST",
       headers: {
         "accept" : "*/*",
         "authorization": this.state.authorization,
-        "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundaryRApOxiG9s3BqghQQ"
       },
-      body: {files : imageDataArray},
+      body: formData,
       }).then(response => response.json())
       .then(responseJson => {
         console.log(responseJson);
