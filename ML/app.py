@@ -111,8 +111,7 @@ def be_emotion():
               FROM diary left join emotion_rate on diary.did = emotion_rate.did
               where uid = {uid} and diary_date >= '{sdate}' and diary_date <= '{edate}'"""
     row = db_class.executeAll(sql)
-    print(row)
-    return str(row)
+    return row[0]
 
 if __name__=="__main__":
     # app.run(debug=True)
