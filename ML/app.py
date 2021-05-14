@@ -8,8 +8,8 @@ from module.comment import generate_comment
 import torch
 
 
-from flask_cors import CORS
-from flask_restplus import Api, Resource, fields
+# from flask_cors import CORS
+# from flask_restplus import Api, Resource, fields
 
 
 # @recomm.rount('/')
