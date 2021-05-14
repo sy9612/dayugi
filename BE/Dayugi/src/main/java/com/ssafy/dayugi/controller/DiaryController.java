@@ -29,6 +29,8 @@ public class DiaryController {
     private ResponseEntity writeDiary(@ModelAttribute Diary diary, @RequestParam(required = false) List<MultipartFile> files) {
         diary.getDiary_date();
         Map result = new HashMap();
+        String path = System.getProperty("user.dir");
+        System.out.println("Working Directory = " + path);
 
         ResponseEntity entity = null;
         try {
