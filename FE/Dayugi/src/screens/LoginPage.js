@@ -76,7 +76,7 @@ class LoginPage extends React.Component {
             style={styles.submitButton}
             onPress={() => this.login(this.state.email, this.state.password)}
           >
-            <Text style={styles.submitButtonText}>로그인</Text>
+            <Text style={styles.submitButtonText}>로 그 인</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -86,7 +86,7 @@ class LoginPage extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#D7B397',
+    backgroundColor: '#FFFAF0',
     width: '100%',
   },
   input: {
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   submitButton: {
-    backgroundColor: "#7a42f4",
+    backgroundColor: "#FF7E36",
     padding: 10,
     marginTop: 10,
     marginLeft: 70,
@@ -110,7 +110,9 @@ const styles = StyleSheet.create({
   },
   submitButtonText: {
     textAlign: "center",
-    color: "black"
+    color: "white",
+    fontSize: 14,
+    fontWeight: 'bold'
   },
   logoImage: {
     justifyContent: 'center',
@@ -118,9 +120,10 @@ const styles = StyleSheet.create({
     alignContent: 'center'
   },
   logo: {
-    color: 'white',
+    color: '#FF7E36',
     fontWeight: 'bold',
     fontSize: 30,
+    fontFamily:'Chilgok_Cye'
   }
 });
 
