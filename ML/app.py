@@ -48,8 +48,8 @@ def emotion(did, diary):
     # Sigmoid
     scores = torch.div(scores, len_script)
     scores = torch.sigmoid(scores)
-    s = torch.sum(scores).item()
-    scores = torch.div(scores, s)
+    # s = torch.sum(scores).item()
+    # scores = torch.div(scores, s)
 
     for idx, score in enumerate(scores[0]):
         analysis[mapping[idx]] = score.item()
