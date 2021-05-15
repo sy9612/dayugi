@@ -1,6 +1,8 @@
 package com.ssafy.dayugi.service;
 
 import com.ssafy.dayugi.model.entity.Diary;
+import com.ssafy.dayugi.model.entity.DiaryEmotion;
+import com.ssafy.dayugi.model.entity.DiaryEmotionInterface;
 import com.ssafy.dayugi.model.entity.User;
 import com.ssafy.dayugi.repository.DiaryFileRepository;
 import com.ssafy.dayugi.repository.DiaryRepository;
@@ -73,12 +75,10 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public List<Optional<Diary>> periodDiary(int uid, String startDate, String endDate) throws Exception {
-//        long start = Date.parse(startDate);
-//        long end = Date.parse(endDate);
+    public List<DiaryEmotionInterface> periodDiary(int uid, String startDate, String endDate) throws Exception {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        List<Optional<Diary>> diaries = diaryRepository.findByUserAndPeriod(uid, startDate, endDate);
-        return diaries;
+        List<DiaryEmotionInterface> diariesEmotion = diaryRepository.findByUserAndPeriod(uid, startDate, endDate);
+        return diariesEmotion;
     }
 
     //완료

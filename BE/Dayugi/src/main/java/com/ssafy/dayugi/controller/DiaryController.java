@@ -1,6 +1,8 @@
 package com.ssafy.dayugi.controller;
 
 import com.ssafy.dayugi.model.entity.Diary;
+import com.ssafy.dayugi.model.entity.DiaryEmotion;
+import com.ssafy.dayugi.model.entity.DiaryEmotionInterface;
 import com.ssafy.dayugi.model.entity.DiaryFile;
 import com.ssafy.dayugi.service.DiaryService;
 import com.ssafy.dayugi.service.FileService;
@@ -29,6 +31,8 @@ public class DiaryController {
     private ResponseEntity writeDiary(@ModelAttribute Diary diary, @RequestParam(required = false) List<MultipartFile> files) {
         diary.getDiary_date();
         Map result = new HashMap();
+        String path = System.getProperty("user.dir");
+        System.out.println("Working Directory = " + path);
 
         ResponseEntity entity = null;
         try {
@@ -52,17 +56,21 @@ public class DiaryController {
                     String origFilename = file.getOriginalFilename();
                     String filename = new MD5Generator(origFilename).toString();
                     // 실행되는 위치의 'files' 폴더에 파일이 저장됩니다.
-                    String savePath = "/home/ubuntu/share/nginx/html/";
+                    String savePath = "/home/image";
                     // 파일이 저장되는 폴더가 없으면 폴더를 생성합니다.
                     if (!new File(savePath).exists()) {
+                        System.out.println("~~no file~~");
                         try {
                             new File(savePath).mkdir();
                         } catch (Exception e) {
                             e.getStackTrace();
                         }
                     }
-                    String filePath = savePath + filename;
-                    file.transferTo(new File(filePath));//지정한 경로에 파일 저장
+
+
+                    String filePath = savePath + "/" + filename + ".jpg";
+                    File newfile = new File(filePath);
+                    file.transferTo(newfile);
 
                     DiaryFile diaryFile = new DiaryFile();
                     diaryFile.setFile_origname(origFilename);
@@ -125,7 +133,7 @@ public class DiaryController {
                     String filename = new MD5Generator(origFilename).toString();
                     // 실행되는 위치의 'files' 폴더에 파일이 저장됩니다.
 //                    String savePath = System.getProperty("user.dir") + "\\files";
-                    String savePath = "/home/ubuntu/share/nginx/html";
+                    String savePath = "/home/image";
 
                     // 파일이 저장되는 폴더가 없으면 폴더를 생성합니다.
                     if (!new File(savePath).exists()) {
@@ -135,7 +143,7 @@ public class DiaryController {
                             e.getStackTrace();
                         }
                     }
-                    String filePath = savePath + "/" + filename;
+                    String filePath = savePath + "/" + filename + ".jpg";
                     file.transferTo(new File(filePath));
 
                     DiaryFile diaryFile = new DiaryFile();
@@ -289,10 +297,10 @@ public class DiaryController {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
-            List<Optional<Diary>> diaries = diaryService.periodDiary(uid, startDate, endDate);
+            List<DiaryEmotionInterface> diaries = diaryService.periodDiary(uid, startDate, endDate);
             if (!diaries.isEmpty()) {
                 result.put("success", "success");
-                result.put("diaries", diaries);
+                result.put("data", diaries);
             } else {
                 result.put("success", "No Diary Data");
             }

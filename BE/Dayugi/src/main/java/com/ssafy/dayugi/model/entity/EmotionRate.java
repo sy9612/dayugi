@@ -8,13 +8,12 @@ import javax.persistence.*;
 @Data
 @Entity
 public class EmotionRate {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="erid")
     private int erid;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "did")
     private Diary diary;
 
