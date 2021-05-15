@@ -102,7 +102,7 @@ class DiaryDetailPage extends React.Component{
 
               <View style={styles.diaryUpdateButton}>
                 <TouchableOpacity onPress={() => {
-                    this.props.navigation.navigate("DiaryUpdate", {diary : this.state.diary});
+                    this.props.navigation.navigate("DiaryUpdate", {diary : this.state.diary, image : this.state.image});
                   }}>
                   <Text style={{color: 'white'}}>수정하기</Text>
                 </TouchableOpacity>
