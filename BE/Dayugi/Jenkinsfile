@@ -25,7 +25,7 @@ pipeline {
             steps {
                 sh 'docker ps -f name=java-migrator-container -q | xargs --no-run-if-empty docker container stop'
                 sh 'docker container ls -a -fname=java-migrator-container -q | xargs -r docker container rm'
-                sh 'docker run -d --name java-migrator-container -p 8080:8080 java-migrator-image:latest'
+                sh 'docker run -d --name java-migrator-container -v /home/ubuntu/share/nginx/html/:/home/image -p 8080:8080 java-migrator-image:latest'
             }
         }
     }
