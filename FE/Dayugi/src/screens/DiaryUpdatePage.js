@@ -87,7 +87,7 @@ class DiaryUpdatePage extends React.Component{
 
         <View style={styles.buttons}>
           <View style={styles.diaryNavigationButton}>
-            <TouchableOpacity onPress={() => {
+            <TouchableOpacity style={styles.touchArea} onPress={() => {
                 this.props.navigation.navigate("DiaryCalendar");
               }}>
               <Text style={{color: 'white'}}>돌아가기</Text>
@@ -95,7 +95,7 @@ class DiaryUpdatePage extends React.Component{
           </View>
 
           <View style={this.state.diaryContent != '' ? styles.diaryUpdateButton : styles.diaryUpdateButtonDiabled }>
-            <TouchableOpacity onPress={() => {
+            <TouchableOpacity style={styles.touchArea} onPress={() => {
                 if(this.state.diaryContent != '')
                   this.updateDiary();
                 else
@@ -135,6 +135,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 8,
   },
+  touchArea:{
+    width:'100%',
+    height:'100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   buttons: {
     position: 'absolute',
     bottom : 8,
@@ -148,8 +154,6 @@ const styles = StyleSheet.create({
     marginRight: 4,
     backgroundColor: '#007AFF',
     borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   diaryUpdateButton: {
     flex: 1,
@@ -157,8 +161,6 @@ const styles = StyleSheet.create({
     marginRight: 8,
     backgroundColor: '#007AFF',
     borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   diaryUpdateButtonDisabled: {
     flex: 1,

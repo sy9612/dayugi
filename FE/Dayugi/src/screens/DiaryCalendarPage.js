@@ -101,7 +101,7 @@ class DiaryCalendarPage extends React.Component{
             </View>
             
             <View style={this.state.selectedContent != '' ? styles.diaryNavigationButton : null}>
-              <TouchableOpacity onPress={() => {
+              <TouchableOpacity style={styles.touchArea} onPress={() => {
                   this.state.selectedContent != "작성한 내용이 없습니다." 
                   ? this.props.navigation.navigate("DiaryDetail", {did : this.state.selectedDiaryID}) 
                   : this.props.navigation.navigate("DiaryWrite", {year : this.state.currentYear, month : this.state.currentMonth, day : this.state.currentDay}) 
@@ -134,6 +134,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 8,
   },
+  touchArea : {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   diaryNavigationButton: {
     position: 'absolute',
     bottom: 8,
@@ -142,8 +148,6 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#007AFF',
     borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 
