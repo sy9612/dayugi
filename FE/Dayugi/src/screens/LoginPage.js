@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { Apploading } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -48,10 +48,10 @@ class LoginPage extends React.Component {
     return (
       <View style={styles.container}>
         <CustomHeader navigation={this.props.navigation} />
-        <View style={styles.logoImage}>
-          <Image source={require('../../assets/images/dayugi.png')} />
-          <Text style={styles.logo}>Dayugi</Text>
+        <View style={styles.logoImageContainer}>
+          <Image style={styles.logoImage} source={require('../../assets/images/dayugi.png')} />
         </View>
+        <Text style={styles.logo}>Dayugi</Text>
         <View>
           <TextInput
             style={styles.input}
@@ -79,6 +79,11 @@ class LoginPage extends React.Component {
             <Text style={styles.submitButtonText}>로 그 인</Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.signUpText}>
+          <Text>아이디가 없으신가요? </Text>
+          <Text style={styles.textLink} onPress={() => this.props.navigation.navigate("SignUp")}>회원가입</Text>
+          <Text> 하세요!</Text>
+        </View>
       </View>
     );
   }
@@ -90,7 +95,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   input: {
-    margin: 10,
     marginBottom: 10,
     marginLeft: 70,
     marginRight: 70,
@@ -114,16 +118,32 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold'
   },
-  logoImage: {
+  logoImageContainer: {
+    flex: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
-    alignContent: 'center'
+  },
+  logoImage: {
+    marginLeft: '7%',
+    height: '100%',
+    width: '100%',
   },
   logo: {
+    textAlign: 'center',
     color: '#FF7E36',
     fontWeight: 'bold',
     fontSize: 30,
-    fontFamily:'Chilgok_Cye'
+    marginBottom: '3%',
+  },
+  signUpText: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+  },
+  textLink: {
+    color: '#FF7E36',
   }
 });
 

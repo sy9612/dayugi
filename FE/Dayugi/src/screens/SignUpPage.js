@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -187,13 +187,13 @@ class SignUpPage extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <CustomHeader navigation = {this.props.navigation}/>
+        <CustomHeader navigation={this.props.navigation} />
+        <Text style={styles.logo}>Dayugi</Text>
         <View>
           <TextInput
             style={styles.input}
             underlineColorAndroid="transparent"
             placeholder=" Email"
-            placeholderTextColor="#9a73ef"
             autoCapitalize="none"
             autoCompleteType="email"
             keyboardType="email-address"
@@ -206,7 +206,6 @@ class SignUpPage extends React.Component {
               style={styles.input}
               underlineColorAndroid="transparent"
               placeholder="인증코드"
-              placeholderTextColor="#9a73ef"
               autoCapitalize="none"
               onChangeText={this.handleCode}
             />
@@ -244,7 +243,6 @@ class SignUpPage extends React.Component {
               style={styles.input}
               underlineColorAndroid="transparent"
               placeholder=" Password"
-              placeholderTextColor="#9a73ef"
               autoCapitalize="none"
               secureTextEntry = { true }
               onChangeText={this.handlePassword}
@@ -253,7 +251,6 @@ class SignUpPage extends React.Component {
               style={styles.input}
               underlineColorAndroid="transparent"
               placeholder=" PasswordCheck"
-              placeholderTextColor="#9a73ef"
               autoCapitalize="none"
               secureTextEntry={true}
               onChangeText={this.handleCheckPassword}
@@ -262,7 +259,6 @@ class SignUpPage extends React.Component {
               style={styles.input}
               underlineColorAndroid="transparent"
               placeholder=" nickName"
-              placeholderTextColor="#9a73ef"
               autoCapitalize="none"
               onChangeText={this.handleNickName}
             />
@@ -272,7 +268,6 @@ class SignUpPage extends React.Component {
               underlineColorAndroid="transparent"
               value={this.state.date}
               placeholder="birth"
-              placeholderTextColor="#9a73ef"
               autoCapitalize="none"
               editable={false}
             />
@@ -314,23 +309,41 @@ class SignUpPage extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFAF0',
     width: '100%',
   },
   input: {
-    margin: 15,
+    margin: 10,
+    marginBottom: 10,
+    marginLeft: 70,
+    marginRight: 70,
     height: 40,
-    borderColor: "#7a42f4",
-    borderWidth: 1
+    borderColor: "#E5E5E5",
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  logo: {
+    textAlign: 'center',
+    color: '#FF7E36',
+    fontWeight: 'bold',
+    fontSize: 30,
+    marginBottom: '10%',
+    marginTop: '5%'
   },
   submitButton: {
-    backgroundColor: "#7a42f4",
+    backgroundColor: "#FF7E36",
     padding: 10,
-    margin: 15,
-    height: 40
+    marginTop: 10,
+    marginLeft: 70,
+    marginRight: 70,
+    height: 40,
+    borderRadius: 5,
   },
   submitButtonText: {
-    color: "white"
+    textAlign: "center",
+    color: "white",
+    fontSize: 14,
+    fontWeight: 'bold'
   }
 });
 
