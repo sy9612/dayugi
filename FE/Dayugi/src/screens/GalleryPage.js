@@ -2,17 +2,16 @@ import React from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Gallery from 'react-native-image-gallery';
+import GridImageView from 'react-native-grid-image-viewer';
 
 class GalleryPage extends React.Component {
   state = {
     files: [],
     uid: '',
-    // authorization: '',
-    currentYear: '',
-    currentMonth: '',
-    currentDay: '',
-
+    url: "http://k4a206.p.ssafy.io/",
+    authorization: '',
+    imageList: [
+   ],
     
   };
 
@@ -22,6 +21,7 @@ class GalleryPage extends React.Component {
     this.state.authorization = await AsyncStorage.getItem('Authorization');
     this.getAllDiary();
   };
+
 
   getAllDiary = () => {
     fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary/diaryfile?uid=${encodeURIComponent(this.state.uid)}`, {
@@ -34,26 +34,24 @@ class GalleryPage extends React.Component {
       .then(responseJson => {
         let success = responseJson.success;
         if(success === "success"){
-          // let mDate = {};
           for (let i = 0; i < responseJson.diaries.length; i++) {
-            // let file = responseJson.diaries[i];
-            let fid = responseJson.diaries[i].fid;
             let file_name = responseJson.diaries[i].file_name;
-            let file_origname = responseJson.diaries[i].file_origname;
-            let file_path = responseJson.diaries[i].file_path;
-            const { files } = this.state;
+            // let fid = responseJson.diaries[i].fid;
+            // let file_origname = responseJson.diaries[i].file_origname;
+            // let file_path = responseJson.diaries[i].file_path;
+            const { imageList } = this.state;
             this.setState({
-              files: files.concat({
-                fid: fid,
-                file_name: file_name,
-                file_origname: file_origname,
-                file_path: file_path,
+              imageList: imageList.concat({
+                image: this.state.url + file_name,
+                // file_name: file_name,
+                // file_origname: file_origname,
+                // file_path: file_path,
               })
             });
 
           }
         }
-        else if(success === "fail"){
+        else if (success === "fail") {
           this.setState({contents : []});
         }
       }
@@ -61,34 +59,16 @@ class GalleryPage extends React.Component {
   };
 
   render() {
-    console.log("###");
-    console.log(this.state.files[0]);
+    console.log(this.state.imageList);
     return (
+      <View style={styles.background}>
+        <CustomHeader navigation = {this.props.navigation}/>
+     <Text style={styles.headline_text}>사진</Text>
+        <Text style={styles.explore_text}>추억을 모아봤습니다</Text>
+        <GridImageView data={this.state.imageList} />
+   </View>
+   );
     
-      <Gallery
-        style={{ flex: 1, backgroundColor: 'black' }}
-        images={[
-          { source: { uri: 'http://i.imgur.com/XP2BE7q.jpg' } },
-          { source: { uri: 'http://i.imgur.com/5nltiUd.jpg' } },
-          { source: { uri: 'http://i.imgur.com/6vOahbP.jpg' } },
-          { source: { uri: 'http://i.imgur.com/kj5VXtG.jpg' } }
-        ]}
-      />
-      // <View style={styles.container}>
-      //   <CustomHeader navigation = {this.props.navigation}/>
-      //   <Text>바껴라ㅠㅠ</Text>
-      //   <Gallery
-      //     style={{ flex: 1, backgroundColor: 'black' }}
-      //     images={[
-      //     // { source: require(this.state.files[0].file_path), dimensions: { width: 150, height: 150 } },
-      //     { source: { uri: 'http://i.imgur.com/kj5VXtG.jpg'  } },
-      //     { source: { uri: 'http://i.imgur.com/kj5VXtG.jpg'  } },
-         
-      //   ]}
-      // />
-      // </View>
-      
-    );
   }
 }
 
@@ -104,7 +84,25 @@ const styles = StyleSheet.create({
     height: 200,
     resizeMode: 'stretch',
   },
- 
+  background: {
+    backgroundColor: 'white',
+    flex: 1
+  },
+  headline_text: {
+    color: 'black',
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginTop: 50,
+    marginLeft: 20
+  },
+  explore_text: {
+    marginTop: 5,
+    marginBottom: 10,
+    color: 'black',
+    marginLeft: 20,
+    fontSize: 12,
+    fontWeight: '600'
+  },
 
 });
 

@@ -5437,6 +5437,11 @@ react-native-gesture-handler@^1.10.3:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-grid-image-viewer@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/react-native-grid-image-viewer/-/react-native-grid-image-viewer-1.0.10.tgz#3533e17e0136ac58b47609aa4fcfaf70452fab9f"
+  integrity sha512-AOufbKR2iHk71jzUEnvxcg6fNPE3nByIVZ5jvV+FE8HEkAcrik5x8vyPEmuuiBeM3jmznCfTcNAP0t+rhn1K0g==
+
 react-native-image-gallery@^2.1.5:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/react-native-image-gallery/-/react-native-image-gallery-2.1.5.tgz#f524b92ef7284d30ffbbd63f93019e0647e23229"
