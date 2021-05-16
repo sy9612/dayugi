@@ -232,14 +232,14 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
     marginRight: 4,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#FF7E36',
     borderRadius: 5,
   },
   diaryUpdateButton: {
     flex: 1,
     marginLeft: 4,
     marginRight: 8,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#FF7E36',
     borderRadius: 5,
   },
   diaryUpdateButtonDisabled: {
