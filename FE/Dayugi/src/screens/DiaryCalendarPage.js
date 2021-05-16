@@ -30,6 +30,9 @@ class DiaryCalendarPage extends React.Component{
       if(isFirstLaunch){
         this.props.navigation.navigate("Tutorial");
       }
+      else if (this.state.uid == null || this.state.uid == undefined || this.state.uid == '' ) {
+        this.props.navigation.navigate("Login")
+      }
       else{
         this.getAllDiary();
       }
@@ -49,7 +52,7 @@ class DiaryCalendarPage extends React.Component{
             let mDate = {};
             for (let i = 0; i < responseJson.diaries.length; i++) {
               let date = moment(responseJson.diaries[i].diary_date).format('YYYY-MM-DD');
-              mDate[date] = {marked : true};
+              mDate[date] = {selected: false, marked : true, dotColor: '#FF7E36'};
             }
             this.setState({markedDate : mDate});
             this.setState({contents : responseJson.diaries});
@@ -69,9 +72,14 @@ class DiaryCalendarPage extends React.Component{
             <Calendar
                 theme={{
                     calendarBackground: '#fff',
+                    todayTextColor: '#FF7E36',
+                    arrowColor: '#FF7E36',
+                    selectedDayBackgroundColor: '#FF7E36',
+                    selectedDotColor: '#fff',
                 }} 
                 markedDates={this.state.markedDate}
                 onDayPress={d => {
+                  let dateString = d.dateString;
                   this.setState({
                     currentYear: d.year,
                     currentMonth: ("0" + (d.month)).slice(-2),
@@ -81,7 +89,7 @@ class DiaryCalendarPage extends React.Component{
                   var content = "작성한 내용이 없습니다.";
                   var did = -1;
                   this.state.contents.forEach((data) => {
-                    if(d.dateString == moment(data.diary_date).format('YYYY-MM-DD')){
+                    if(dateString == moment(data.diary_date).format('YYYY-MM-DD')){
                       content = data.diary_content;
                       did = data.did;
                     }
@@ -146,7 +154,7 @@ const styles = StyleSheet.create({
     left: 8,
     right: 8,
     height: 40,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#FF7E36',
     borderRadius: 5,
   },
 });
