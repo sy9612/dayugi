@@ -37,33 +37,51 @@ class DiaryUpdatePage extends React.Component{
 
   updateDiary = () => {
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
-    let dataObj = {
-      "diary_content" : this.state.diaryContent,
-      "diary_date" : date,
-      "did" : this.state.diary.did,
-      "user" : {
-        "uid" : this.state.uid
-      }
+    let imageUri = this.state.image;
+    if (imageUri != null) {
+      let filename = localUri.split('/').pop();
+      let match = /\.(\w+)$/.exec(filename);
+      let type = match ? `image/${match[1]}` : `image`;
+      let formData = new FormData();
+      formData.append('files', { uri: localUri, name: filename, type });
+      fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=${encodeURIComponent(this.state.diary.did)}&user.uid=${encodeURIComponent(this.state.uid)}`, {
+        method: "PUT",
+        headers: {
+          "accept": "*/*",
+          "authorization": this.state.authorization,
+        },
+        body: formData
+        }).then(response => response.json())
+        .then(responseJson => {
+          let success = responseJson.success;
+          if(success === "success"){
+            // ????
+          }
+          else if(success === "fail"){
+            this.props.navigation.navigate("DiaryCalendar");
+          }
+        }
+      );
     }
-    fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary`, {
-      method: "PUT",
-      headers: {
-        "accept": "*/*",
-        "authorization": this.state.authorization,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(dataObj),
-      }).then(response => response.json())
-      .then(responseJson => {
-        let success = responseJson.success;
-        if(success === "success"){
-          // ????
+    else{
+      fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=${encodeURIComponent(this.state.diary.did)}&user.uid=${encodeURIComponent(this.state.uid)}`, {
+        method: "PUT",
+        headers: {
+          "accept": "*/*",
+          "authorization": this.state.authorization,
+        },
+        }).then(response => response.json())
+        .then(responseJson => {
+          let success = responseJson.success;
+          if(success === "success"){
+            // ????
+          }
+          else if(success === "fail"){
+            this.props.navigation.navigate("DiaryCalendar");
+          }
         }
-        else if(success === "fail"){
-          this.props.navigation.navigate("DiaryCalendar");
-        }
-      }
-    );
+      );
+    }
   };
 
   _pickImage = async () => {
@@ -85,7 +103,7 @@ class DiaryUpdatePage extends React.Component{
       null,
       '이미지를 삭제하시겠습니까?',
       [
-        {text: '삭제하기', onPress: () => this.setState({image : null})},
+        {text: '삭제하기', onPress: () => this.setState({image : null, imageChanged : true})},
         {text: '취소', onPress: () => {}},
       ],
       { cancelable: true }
