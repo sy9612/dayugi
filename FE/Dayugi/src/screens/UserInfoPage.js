@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import DialogInput from 'react-native-dialog-input';
+import Separator from '../components/Separator';
 
 class UserInfoPage extends React.Component {
   state = {
@@ -117,37 +118,34 @@ class UserInfoPage extends React.Component {
   }
   render() {
     return (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <CustomHeader navigation={this.props.navigation} />
-        <View>
-          <Text>
-            Email: 
-          </Text>
+        <View style={styles.contentContainer}>
+          <Text style={styles.title}>Email</Text>
           <TextInput
-            style={styles.input}
+            style={styles.content}
             underlineColorAndroid="transparent"
             value={this.state.email}
             placeholderTextColor="#9a73ef"
             autoCapitalize="none"
             editable={false}
           />
-          <Text>
-            Password: 
-          </Text>
+          <Separator/>
+          <Text style={styles.title}>Password</Text>
           <TextInput
-            style={styles.input}
+            style={styles.content}
             underlineColorAndroid="transparent"
             placeholder="Password"
-            placeholderTextColor="#9a73ef"
+            placeholderTextColor="#999"
             autoCapitalize="none"
             onChangeText={this.handlePassword}
             editable={true}
           />
-          <Text>
-            NickName: 
-          </Text>
+          <Separator/>
+          <Text style={styles.title}>Nickname</Text>
           <TextInput
-            style={styles.input}
+            style={styles.content}
             underlineColorAndroid="transparent"
             value={this.state.nickName}
             placeholderTextColor="#9a73ef"
@@ -155,27 +153,26 @@ class UserInfoPage extends React.Component {
             onChangeText={this.handleNickName}
             editable={true}
           />
-          <Text>
-            Birth: 
-          </Text>
+          <Separator/>
+          <Text style={styles.title}>Birth</Text>
           <TextInput
-            style={styles.input}
+            style={styles.content}
             underlineColorAndroid="transparent"
             value={this.state.birth}
-            placeholderTextColor="#9a73ef"
+            placeholderTextColor="#000"
             autoCapitalize="none"
             editable={false}
           />
-        </View>
-        <View style={styles.Btn}>
+          <Separator/>
+          
+        <View style={styles.buttons}>
           <TouchableOpacity
             style={styles.submitButton}
             onPress={() => this.changeInfo()}
           >
             <Text style={styles.submitButtonText}>회원정보 변경</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.Btn}>
+
           <TouchableOpacity
             style={styles.submitButton}
             onPress={() => this.handleVisible(true)}
@@ -189,8 +186,24 @@ class UserInfoPage extends React.Component {
             submitInput={ (inputText) => {this.withdraw(inputText, parseInt(this.state.uid))} }
             closeDialog={ () => {this.handleVisible(false)}}>
           </DialogInput>
+
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => {}}
+          >
+            <Text style={styles.submitButtonText}>다이어리 전체 삭제</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => {}}
+          >
+            <Text style={styles.submitButtonText}>로그아웃</Text>
+          </TouchableOpacity>
+        </View>
         </View>
       </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -201,12 +214,36 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     width: '100%',
+    height: '100%',
+  },
+  contentContainer:{
+    height: '100%',
+    width: '100%',
+    marginTop: 8,
+  }, 
+  title: {
+    fontSize: 14,
+    marginLeft: 8,
+  },
+  content: {
+    fontSize: 16,
+    marginLeft: 8,
+    color: '#000'
+  },
+  buttons:{
+    position: 'absolute',
+    bottom : 88,
+    width: '100%',
   },
   submitButton: {
-    backgroundColor: "#7a42f4",
-    padding: 10,
-    margin: 15,
-    height: 40
+    backgroundColor: "#FF7E36",
+    height: 40,
+    marginLeft: 8,
+    marginRight: 8,
+    marginBottom: 8,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   submitButtonText: {
     color: "white"
