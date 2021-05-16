@@ -69,6 +69,7 @@ public class FileServiceImpl implements FileService {
         DiaryFile diaryFiles = diaryFileRepository.findDiaryFileByDiary_Did(did);
         if(diaryFiles != null) {
             diaryFileRepository.deleteDiaryFileByDiary_Did(did);
+            System.out.println(diaryFiles.getFid());
         }
         if(!newFiles.isEmpty()) {
             diaryFileRepository.saveAll(newFiles);
