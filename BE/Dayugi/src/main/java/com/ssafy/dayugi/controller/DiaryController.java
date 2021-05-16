@@ -120,7 +120,7 @@ public class DiaryController {
 
     @PutMapping(value = "")
     @ApiOperation(value = "다이어리 수정", notes = "다이어리 수정")
-    private ResponseEntity updateDiary(@RequestBody Diary diary, @RequestParam int flag, @RequestParam(required = false) List<MultipartFile> files) {
+    private ResponseEntity updateDiary(@ModelAttribute Diary diary, @RequestParam int flag, @RequestParam(required = false) List<MultipartFile> files) {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
