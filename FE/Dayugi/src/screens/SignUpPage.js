@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ToastAndroid, Platform, AlertIOS, BackHandler } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -19,8 +19,17 @@ class SignUpPage extends React.Component {
     date: "",
     mode: 'date',
     show: false,
-    navigation: this.props,
+    returnToLogin: false,
   };
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  // 이벤트 해제
+  componentWillUnmount() {
+    this.handleReturnToLogin(false);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
 
   handleEmail = text => {
     this.setState({ email: text });
@@ -53,14 +62,39 @@ class SignUpPage extends React.Component {
     this.setState({ mode: text });
   };
 
-  handleShow = Boolean => {
-    this.setState({ show: Boolean });
+  handleShow = boolean => {
+    this.setState({ show: boolean });
   };
 
   handleDate = Date => {
     this.setState({ date: this.getFormatDate(Date) });
-    console.log(this.state.date);
   };
+  handleReturnToLogin = boolean => {
+    this.setState({ returnToLogin: true })
+  }
+
+  handleBackButton = () => {
+    // 2000(2초) 안에 back 버튼을 한번 더 클릭 할 경우 앱 종료
+    if (!this.state.returnToLogin) {
+      if (Platform.OS === 'android') {
+        ToastAndroid.show('한번 더 누르시면\n로그인 화면으로 돌아갑니다.', ToastAndroid.SHORT)
+      } else {
+        AlertIOS.alert('한번 더 누르시면\n로그인 화면으로 돌아갑니다.');
+      }
+      this.handleReturnToLogin(true);
+      setTimeout(
+        () => {
+          this.handleReturnToLogin(false);
+          console.log('test');
+        },
+        2000    // 2초
+      );
+    } else {
+      clearTimeout(this.timeout);
+      this.props.navigation.navigate('Login');
+    }
+    return true;
+}
 
   validateEmail = (mail) => {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
@@ -81,6 +115,10 @@ class SignUpPage extends React.Component {
     }
     else if (selectedDate > new Date()) {
       alert("설정된 생일 날짜를 다시 확인해주세요.");
+      return;
+    }
+    else if (this.state.date == '' || this.state.date == null) {
+      alert("생일을 설정해주세요!");
       return;
     }
     else{

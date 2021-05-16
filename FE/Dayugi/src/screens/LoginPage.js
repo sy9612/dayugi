@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   logoImageContainer: {
-    flex: 1.5,
+    flex: 1.25,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     color: '#FF7E36',
     fontWeight: 'bold',
     fontSize: 30,
-    marginBottom: '3%',
+    marginBottom: '5%',
   },
   signUpText: {
     flex: 1,
