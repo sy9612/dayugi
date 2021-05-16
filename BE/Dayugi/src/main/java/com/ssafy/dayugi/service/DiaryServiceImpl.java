@@ -6,6 +6,7 @@ import com.ssafy.dayugi.model.entity.DiaryEmotionInterface;
 import com.ssafy.dayugi.model.entity.User;
 import com.ssafy.dayugi.repository.DiaryFileRepository;
 import com.ssafy.dayugi.repository.DiaryRepository;
+import com.ssafy.dayugi.repository.EmotionRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Autowired
     private DiaryRepository diaryRepository;
-    private DiaryFileRepository diaryFileRepository;
+    EmotionRateRepository emotionRateRepository;
 
     @Override
     public int writeDiary(Diary diary) throws Exception {
@@ -87,6 +88,7 @@ public class DiaryServiceImpl implements DiaryService {
         Optional<Diary> diary = diaryRepository.findDiaryByDid(did);
 
         if (diary.isPresent()) {
+            emotionRateRepository.deleteEmotionRateByDiary_Did(diary.get().getDid());
             diaryRepository.deleteDiaryByDid(did);
             return true;
         }
@@ -98,7 +100,11 @@ public class DiaryServiceImpl implements DiaryService {
     public boolean deleteAllDiary(int uid) throws Exception {
         List<Optional<Diary>> diaries = diaryRepository.findDiariesByUser_Uid(uid);
         if (!diaries.isEmpty()) {
-//            System.out.println(diaries);
+            for (Optional<Diary> diary : diaries) {
+                if (diary.isPresent()) {
+                    emotionRateRepository.deleteEmotionRateByDiary_Did(diary.get().getDid());
+                }
+            }
             diaryRepository.deleteDiariesByUser_Uid(uid);
             return true;
         }
