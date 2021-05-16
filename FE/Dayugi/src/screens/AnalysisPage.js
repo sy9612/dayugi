@@ -17,11 +17,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { LineChart, PieChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/AntDesign';
-// import { floor } from 'react-native-reanimated';
 import Plotly from 'react-native-plotly'; // 걍 안됨
-// import { Radar } from 'react-native-pathjs-charts'; //실행도 안됨
-
-// this.handleEmail(String(await AsyncStorage.getItem("email")));
 
 class AnalysisPage extends React.Component {
   state = {
@@ -30,7 +26,6 @@ class AnalysisPage extends React.Component {
     nickName: '',
     authorization: '',
 
-    // setLoading: useState(true),
     startDate: new Date(),
     startDateString: moment(new Date()).format('YYYY-MM-DD'),
     startMode: 'date',
@@ -68,43 +63,6 @@ class AnalysisPage extends React.Component {
       barPercentage: 0.5,
       useShadowColorFromDataset: false, // optional
     },
-    // pieData: [
-    //   {
-    //     name: '행복',
-    //     population: 21500000,
-    //     color: 'rgba(250, 107, 107,0.8)',
-    //     legendFontColor: '#fa6b6b',
-    //     legendFontSize: 15,
-    //   },
-    //   {
-    //     name: '슬픔',
-    //     population: 2800000,
-    //     color: 'rgba(0, 28, 189, 0.8)',
-    //     legendFontColor: '#001cbd',
-    //     legendFontSize: 15,
-    //   },
-    //   {
-    //     name: '분노',
-    //     population: 527612,
-    //     color: '#bd0000',
-    //     legendFontColor: '#bd0000',
-    //     legendFontSize: 15,
-    //   },
-    //   {
-    //     name: '공포',
-    //     population: 8538000,
-    //     color: 'rgba(74, 68, 67, 0.8)',
-    //     legendFontColor: '#4a4443',
-    //     legendFontSize: 15,
-    //   },
-    //   {
-    //     name: '우울',
-    //     population: 11920000,
-    //     color: 'rgba(85, 82, 171, 0.8)',
-    //     legendFontColor: '#5552ab',
-    //     legendFontSize: 15,
-    //   },
-    // ],
     radarData: [
       // 차트에 들어갈 data를 먼저 지정해주고!
       {
@@ -239,7 +197,7 @@ class AnalysisPage extends React.Component {
   //---
   analysis = () => {
     const url = `http://k4a206.p.ssafy.io:8080/dayugi/diary/period?uid=${encodeURIComponent(
-      43 //this.state.uid
+      this.state.uid
     )}&startDate=${encodeURIComponent(this.state.startDateString)}&endDate=${encodeURIComponent(
       this.state.endDateString
     )}`;
@@ -264,10 +222,50 @@ class AnalysisPage extends React.Component {
             if (a.diary_date < b.diary_date) return -1;
             if (a.diary_date > b.diary_date) return 1;
           });
-          console.log(data);
-          this.radarUpdate();
+          // console.log(data);
           this.setState({ diaries: data });
-        } else if (success === 'fail') {
+          // console.log('--------------------------');
+
+          let sum = [0, 0, 0, 0, 0, 0, 0, 0];
+          let cnt = 0;
+          for (let index = 0; index < data.length; index++) {
+            const d = data[index];
+            console.log(d);
+            if (d.happiness == null) continue;
+
+            cnt++;
+            sum[0] += Number(d.happiness);
+            sum[1] += Number(d.angry);
+            sum[2] += Number(d.disgust);
+            sum[3] += Number(d.fear);
+            sum[4] += Number(d.sadness);
+            sum[5] += Number(d.surprise);
+            sum[6] += Number(d.neutral);
+          }
+          // console.log('----------sum : 더한 후----------');
+          // console.log(sum + '/n');
+
+          for (let index = 0; index < 7; index++) {
+            sum[index] = (sum[index] / cnt) * 100;
+          }
+          sum[7] = sum[0];
+
+          // console.log('----------sum : 나눈 후----------');
+          // console.log(sum + '/n');
+          let tmpData = [
+            {
+              type: 'scatterpolar', // chart type
+              r: sum, // data
+              theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람', '보통', '행복'], // data category
+              fill: 'toself', // fill option
+              name: 'Group A', // data group name
+            },
+          ];
+          this.setState({ radarData: tmpData });
+
+          // console.log('------------연산 후--------------');
+          // console.log(this.state.radarData);
+        } else {
           this.setState({
             diaries: [],
           });
@@ -276,42 +274,20 @@ class AnalysisPage extends React.Component {
   };
 
   //--
-  radarUpdate = () => {
-    // theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람','보통' '행복'], // data category
-    const sum = [0, 0, 0, 0, 0, 0, 0, 0];
-    const cnt = 0;
-    this.state.diaries.forEach((d) => {
-      console.log(d);
-      // if (d.happiness == null) continue;
-
-      // cnt++;
-      // sum[0] += d.happiness;
-      // sum[1] += d.angry;
-      // sum[2] += d.disgust;
-      // sum[3] += d.fear;
-      // sum[4] += d.sadness;
-      // sum[5] += d.surprise;
-      // sum[6] += d.neutral;
-      // sum[7] += d.happiness;
-    });
-
-    // for (let index = 0; index < 7; index++) {
-    //   sum[index] = sum[index] / cnt;
-    // }
-    // sum[7] = sum[0];
-    this.setState({
-      radarData: (radarData = [
-        {
-          type: 'scatterpolar', // chart type
-          r: sum, // data
-          theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람', '보통', '행복'], // data category
-          fill: 'toself', // fill option
-          name: 'Group A', // data group name
-        },
-      ]),
-    });
-    // plotly.react(sum, this.state.radarLayout);
-  };
+  // radarUpdate = () => {
+  //   this.setState({
+  //     radarData: (radarData = [
+  //       {
+  //         type: 'scatterpolar', // chart type
+  //         r: sum, // data
+  //         theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람', '보통', '행복'], // data category
+  //         fill: 'toself', // fill option
+  //         name: 'Group A', // data group name
+  //       },
+  //     ]),
+  //   });
+  //   // plotly.react(sum, this.state.radarLayout);
+  // };
 
   render() {
     return (
@@ -366,18 +342,6 @@ class AnalysisPage extends React.Component {
             </View>
           </View>
           <Separator />
-          <Text>곡선 그래프</Text>
-          <View style={styles.lineChartRow}>
-            <LineChart
-              data={this.state.data}
-              width={this.state.screenWidth}
-              height={256}
-              verticalLabelRotation={30}
-              chartConfig={this.state.chartConfig}
-              bezier
-            />
-          </View>
-          <Separator />
           <View>
             <Text>평균 감정 그래프</Text>
             <View style={styles.chartRow}>
@@ -389,6 +353,18 @@ class AnalysisPage extends React.Component {
                 enableFullPlotly
               />
             </View>
+          </View>
+          <Separator />
+          <Text>곡선 그래프</Text>
+          <View style={styles.lineChartRow}>
+            <LineChart
+              data={this.state.data}
+              width={this.state.screenWidth}
+              height={256}
+              verticalLabelRotation={30}
+              chartConfig={this.state.chartConfig}
+              bezier
+            />
           </View>
           {/* <Separator />
           <Text>파이 그래프</Text>
