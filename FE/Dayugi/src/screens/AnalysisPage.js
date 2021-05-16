@@ -292,12 +292,8 @@ class AnalysisPage extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        {/* <View style={styles.container}> */}
+        <CustomHeader title="다이어리 분석" navigation={this.props.navigation} />
         <ScrollView style={styles.scrollView} contentContainerStyle={{ width: '100%' }}>
-          {/* <View style={styles.headerView}> */}
-          <CustomHeader navigation={this.props.navigation} />
-          <Text style={styles.headerText}>다이어리 분석</Text>
-          {/* </View> */}
           <Separator />
           <View style={styles.setDateText}>
             <Text>기간 설정 : &nbsp;</Text>
@@ -389,10 +385,10 @@ class AnalysisPage extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: '#fff',
     width: '100%',
-    paddingTop: StatusBar.currentHeight,
+    // paddingTop: StatusBar.currentHeight,
   },
   headerView: {
     flexDirection: 'row',
