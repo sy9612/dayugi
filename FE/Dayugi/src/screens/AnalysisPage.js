@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -8,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
+  Button,
 } from 'react-native';
 import Separator from '../components/Separator';
 import CustomHeader from '../components/CustomHeader';
@@ -15,17 +17,20 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { LineChart, PieChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/AntDesign';
-// import { floor } from 'react-native-reanimated';
 import Plotly from 'react-native-plotly'; // 걍 안됨
-// import { Radar } from 'react-native-pathjs-charts'; //실행도 안됨
 
 class AnalysisPage extends React.Component {
   state = {
-    // setLoading: useState(true),
+    uid: '',
+    email: '',
+    nickName: '',
+    authorization: '',
+
     startDate: new Date(),
     startDateString: moment(new Date()).format('YYYY-MM-DD'),
     startMode: 'date',
     startShow: false,
+    diaries: [],
 
     endDate: new Date(),
     endDateString: moment(new Date()).format('YYYY-MM-DD'),
@@ -37,7 +42,10 @@ class AnalysisPage extends React.Component {
       labels: ['January', 'February', 'March', 'April', 'May', 'June'],
       datasets: [
         {
-          data: [20, 45, 28, 80, 99, 43],
+          data: [
+            20, 45, 28, 80, 99, 43, 80, 13, 53, 20, 45, 28, 80, 99, 43, 80, 13, 53, 20, 45, 28, 80,
+            99, 43, 80, 13, 53, 20, 45, 28, 80, 99, 43, 80, 13, 53,
+          ],
           color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
           strokeWidth: 2, // optional
         },
@@ -55,49 +63,12 @@ class AnalysisPage extends React.Component {
       barPercentage: 0.5,
       useShadowColorFromDataset: false, // optional
     },
-    pieData: [
-      {
-        name: '행복',
-        population: 21500000,
-        color: 'rgba(250, 107, 107,0.8)',
-        legendFontColor: '#fa6b6b',
-        legendFontSize: 15,
-      },
-      {
-        name: '슬픔',
-        population: 2800000,
-        color: 'rgba(0, 28, 189, 0.8)',
-        legendFontColor: '#001cbd',
-        legendFontSize: 15,
-      },
-      {
-        name: '분노',
-        population: 527612,
-        color: '#bd0000',
-        legendFontColor: '#bd0000',
-        legendFontSize: 15,
-      },
-      {
-        name: '공포',
-        population: 8538000,
-        color: 'rgba(74, 68, 67, 0.8)',
-        legendFontColor: '#4a4443',
-        legendFontSize: 15,
-      },
-      {
-        name: '우울',
-        population: 11920000,
-        color: 'rgba(85, 82, 171, 0.8)',
-        legendFontColor: '#5552ab',
-        legendFontSize: 15,
-      },
-    ],
     radarData: [
       // 차트에 들어갈 data를 먼저 지정해주고!
       {
         type: 'scatterpolar', // chart type
-        r: [50, 15, 14, 25, 62, 50], // data
-        theta: ['A', 'B', 'C', 'D', 'E', 'A'], // data category
+        r: [0, 0, 0, 0, 0, 0, 0, 0, 0], // data
+        theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람', '보통', '행복'], // data category
         fill: 'toself', // fill option
         name: 'Group A', // data group name
       },
@@ -109,12 +80,52 @@ class AnalysisPage extends React.Component {
           // 방사축이라는 의미인데 아래 그림에서 파란색으로 표시된 부분을 말한다!
           visible: true, // 방사축 display
           range: [0, 100], // 방사축의 시작값, 끝 값
+          showticklabels: false, // @1-1
+          showline: false, // @1-2
+          ticklen: 0, // @1-3
         },
+        angularaxis: {
+          // 각축 꾸미기 시작!
+          // rotation: 210, // 차트 회전율! (KDA가 제일 위로 올 수 있도록 돌려주었당)
+          color: '#eee', // 각축의 선 색깔
+          ticklen: 0, // @2-1
+          tickfont: {
+            // @2-2
+            color: '#888',
+            size: 13,
+          },
+        },
+        gridshape: 'linear', // @3
       },
+      showlegend: false, // @4
     },
   };
 
   // handleDateString = (startDateString) => {};
+  componentDidMount() {
+    this.getUid();
+    this.getEmail();
+    this.getNickName();
+    this.getAuthorization();
+  }
+
+  async getUid() {
+    let tmp = String(await AsyncStorage.getItem('uid'));
+    this.setState({ uid: tmp });
+  }
+  async getEmail() {
+    let tmp = String(await AsyncStorage.getItem('email'));
+    this.setState({ email: tmp });
+  }
+  async getNickName() {
+    let tmp = String(await AsyncStorage.getItem('nickName'));
+    this.setState({ nickName: tmp });
+  }
+
+  async getAuthorization() {
+    let tmp = String(await AsyncStorage.getItem('Authorization'));
+    this.setState({ authorization: tmp });
+  }
 
   handleStartDate = (Date) => {
     this.setState({ startDate: Date });
@@ -184,55 +195,116 @@ class AnalysisPage extends React.Component {
   };
 
   //---
-  analysis = (startDate, endDate) => {
-    let tmp = 'start date : ' + startDate + '/n' + 'end date : ' + endDate;
-    alert(tmp);
-    console.log(this.state.radarData);
-    // let dataObj = { email: email, password: password };
-    // fetch('http://k4a206.p.ssafy.io:8080/dayugi/user', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(dataObj),
-    // })
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     let success = responseJson.success;
-    //     if (success == 'success') {
-    //       let uid = String(responseJson.data['uid']);
-    //       let nickName = String(responseJson.data['nickname']);
-    //       let Authorization = String(responseJson.Authorization);
-    //       AsyncStorage.setItem('uid', uid);
-    //       AsyncStorage.setItem('email', this.state.email);
-    //       AsyncStorage.setItem('nickName', nickName);
-    //       AsyncStorage.setItem('Authorization', Authorization);
-    //       this.props.navigation.navigate('DiaryCalendar');
-    //     } else {
-    //       alert('Id 또는 비밀번호를 확인해주세요.');
-    //     }
-    //   });
+  analysis = () => {
+    const url = `http://k4a206.p.ssafy.io:8080/dayugi/diary/period?uid=${encodeURIComponent(
+      this.state.uid
+    )}&startDate=${encodeURIComponent(this.state.startDateString)}&endDate=${encodeURIComponent(
+      this.state.endDateString
+    )}`;
+    // console.log(url);
+    // console.log(this.state.authorization);
+
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        accept: '*/*',
+        authorization: this.state.authorization,
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        // console.log(responseJson);
+        let success = responseJson.success;
+        let data = responseJson.data;
+
+        if (success === 'success') {
+          data.sort(function (a, b) {
+            if (a.diary_date < b.diary_date) return -1;
+            if (a.diary_date > b.diary_date) return 1;
+          });
+          // console.log(data);
+          this.setState({ diaries: data });
+          // console.log('--------------------------');
+
+          let sum = [0, 0, 0, 0, 0, 0, 0, 0];
+          let cnt = 0;
+          for (let index = 0; index < data.length; index++) {
+            const d = data[index];
+            console.log(d);
+            if (d.happiness == null) continue;
+
+            cnt++;
+            sum[0] += Number(d.happiness);
+            sum[1] += Number(d.angry);
+            sum[2] += Number(d.disgust);
+            sum[3] += Number(d.fear);
+            sum[4] += Number(d.sadness);
+            sum[5] += Number(d.surprise);
+            sum[6] += Number(d.neutral);
+          }
+          // console.log('----------sum : 더한 후----------');
+          // console.log(sum + '/n');
+
+          for (let index = 0; index < 7; index++) {
+            sum[index] = (sum[index] / cnt) * 100;
+          }
+          sum[7] = sum[0];
+
+          // console.log('----------sum : 나눈 후----------');
+          // console.log(sum + '/n');
+          let tmpData = [
+            {
+              type: 'scatterpolar', // chart type
+              r: sum, // data
+              theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람', '보통', '행복'], // data category
+              fill: 'toself', // fill option
+              name: 'Group A', // data group name
+            },
+          ];
+          this.setState({ radarData: tmpData });
+
+          // console.log('------------연산 후--------------');
+          // console.log(this.state.radarData);
+        } else {
+          this.setState({
+            diaries: [],
+          });
+        }
+      });
   };
 
   //--
-  radarUpdate = (_, { data, layout, config }, plotly) => {
-    plotly.react(data, layout, config);
-  };
+  // radarUpdate = () => {
+  //   this.setState({
+  //     radarData: (radarData = [
+  //       {
+  //         type: 'scatterpolar', // chart type
+  //         r: sum, // data
+  //         theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람', '보통', '행복'], // data category
+  //         fill: 'toself', // fill option
+  //         name: 'Group A', // data group name
+  //       },
+  //     ]),
+  //   });
+  //   // plotly.react(sum, this.state.radarLayout);
+  // };
 
   render() {
     return (
       <SafeAreaView style={styles.container}>
         {/* <View style={styles.container}> */}
         <ScrollView style={styles.scrollView} contentContainerStyle={{ width: '100%' }}>
+          {/* <View style={styles.headerView}> */}
           <CustomHeader navigation={this.props.navigation} />
-          <Text>분석 페이지</Text>
+          <Text style={styles.headerText}>다이어리 분석</Text>
+          {/* </View> */}
           <Separator />
-          <Text>조회 날짜</Text>
-          {/* <Text style={styles.text}>{this.state.startDateString}</Text> */}
-          {/* <Icon name="calendar" size={20} color="#3143e8" /> */}
           <View style={styles.setDateText}>
+            <Text>기간 설정 : &nbsp;</Text>
             <TouchableOpacity onPress={() => this.startShowDatepicker()}>
               <Text style={styles.text}>
                 {this.state.startDateString}&nbsp;
-                <Icon name="calendar" size={15} color="#3143e8" />
+                <Icon name="calendar" size={15} color="#FF7E36" />
               </Text>
             </TouchableOpacity>
             <Text>&nbsp;&nbsp;~&nbsp;&nbsp;</Text>
@@ -249,7 +321,7 @@ class AnalysisPage extends React.Component {
             <TouchableOpacity onPress={() => this.endShowDatepicker()}>
               <Text style={styles.text}>
                 {this.state.endDateString}&nbsp;
-                <Icon name="calendar" size={15} color="#3143e8" />
+                <Icon name="calendar" size={15} color="#FF7E36" />
               </Text>
             </TouchableOpacity>
             {this.state.endShow && (
@@ -264,22 +336,19 @@ class AnalysisPage extends React.Component {
               />
             )}
             <View>
-              <TouchableOpacity
-                style={styles.submitButton}
-                onPress={() => this.analysis(this.state.startDate, this.state.endDate)}
-              >
+              <TouchableOpacity style={styles.submitButton} onPress={() => this.analysis()}>
                 <Text style={styles.submitButtonText}>조회</Text>
               </TouchableOpacity>
             </View>
           </View>
           <Separator />
           <View>
-            <Text>Rader Chart</Text>
+            <Text>평균 감정 그래프</Text>
             <View style={styles.chartRow}>
               <Plotly
                 data={this.state.radarData}
                 layout={this.state.radarLayout}
-                update={this.radarUpdate}
+                // update={this.radarUpdate}
                 debug
                 enableFullPlotly
               />
@@ -297,7 +366,7 @@ class AnalysisPage extends React.Component {
               bezier
             />
           </View>
-          <Separator />
+          {/* <Separator />
           <Text>파이 그래프</Text>
           <View style={styles.pieChartRow}>
             <PieChart
@@ -311,7 +380,7 @@ class AnalysisPage extends React.Component {
               center={[10, 10]}
               absolute
             />
-          </View>
+          </View> */}
         </ScrollView>
       </SafeAreaView>
     );
@@ -325,25 +394,41 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: StatusBar.currentHeight,
   },
+  headerView: {
+    flexDirection: 'row',
+  },
+  headerText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: '#FF7E36',
+    fontSize: 20,
+  },
   scrollView: {
     // backgroundColor: 'pink',
     marginHorizontal: 20,
   },
   text: {
-    color: 'purple',
+    color: 'dimgray',
+    fontSize: 16,
   },
   setDateText: {
     flexDirection: 'row',
   },
   submitButton: {
-    backgroundColor: '#7a42f4',
-    padding: 2,
+    backgroundColor: '#FF7E36',
+    paddingBottom: 2,
+    paddingTop: 2,
+    paddingLeft: 5,
+    paddingRight: 5,
     margin: 2,
     height: 20,
     marginRight: 0,
+    borderRadius: 5,
+    marginLeft: 10,
   },
   submitButtonText: {
     color: 'white',
+    fontSize: 12,
   },
   chartRow: {
     flex: 1,
