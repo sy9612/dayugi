@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -20,8 +21,14 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Plotly from 'react-native-plotly'; // 걍 안됨
 // import { Radar } from 'react-native-pathjs-charts'; //실행도 안됨
 
+// this.handleEmail(String(await AsyncStorage.getItem("email")));
+
 class AnalysisPage extends React.Component {
   state = {
+    uid: '',
+    email: '',
+    nickName: '',
+
     // setLoading: useState(true),
     startDate: new Date(),
     startDateString: moment(new Date()).format('YYYY-MM-DD'),
@@ -38,7 +45,10 @@ class AnalysisPage extends React.Component {
       labels: ['January', 'February', 'March', 'April', 'May', 'June'],
       datasets: [
         {
-          data: [20, 45, 28, 80, 99, 43],
+          data: [
+            20, 45, 28, 80, 99, 43, 80, 13, 53, 20, 45, 28, 80, 99, 43, 80, 13, 53, 20, 45, 28, 80,
+            99, 43, 80, 13, 53, 20, 45, 28, 80, 99, 43, 80, 13, 53,
+          ],
           color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
           strokeWidth: 2, // optional
         },
@@ -56,43 +66,43 @@ class AnalysisPage extends React.Component {
       barPercentage: 0.5,
       useShadowColorFromDataset: false, // optional
     },
-    pieData: [
-      {
-        name: '행복',
-        population: 21500000,
-        color: 'rgba(250, 107, 107,0.8)',
-        legendFontColor: '#fa6b6b',
-        legendFontSize: 15,
-      },
-      {
-        name: '슬픔',
-        population: 2800000,
-        color: 'rgba(0, 28, 189, 0.8)',
-        legendFontColor: '#001cbd',
-        legendFontSize: 15,
-      },
-      {
-        name: '분노',
-        population: 527612,
-        color: '#bd0000',
-        legendFontColor: '#bd0000',
-        legendFontSize: 15,
-      },
-      {
-        name: '공포',
-        population: 8538000,
-        color: 'rgba(74, 68, 67, 0.8)',
-        legendFontColor: '#4a4443',
-        legendFontSize: 15,
-      },
-      {
-        name: '우울',
-        population: 11920000,
-        color: 'rgba(85, 82, 171, 0.8)',
-        legendFontColor: '#5552ab',
-        legendFontSize: 15,
-      },
-    ],
+    // pieData: [
+    //   {
+    //     name: '행복',
+    //     population: 21500000,
+    //     color: 'rgba(250, 107, 107,0.8)',
+    //     legendFontColor: '#fa6b6b',
+    //     legendFontSize: 15,
+    //   },
+    //   {
+    //     name: '슬픔',
+    //     population: 2800000,
+    //     color: 'rgba(0, 28, 189, 0.8)',
+    //     legendFontColor: '#001cbd',
+    //     legendFontSize: 15,
+    //   },
+    //   {
+    //     name: '분노',
+    //     population: 527612,
+    //     color: '#bd0000',
+    //     legendFontColor: '#bd0000',
+    //     legendFontSize: 15,
+    //   },
+    //   {
+    //     name: '공포',
+    //     population: 8538000,
+    //     color: 'rgba(74, 68, 67, 0.8)',
+    //     legendFontColor: '#4a4443',
+    //     legendFontSize: 15,
+    //   },
+    //   {
+    //     name: '우울',
+    //     population: 11920000,
+    //     color: 'rgba(85, 82, 171, 0.8)',
+    //     legendFontColor: '#5552ab',
+    //     legendFontSize: 15,
+    //   },
+    // ],
     radarData: [
       // 차트에 들어갈 data를 먼저 지정해주고!
       {
@@ -132,6 +142,24 @@ class AnalysisPage extends React.Component {
   };
 
   // handleDateString = (startDateString) => {};
+  componentDidMount() {
+    this.getUid();
+    this.getEmail();
+    this.getNickName();
+  }
+
+  async getUid() {
+    let tmp = String(await AsyncStorage.getItem('uid'));
+    this.setState({ uid: tmp });
+  }
+  async getEmail() {
+    let tmp = String(await AsyncStorage.getItem('email'));
+    this.setState({ email: tmp });
+  }
+  async getNickName() {
+    let tmp = String(await AsyncStorage.getItem('nickName'));
+    this.setState({ nickName: tmp });
+  }
 
   handleStartDate = (Date) => {
     this.setState({ startDate: Date });
@@ -202,10 +230,7 @@ class AnalysisPage extends React.Component {
 
   //---
   analysis = (startDate, endDate) => {
-    let tmp = 'start date : ' + startDate + '/n' + 'end date : ' + endDate;
-    alert(tmp);
-    console.log(this.state.radarData);
-    // let dataObj = { email: email, password: password };
+    // let dataObj = { uid: email, password: password };
     // fetch('http://k4a206.p.ssafy.io:8080/dayugi/user', {
     //   method: 'POST',
     //   headers: { 'Content-Type': 'application/json' },
@@ -303,7 +328,7 @@ class AnalysisPage extends React.Component {
           </View>
           <Separator />
           <View>
-            <Text>Rader Chart</Text>
+            <Text>평균 감정 그래프</Text>
             <View style={styles.chartRow}>
               <Plotly
                 data={this.state.radarData}
@@ -314,7 +339,7 @@ class AnalysisPage extends React.Component {
               />
             </View>
           </View>
-          <Separator />
+          {/* <Separator />
           <Text>파이 그래프</Text>
           <View style={styles.pieChartRow}>
             <PieChart
@@ -328,7 +353,7 @@ class AnalysisPage extends React.Component {
               center={[10, 10]}
               absolute
             />
-          </View>
+          </View> */}
         </ScrollView>
       </SafeAreaView>
     );
