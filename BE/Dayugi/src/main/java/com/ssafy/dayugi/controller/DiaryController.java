@@ -1,10 +1,7 @@
 package com.ssafy.dayugi.controller;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ssafy.dayugi.model.entity.Diary;
-import com.ssafy.dayugi.model.entity.DiaryEmotion;
-import com.ssafy.dayugi.model.entity.DiaryEmotionInterface;
-import com.ssafy.dayugi.model.entity.DiaryFile;
+import com.ssafy.dayugi.model.entity.*;
 import com.ssafy.dayugi.service.DiaryService;
 import com.ssafy.dayugi.service.FileService;
 import com.ssafy.dayugi.util.MD5Generator;
@@ -230,6 +227,7 @@ public class DiaryController {
                 result.put("success", "fail");
                 result.put("message", "fail to delete files of diary");
             }
+
             boolean checkSuccess = diaryService.deleteDiary(did);
             if (checkSuccess) {
                 result.put("success", "success");
