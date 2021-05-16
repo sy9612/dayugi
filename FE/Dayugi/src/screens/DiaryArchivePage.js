@@ -2,129 +2,166 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MonthPicker from 'react-native-month-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
 class DiaryArchivePage extends React.Component {
   state = {
+    uid: '',
+    authorization: '',
     currentYear: '',
     currentMonth: '',
     isModalOpen: false,
-    contents:[
-      {
-          diaryDate:"2021-04-01",
-          diaryContent:"안녕안녕",
-      },
-      {
-          diaryDate:"2021-04-21",
-          diaryContent:"안녕안녕안녕안녕",
-      },
-      {
-          diaryDate:"2021-05-01",
-          diaryContent:"안녕안녕안녕안녕안녕안녕",
-      },
-      {
-          diaryDate:"2021-05-03",
-          diaryContent:"안녕안녕안녕안녕안녕안녕안녕안녕안녕안녕안녕안녕",
-      },
-      {
-          diaryDate:"2021-05-04",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-05-08",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-07-03",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-08-03",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-09-03",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-10-03",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-11-03",
-          diaryContent:"1",
-      },
-      {
-          diaryDate:"2021-12-03",
-          diaryContent:"1",
-      },
-    ]
-  }
+    contents: [],
+  };
 
-  componentDidMount() {
-    var y = new Date().getFullYear(); 
-    var m = ("0" + (1 + new Date().getMonth())).slice(-2);
-    
+  async componentDidMount() {
+    this.state.uid = await AsyncStorage.getItem('uid');
+    this.state.authorization = await AsyncStorage.getItem('Authorization');
+
+    var y = new Date().getFullYear();
+    var m = ('0' + (1 + new Date().getMonth())).slice(-2);
+
     this.setState({
       currentYear: y,
-      currentMonth : m
+      currentMonth: m,
     });
+
+    this.getDiaryWithMonth(this.state.currentYear, this.state.currentMonth);
   }
+
+  getDiaryWithMonth = (year, month) => {
+    fetch(
+      `http://k4a206.p.ssafy.io:8080/dayugi/diary/monthly?month=${encodeURIComponent(
+        month
+      )}&uid=${encodeURIComponent(this.state.uid)}&year=${encodeURIComponent(year)}`,
+      {
+        method: 'GET',
+        headers: {
+          accept: '*/*',
+          authorization: this.state.authorization,
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((responseJson) => {
+        let success = responseJson.success;
+        let diaries = responseJson.diaries;
+
+        if (success === 'success') {
+          diaries.sort(function (a, b) {
+            if (a.diary_date < b.diary_date) return -1;
+            if (a.diary_date > b.diary_date) return 1;
+          });
+
+          this.setState({ contents: diaries });
+        } else if (success === 'fail') {
+          this.setState({
+            contents: [{ diary_date: 0, diary_content: '작성한 내용이 없습니다.' }],
+          });
+        }
+      });
+  };
+
+  getAllDiary = () => {
+    fetch(
+      `http://k4a206.p.ssafy.io:8080/dayugi/diary/all?uid=${encodeURIComponent(this.state.uid)}`,
+      {
+        method: 'GET',
+        headers: {
+          accept: '*/*',
+          authorization: this.state.authorization,
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((responseJson) => {
+        let success = responseJson.success;
+        let diaries = responseJson.diaries;
+
+        if (success === 'success') {
+          diaries.sort(function (a, b) {
+            if (a.diary_date < b.diary_date) return -1;
+            if (a.diary_date > b.diary_date) return 1;
+          });
+
+          this.setState({ contents: diaries });
+        } else if (success === 'fail') {
+          this.setState({
+            contents: [{ diary_date: 0, diary_content: '작성한 내용이 없습니다.' }],
+          });
+        }
+      });
+  };
 
   openModal = () => {
     this.setState({ isModalOpen: true });
   };
 
-  closeModal = () => {
+  closeModalWithMonth = () => {
+    this.getDiaryWithMonth(this.state.currentYear, this.state.currentMonth);
+    this.setState({ isModalOpen: false });
+  };
+
+  closeModalWithAll = () => {
+    this.getAllDiary();
     this.setState({ isModalOpen: false });
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <CustomHeader navigation = {this.props.navigation}/>
-        <View style = {styles.pickerContainer}>
+        <CustomHeader title="" navigation={this.props.navigation} />
+        <View style={styles.pickerContainer}>
           <TouchableOpacity onPress={this.openModal}>
             <Text>
-              {this.state.currentYear}-{this.state.currentMonth} 
+              {this.state.currentYear != '0'
+                ? this.state.currentYear + '-' + this.state.currentMonth
+                : '전체보기'}
               <Ionicons name="arrow-down"></Ionicons>
             </Text>
           </TouchableOpacity>
         </View>
 
-        <Modal
-          transparent
-          animationType="fade"
-          visible={this.state.isModalOpen}>
+        <Modal transparent animationType="fade" visible={this.state.isModalOpen}>
           <View style={styles.modalContainer}>
             <MonthPicker
-              selectedDate={new moment(this.state.currentYear + '-' + this.state.currentMonth,'YYYY-MM')}
-              initialView={new moment(this.state.currentYear + '-' + this.state.currentMonth,'YYYY-MM')}
+              selectedDate={
+                new moment(this.state.currentYear + '-' + this.state.currentMonth, 'YYYY-MM')
+              }
+              initialView={
+                new moment(this.state.currentYear + '-' + this.state.currentMonth, 'YYYY-MM')
+              }
               onMonthChange={(date) => {
                 this.state.currentYear = moment(date).format('YYYY');
                 this.state.currentMonth = moment(date).format('MM');
-                this.closeModal()
+                this.closeModalWithMonth();
               }}
-              seperatorColor='#eee'
-              nextText='>  '
-              prevText='  <'
-              monthFormat= "MM" 
+              seperatorColor="#eee"
+              nextText=">  "
+              prevText="  <"
+              monthFormat="MM"
             />
+            <View style={styles.viewAllButton}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.state.currentYear = '0';
+                  this.closeModalWithAll();
+                }}
+              >
+                <Text>전체보기</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </Modal>
 
         <FlatList
-          style = {{ width : "100%", marginTop : 8 }}
-          data = {this.state.contents}
-          renderItem = {({ item }) => 
-            <Item
-              item = {item}
-              navigation = {this.props.navigation}
-            />
-          }
-          keyExtractor = {item => item.diaryDate}
+          style={{ width: '100%', marginTop: 8 }}
+          data={this.state.contents}
+          renderItem={({ item }) => <Item item={item} navigation={this.props.navigation} />}
+          keyExtractor={(item) => item.diary_date}
         />
       </View>
     );
@@ -133,10 +170,15 @@ class DiaryArchivePage extends React.Component {
 
 function Item({ item, navigation }) {
   return (
-    <TouchableOpacity style = {styles.drawerContentListItem} onPress={() => alert(item.diaryDate + " " + item.diaryContent)}>
-        <Text style = {styles.drawerContentItemDiaryDate}>{item.diaryDate}</Text>
-        <Separator />
-        <Text style = {styles.drawerContentItemDiaryContent}>{item.diaryContent}</Text>
+    <TouchableOpacity
+      style={styles.drawerContentListItem}
+      onPress={() => navigation.navigate('DiaryDetail', { did: item.did })}
+    >
+      <Text style={styles.drawerContentItemDiaryDate}>
+        {item.diary_date != 0 && moment(item.diary_date).format('YYYY-MM-DD')}
+      </Text>
+      <Separator />
+      <Text style={styles.drawerContentItemDiaryContent}>{item.diary_content}</Text>
     </TouchableOpacity>
   );
 }
@@ -148,10 +190,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   pickerContainer: {
-    backgroundColor : '#fff',
-    height: 40, 
-    flexDirection: 'row', 
-    justifyContent: 'center', 
+    backgroundColor: '#fff',
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   modalContainer: {
@@ -159,19 +201,26 @@ const styles = StyleSheet.create({
     top: 120,
     width: '100%',
   },
-  drawerContentListItem:{
-    backgroundColor : '#fff',
+  viewAllButton: {
+    backgroundColor: '#fff',
+    width: '100%',
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  drawerContentListItem: {
+    backgroundColor: '#fff',
     padding: 8,
     margin: 8,
     marginTop: 0,
     borderRadius: 5,
   },
-  drawerContentItemDiaryDate:{
-    fontSize : 12,
+  drawerContentItemDiaryDate: {
+    fontSize: 12,
   },
-  drawerContentItemDiaryContent:{
-    fontSize : 14,
+  drawerContentItemDiaryContent: {
+    fontSize: 14,
   },
 });
 
-export default DiaryArchivePage
+export default DiaryArchivePage;
