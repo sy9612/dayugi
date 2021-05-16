@@ -10,20 +10,12 @@ class DrawerContent extends React.Component {
                 text:"Home",
             },
             {
-                name:"Login",
-                text:"로그인",
-            },
-            {
                 name: "UserInfo",
                 text: "마이페이지"
             },
             {
                 name:"DiaryArchive",
                 text:"모아보기",
-            },
-            {
-                name:"GrowthDiary",
-                text:"성장일지",
             },
             {
                 name:"Gallery",
@@ -98,7 +90,7 @@ function Item({ item, navigate }) {
 const styles = StyleSheet.create({
     drawerContentTop : {
         height : 120,
-        backgroundColor: '#D7B397'
+        backgroundColor: '#FFFAF0'
     },
     drawerContentDivider : {
         height : 1,
