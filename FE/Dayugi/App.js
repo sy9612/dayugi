@@ -5,10 +5,6 @@ import { Font } from 'expo';
 
 class App extends React.Component {
 
-  async componentDidMount() {
-    await Font.loadAsync({'Chilgok_Cye': require('./assets/fonts/Chilgok_Cye.ttf'),});
-  }
-  
   render() {
     // AsyncStorage.clear();
 

@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 
@@ -40,23 +41,49 @@ class DrawerContent extends React.Component {
     }
 
     render() {
-        return (
-            <View>
-                <View style={styles.drawerContentTop}></View>
-                <View style={styles.drawerContentDivider}></View>
-                <FlatList
-                    style = {{ width : "50%", marginLeft : 30 }}
-                    data = {this.state.routes}
-                    renderItem = {({ item }) => 
-                        <Item
-                            item = {item} 
-                            navigate = {this.props.navigation.navigate}
-                        />
-                    }
-                    keyExtractor = {item => item.name}
-                />
-            </View>
-        );
+      async function reissueToken() {
+        var uid = await AsyncStorage.getItem('uid');
+        var token = await AsyncStorage.getItem('Authorization');
+        if (uid == 'null' || uid == undefined || uid == '') {
+          return;
+        }
+        else {
+          let dataObj = { uid: parseInt(uid) };
+          fetch('http://k4a206.p.ssafy.io:8080/dayugi/user/token', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "authorization": token,
+            },
+            body: JSON.stringify(dataObj),
+          }).then(response => response.json())
+          .then(responseJson => {
+          let success = responseJson.success;
+            if (success == "success") {
+              let Authorization = String(responseJson.Authorization);
+              AsyncStorage.setItem('Authorization', Authorization);
+            }
+          });
+        }
+      }
+      reissueToken();
+      return (
+        <View>
+          <View style={styles.drawerContentTop}></View>
+          <View style={styles.drawerContentDivider}></View>
+          <FlatList
+            style = {{ width : "50%", marginLeft : 30 }}
+            data = {this.state.routes}
+            renderItem = {({ item }) => 
+              <Item
+                item = {item} 
+                navigate = {this.props.navigation.navigate}
+              />
+            }
+            keyExtractor = {item => item.name}
+          />
+        </View>
+      );
     }
 }
 
