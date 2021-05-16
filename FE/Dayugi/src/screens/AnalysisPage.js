@@ -39,10 +39,10 @@ class AnalysisPage extends React.Component {
 
     screenWidth: Dimensions.get('window').width * 0.9,
     data: {
-      labels: ['asdf', 'sdfg', 'dfgh', '', 'qwer'],
+      labels: [''],
       datasets: [
         {
-          data: [1, 3, 7, null, 2],
+          data: [0],
           color: () => `#337EFF`, // optional
           // strokeWidth: 2, // optional
         },
@@ -193,7 +193,7 @@ class AnalysisPage extends React.Component {
   //---
   analysis = () => {
     const url = `http://k4a206.p.ssafy.io:8080/dayugi/diary/period?uid=${encodeURIComponent(
-      46
+      this.state.uid
     )}&startDate=${encodeURIComponent(this.state.startDateString)}&endDate=${encodeURIComponent(
       this.state.endDateString
     )}`;
@@ -209,7 +209,7 @@ class AnalysisPage extends React.Component {
     })
       .then((response) => response.json())
       .then((responseJson) => {
-        // console.log(responseJson);
+        console.log(responseJson);
         let success = responseJson.success;
         let data = responseJson.data;
 
@@ -409,7 +409,8 @@ class AnalysisPage extends React.Component {
             </View>
           </View>
           <Separator />
-          <Text>곡선 그래프</Text>
+          <Text>날짜별 행복지수</Text>
+          <Text></Text>
           <View style={styles.lineChartRow}>
             <LineChart
               data={this.state.data}
