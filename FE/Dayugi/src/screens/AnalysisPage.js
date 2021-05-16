@@ -37,31 +37,27 @@ class AnalysisPage extends React.Component {
     endMode: 'date',
     endShow: false,
 
-    screenWidth: Dimensions.get('window').width,
+    screenWidth: Dimensions.get('window').width * 0.9,
     data: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+      labels: ['asdf', 'sdfg', 'dfgh', '', 'qwer'],
       datasets: [
         {
-          data: [
-            20, 45, 28, 80, 99, 43, 80, 13, 53, 20, 45, 28, 80, 99, 43, 80, 13, 53, 20, 45, 28, 80,
-            99, 43, 80, 13, 53, 20, 45, 28, 80, 99, 43, 80, 13, 53,
-          ],
-          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-          strokeWidth: 2, // optional
+          data: [1, 3, 7, null, 2],
+          color: () => `#337EFF`, // optional
+          // strokeWidth: 2, // optional
         },
       ],
-      legend: ['긍/부정 그래프'], // optional
+      // legend: ['행복 지수 그래프'], // optional
     },
 
     chartConfig: {
-      backgroundGradientFrom: '#1E2923',
+      // backgroundGradientFrom: '#1E2923',
+      // backgroundGradientTo: '#08130D',
       backgroundGradientFromOpacity: 0,
-      backgroundGradientTo: '#08130D',
-      backgroundGradientToOpacity: 0.0,
-      color: (opacity = 1) => `rgba(224, 185, 126, ${opacity})`,
+      backgroundGradientToOpacity: 0,
+      fillShadowGradientOpacity: 0,
+      color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
       strokeWidth: 2, // optional, default 3
-      barPercentage: 0.5,
-      useShadowColorFromDataset: false, // optional
     },
     radarData: [
       // 차트에 들어갈 data를 먼저 지정해주고!
@@ -197,7 +193,7 @@ class AnalysisPage extends React.Component {
   //---
   analysis = () => {
     const url = `http://k4a206.p.ssafy.io:8080/dayugi/diary/period?uid=${encodeURIComponent(
-      this.state.uid
+      46
     )}&startDate=${encodeURIComponent(this.state.startDateString)}&endDate=${encodeURIComponent(
       this.state.endDateString
     )}`;
@@ -222,17 +218,16 @@ class AnalysisPage extends React.Component {
             if (a.diary_date < b.diary_date) return -1;
             if (a.diary_date > b.diary_date) return 1;
           });
-          // console.log(data);
           this.setState({ diaries: data });
           // console.log('--------------------------');
-
+          
           let sum = [0, 0, 0, 0, 0, 0, 0, 0];
           let cnt = 0;
           for (let index = 0; index < data.length; index++) {
             const d = data[index];
-            console.log(d);
+            // console.log(d);
             if (d.happiness == null) continue;
-
+            
             cnt++;
             sum[0] += Number(d.happiness);
             sum[1] += Number(d.angry);
@@ -244,12 +239,12 @@ class AnalysisPage extends React.Component {
           }
           // console.log('----------sum : 더한 후----------');
           // console.log(sum + '/n');
-
+          
           for (let index = 0; index < 7; index++) {
             sum[index] = (sum[index] / cnt) * 100;
           }
           sum[7] = sum[0];
-
+          
           // console.log('----------sum : 나눈 후----------');
           // console.log(sum + '/n');
           let tmpData = [
@@ -262,6 +257,69 @@ class AnalysisPage extends React.Component {
             },
           ];
           this.setState({ radarData: tmpData });
+          let values = []
+          s = data[0]['diary_date']
+          e = data[data.length-1]['diary_date']
+          let sday = [Number(s.slice(0, 4)), Number(s.slice(5, 7)), Number(s.slice(8, 10))]
+          let eday = [Number(e.slice(0, 4)), Number(e.slice(5, 7)), Number(e.slice(8, 10))]
+          let day = [s.slice(5, 10)]
+          while (sday[2] != eday[2] || sday[1] != eday[1] || sday[1] != eday[1]) {
+            sday[2]++
+            if ((sday[1] == 2 && ((sday[0] % 4 == 0 && sday[2]==30) || (sday[0] % 4 != 0 && sday[2] == 29)))
+              || ([4, 6, 9, 11].includes(sday[1]) && sday[2] == 30)
+              || ([1, 3, 5, 7, 8, 10, 12].includes(sday[1]) && sday[2] == 31)) {
+                sday[1]++
+                sday[2] = 1
+            }
+            let month = String(sday[1])
+            if (month.length == 1) {
+              month = '0' + month
+            }
+            let days = String(sday[2])
+            if (days.length == 1) {
+              days = '0' + days
+            }
+            day.push(month+'-'+days)
+          }
+          console.log(day)
+          let i = 0
+          for (let index = 0; index < data.length; index++) {
+            const d = data[index];
+            // console.log(d['diary_date'].slice(5, 7))
+            // console.log(d['diary_date'].slice(8, 10))
+            // labels.push(d['diary_date'])
+            // values.push(Number(d['happiness']))
+            while (true) {
+              if (d['diary_date'].slice(5, 10) == day[i]) {
+                values.push(Number(d['happiness']))
+                i++
+                break
+              } else {
+                values.push(null)
+              }
+              i++
+            }
+          }
+          let l = 1 + parseInt(day.length / 8)
+          for (let index = 0; index < day.length; index++) {
+            if (index % l != 0) {
+              day[index] = ''
+            }
+          }
+          console.log(day)
+          console.log(values)
+          let lineData = {
+            labels: day,
+            datasets: [
+              {
+                data: values,
+                color: () => `#337EFF`, // optional
+                // strokeWidth: 2, // optional
+              },
+            ],
+            // legend: ['행복 지수 그래프'], // optional
+          };
+          this.setState({ data: lineData })
 
           // console.log('------------연산 후--------------');
           // console.log(this.state.radarData);
@@ -357,10 +415,15 @@ class AnalysisPage extends React.Component {
               data={this.state.data}
               width={this.state.screenWidth}
               height={256}
-              verticalLabelRotation={30}
+              // withDots='false'
+              fromZero='true'
+              // withVerticalLines='false'
+              // hidePointsAtIndex='[2]'
+              yAxisInterval='365'
               chartConfig={this.state.chartConfig}
-              bezier
-            />
+              
+              // bezier
+              />
           </View>
           {/* <Separator />
           <Text>파이 그래프</Text>
