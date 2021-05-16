@@ -67,10 +67,10 @@ class UserInfoPage extends React.Component {
   };
     
 
-  withdraw = async (checkText, email) => {
+  withdraw = async (checkText, uid) => {
     this.handleVisible(false);
     if(checkText === '확인'){
-      fetch('http://k4a206.p.ssafy.io:8080/dayugi/user?email=' + email, {
+      fetch('http://k4a206.p.ssafy.io:8080/dayugi/user?uid=' + uid, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -79,10 +79,11 @@ class UserInfoPage extends React.Component {
       }).then(response => response.json())
         .then(responseJson => {
           let success = responseJson.success;
+          console.log(success);
           if (success == 'success') {
             alert('지금까지 이용해주셔서 감사합니다.');
             AsyncStorage.clear();
-            this.props.navigation.navigate("TutorialPage");
+            this.props.navigation.navigate("DiaryCalendar");
           }
         })
     }
@@ -104,8 +105,11 @@ class UserInfoPage extends React.Component {
       body: JSON.stringify(dataObj),
     }).then(response => response.json())
       .then(responseJson => {
-        if (responseJson.success)
+        if (responseJson.success){
           alert('성공적으로 회원정보가 변경되었습니다.');
+          this.handlePassword('');
+          this.handleNickName(String(responseJson.data['nickname']));
+        }
         else
           alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       })
@@ -182,7 +186,7 @@ class UserInfoPage extends React.Component {
             title={"회원 탈퇴 확인"}
             message={"정말 탈퇴를 원하실 경우 입력창에 '확인'을 입력해주세요"}
             hintInput ={"확인"}
-            submitInput={ (inputText) => {this.withdraw(inputText, this.state.email)} }
+            submitInput={ (inputText) => {this.withdraw(inputText, parseInt(this.state.uid))} }
             closeDialog={ () => {this.handleVisible(false)}}>
           </DialogInput>
         </View>

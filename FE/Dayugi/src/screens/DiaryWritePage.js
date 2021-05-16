@@ -28,6 +28,7 @@ class DiaryWritePage extends React.Component{
   }
 
   writeDiary = () => {
+    console.log("test");
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
 
     let localUri = this.state.image;

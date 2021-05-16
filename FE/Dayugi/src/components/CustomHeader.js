@@ -8,7 +8,7 @@ class CustomHeader extends React.Component {
                 statusBarProps={{ barStyle: 'dark-content' }}
                 leftComponent={{ icon: 'menu', color: '#000', onPress: () => this.props.navigation.openDrawer() }}
                 containerStyle={{
-                    backgroundColor: '#fff',
+                    backgroundColor: '#FFFAF0',
                     height:80,
                 }}
             />

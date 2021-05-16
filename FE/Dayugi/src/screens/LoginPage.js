@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import React, { Apploading } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class LoginPage extends React.Component {
   state = {
     email: "",
-    password: ""
+    password: "",
   };
 
   handleEmail = text => {
@@ -16,6 +16,7 @@ class LoginPage extends React.Component {
   handlePassword = text => {
     this.setState({ password: text });
   };
+
 
   login = (email, password) => {
     let dataObj= {email:email, password:password};
@@ -46,13 +47,16 @@ class LoginPage extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <CustomHeader navigation = {this.props.navigation}/>
+        <CustomHeader navigation={this.props.navigation} />
+        <View style={styles.logoImageContainer}>
+          <Image style={styles.logoImage} source={require('../../assets/images/dayugi.png')} />
+        </View>
+        <Text style={styles.logo}>Dayugi</Text>
         <View>
           <TextInput
             style={styles.input}
             underlineColorAndroid="transparent"
             placeholder=" Email"
-            placeholderTextColor="#9a73ef"
             autoCapitalize="none"
             keyboardType="email-address"
             onChangeText={this.handleEmail}
@@ -61,7 +65,6 @@ class LoginPage extends React.Component {
             style={styles.input}
             underlineColorAndroid="transparent"
             placeholder=" Password"
-            placeholderTextColor="#9a73ef"
             autoCapitalize="none"
             secureTextEntry = { true }
             onChangeText={this.handlePassword}
@@ -73,8 +76,13 @@ class LoginPage extends React.Component {
             style={styles.submitButton}
             onPress={() => this.login(this.state.email, this.state.password)}
           >
-            <Text style={styles.submitButtonText}>로그인</Text>
+            <Text style={styles.submitButtonText}>로 그 인</Text>
           </TouchableOpacity>
+        </View>
+        <View style={styles.signUpText}>
+          <Text>아이디가 없으신가요? </Text>
+          <Text style={styles.textLink} onPress={() => this.props.navigation.navigate("SignUp")}>회원가입</Text>
+          <Text> 하세요!</Text>
         </View>
       </View>
     );
@@ -83,23 +91,59 @@ class LoginPage extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFAF0',
     width: '100%',
   },
   input: {
-    margin: 15,
+    marginBottom: 10,
+    marginLeft: 70,
+    marginRight: 70,
     height: 40,
-    borderColor: "#7a42f4",
-    borderWidth: 1
+    borderColor: "#E5E5E5",
+    borderWidth: 1,
+    borderRadius: 5,
   },
   submitButton: {
-    backgroundColor: "#7a42f4",
+    backgroundColor: "#FF7E36",
     padding: 10,
-    margin: 15,
-    height: 40
+    marginTop: 10,
+    marginLeft: 70,
+    marginRight: 70,
+    height: 40,
+    borderRadius: 5,
   },
   submitButtonText: {
-    color: "white"
+    textAlign: "center",
+    color: "white",
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  logoImageContainer: {
+    flex: 1.25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoImage: {
+    marginLeft: '7%',
+    height: '100%',
+    width: '100%',
+  },
+  logo: {
+    textAlign: 'center',
+    color: '#FF7E36',
+    fontWeight: 'bold',
+    fontSize: 30,
+    marginBottom: '5%',
+  },
+  signUpText: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+  },
+  textLink: {
+    color: '#FF7E36',
   }
 });
 
