@@ -1,5 +1,6 @@
 package com.ssafy.dayugi.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ssafy.dayugi.model.entity.Diary;
 import com.ssafy.dayugi.model.entity.DiaryEmotion;
 import com.ssafy.dayugi.model.entity.DiaryEmotionInterface;
@@ -9,9 +10,11 @@ import com.ssafy.dayugi.service.FileService;
 import com.ssafy.dayugi.util.MD5Generator;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -101,12 +104,26 @@ public class DiaryController {
             result.put("success", "error");
             entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
         }
+
+        //flask로 did랑 diary_content 보내기
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("did", Integer.toString(diary.getDid()));
+        parameters.put("diary", diary.getDiary_content());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<Map<String, String>>(parameters, headers);
+
+        String url = "http://k4a206.p.ssafy.io:5000/diary/";
+        ResponseEntity<String> res = new RestTemplate().postForEntity(url, request, String.class);
+
         return entity;
     }
 
     @PutMapping(value = "")
     @ApiOperation(value = "다이어리 수정", notes = "다이어리 수정")
-    private ResponseEntity updateDiary(@RequestBody Diary diary, @RequestParam(required = false) List<MultipartFile> files) {
+    private ResponseEntity updateDiary(@RequestBody Diary diary, @RequestParam int flag, @RequestParam(required = false) List<MultipartFile> files) {
         Map result = new HashMap();
         ResponseEntity entity = null;
         try {
@@ -124,44 +141,17 @@ public class DiaryController {
             entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
         }
 
-        //파일 수정
-        try{
-            List<DiaryFile> diaryFiles = new ArrayList<>();
-            if (files != null) {
-                for (MultipartFile file : files) {
-                    String origFilename = file.getOriginalFilename();
-                    String filename = new MD5Generator(origFilename).toString();
-                    // 실행되는 위치의 'files' 폴더에 파일이 저장됩니다.
-//                    String savePath = System.getProperty("user.dir") + "\\files";
-                    String savePath = "/home/image";
+        if(flag == 0) {
 
-                    // 파일이 저장되는 폴더가 없으면 폴더를 생성합니다.
-                    if (!new File(savePath).exists()) {
-                        try {
-                            new File(savePath).mkdir();
-                        } catch (Exception e) {
-                            e.getStackTrace();
-                        }
-                    }
-                    String filePath = savePath + "/" + filename + ".jpg";
-                    file.transferTo(new File(filePath));
-
-                    DiaryFile diaryFile = new DiaryFile();
-                    diaryFile.setFile_origname(origFilename);
-                    diaryFile.setFile_name(filename);
-                    diaryFile.setFile_path(filePath);
-                    diaryFile.setDiary(diary);
-                    diaryFile.setUser(diary.getUser());
-                    diaryFiles.add(diaryFile);
-                }
-            }
+        }
+        else if(flag == 2){//파일 삭제
             try {
-                boolean checkFileSuccess = fileService.updateFiles(diary.getDid(), diaryFiles);
-                if (checkFileSuccess) {
+                boolean checkDeleteFile = fileService.deleteAllFile(diary.getDid());
+                if (checkDeleteFile) {
                     result.put("success", "success");
-                    result.put("diary", files);
                 } else {
-                    result.put("success", "fail to update files");
+                    result.put("success", "fail");
+                    result.put("message", "삭제할 파일 없음");
                 }
                 entity = new ResponseEntity<>(result, HttpStatus.OK);
             } catch (Exception e) {
@@ -169,11 +159,60 @@ public class DiaryController {
                 result.put("success", "error");
                 entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
             }
+        }
+        else {//수정
+            //파일 수정
+            try {
+                List<DiaryFile> diaryFiles = new ArrayList<>();
+                if (files != null) {
+                    for (MultipartFile file : files) {
+                        String origFilename = file.getOriginalFilename();
+                        String filename = new MD5Generator(origFilename).toString();
+                        // 실행되는 위치의 'files' 폴더에 파일이 저장됩니다.
+//                    String savePath = System.getProperty("user.dir") + "\\files";
+                        String savePath = "/home/image";
 
-        }catch (Exception e) {
-            e.printStackTrace();
-            result.put("success", "error");
-            entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+                        // 파일이 저장되는 폴더가 없으면 폴더를 생성합니다.
+                        if (!new File(savePath).exists()) {
+                            try {
+                                new File(savePath).mkdir();
+                            } catch (Exception e) {
+                                e.getStackTrace();
+                            }
+                        }
+                        String filePath = savePath + "/" + filename + ".jpg";
+                        file.transferTo(new File(filePath));
+
+                        DiaryFile diaryFile = new DiaryFile();
+                        diaryFile.setFile_origname(origFilename);
+                        diaryFile.setFile_name(filename);
+                        diaryFile.setFile_path(filePath);
+                        diaryFile.setDiary(diary);
+                        diaryFile.setUser(diary.getUser());
+                        diaryFiles.add(diaryFile);
+                    }
+                }
+                try {
+                    boolean checkFileSuccess = fileService.updateFiles(diary.getDid(), diaryFiles);
+                    if (checkFileSuccess) {
+                        result.put("success", "success");
+                        result.put("diary", files);
+                    } else {
+                        result.put("success", "fail");
+                        result.put("message", "파일 업데이트 실패");
+                    }
+                    entity = new ResponseEntity<>(result, HttpStatus.OK);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    result.put("success", "error");
+                    entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.put("success", "error");
+                entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
         }
         return entity;
     }
@@ -356,5 +395,7 @@ public class DiaryController {
         }
         return entity;
     }
+
+
 
 }
