@@ -28,12 +28,14 @@ class AnalysisPage extends React.Component {
     uid: '',
     email: '',
     nickName: '',
+    authorization: '',
 
     // setLoading: useState(true),
     startDate: new Date(),
     startDateString: moment(new Date()).format('YYYY-MM-DD'),
     startMode: 'date',
     startShow: false,
+    diaries: [],
 
     endDate: new Date(),
     endDateString: moment(new Date()).format('YYYY-MM-DD'),
@@ -107,8 +109,8 @@ class AnalysisPage extends React.Component {
       // 차트에 들어갈 data를 먼저 지정해주고!
       {
         type: 'scatterpolar', // chart type
-        r: [50, 15, 14, 25, 62, 46, 50], // data
-        theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람', '행복'], // data category
+        r: [0, 0, 0, 0, 0, 0, 0, 0, 0], // data
+        theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람', '보통', '행복'], // data category
         fill: 'toself', // fill option
         name: 'Group A', // data group name
       },
@@ -146,6 +148,7 @@ class AnalysisPage extends React.Component {
     this.getUid();
     this.getEmail();
     this.getNickName();
+    this.getAuthorization();
   }
 
   async getUid() {
@@ -159,6 +162,11 @@ class AnalysisPage extends React.Component {
   async getNickName() {
     let tmp = String(await AsyncStorage.getItem('nickName'));
     this.setState({ nickName: tmp });
+  }
+
+  async getAuthorization() {
+    let tmp = String(await AsyncStorage.getItem('Authorization'));
+    this.setState({ authorization: tmp });
   }
 
   handleStartDate = (Date) => {
@@ -229,34 +237,80 @@ class AnalysisPage extends React.Component {
   };
 
   //---
-  analysis = (startDate, endDate) => {
-    // let dataObj = { uid: email, password: password };
-    // fetch('http://k4a206.p.ssafy.io:8080/dayugi/user', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(dataObj),
-    // })
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     let success = responseJson.success;
-    //     if (success == 'success') {
-    //       let uid = String(responseJson.data['uid']);
-    //       let nickName = String(responseJson.data['nickname']);
-    //       let Authorization = String(responseJson.Authorization);
-    //       AsyncStorage.setItem('uid', uid);
-    //       AsyncStorage.setItem('email', this.state.email);
-    //       AsyncStorage.setItem('nickName', nickName);
-    //       AsyncStorage.setItem('Authorization', Authorization);
-    //       this.props.navigation.navigate('DiaryCalendar');
-    //     } else {
-    //       alert('Id 또는 비밀번호를 확인해주세요.');
-    //     }
-    //   });
+  analysis = () => {
+    const url = `http://k4a206.p.ssafy.io:8080/dayugi/diary/period?uid=${encodeURIComponent(
+      43 //this.state.uid
+    )}&startDate=${encodeURIComponent(this.state.startDateString)}&endDate=${encodeURIComponent(
+      this.state.endDateString
+    )}`;
+    // console.log(url);
+    // console.log(this.state.authorization);
+
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        accept: '*/*',
+        authorization: this.state.authorization,
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        // console.log(responseJson);
+        let success = responseJson.success;
+        let data = responseJson.data;
+
+        if (success === 'success') {
+          data.sort(function (a, b) {
+            if (a.diary_date < b.diary_date) return -1;
+            if (a.diary_date > b.diary_date) return 1;
+          });
+          console.log(data);
+          this.radarUpdate();
+          this.setState({ diaries: data });
+        } else if (success === 'fail') {
+          this.setState({
+            diaries: [],
+          });
+        }
+      });
   };
 
   //--
-  radarUpdate = (_, { data, layout, config }, plotly) => {
-    plotly.react(data, layout, config);
+  radarUpdate = () => {
+    // theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람','보통' '행복'], // data category
+    const sum = [0, 0, 0, 0, 0, 0, 0, 0];
+    const cnt = 0;
+    this.state.diaries.forEach((d) => {
+      console.log(d);
+      // if (d.happiness == null) continue;
+
+      // cnt++;
+      // sum[0] += d.happiness;
+      // sum[1] += d.angry;
+      // sum[2] += d.disgust;
+      // sum[3] += d.fear;
+      // sum[4] += d.sadness;
+      // sum[5] += d.surprise;
+      // sum[6] += d.neutral;
+      // sum[7] += d.happiness;
+    });
+
+    // for (let index = 0; index < 7; index++) {
+    //   sum[index] = sum[index] / cnt;
+    // }
+    // sum[7] = sum[0];
+    this.setState({
+      radarData: (radarData = [
+        {
+          type: 'scatterpolar', // chart type
+          r: sum, // data
+          theta: ['행복', '분노', '역겨움', '공포', '슬픔', '놀람', '보통', '행복'], // data category
+          fill: 'toself', // fill option
+          name: 'Group A', // data group name
+        },
+      ]),
+    });
+    // plotly.react(sum, this.state.radarLayout);
   };
 
   render() {
@@ -306,10 +360,7 @@ class AnalysisPage extends React.Component {
               />
             )}
             <View>
-              <TouchableOpacity
-                style={styles.submitButton}
-                onPress={() => this.analysis(this.state.startDate, this.state.endDate)}
-              >
+              <TouchableOpacity style={styles.submitButton} onPress={() => this.analysis()}>
                 <Text style={styles.submitButtonText}>조회</Text>
               </TouchableOpacity>
             </View>
@@ -333,7 +384,7 @@ class AnalysisPage extends React.Component {
               <Plotly
                 data={this.state.radarData}
                 layout={this.state.radarLayout}
-                update={this.radarUpdate}
+                // update={this.radarUpdate}
                 debug
                 enableFullPlotly
               />
