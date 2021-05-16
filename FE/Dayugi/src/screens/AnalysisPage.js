@@ -294,17 +294,17 @@ class AnalysisPage extends React.Component {
       <SafeAreaView style={styles.container}>
         {/* <View style={styles.container}> */}
         <ScrollView style={styles.scrollView} contentContainerStyle={{ width: '100%' }}>
+          {/* <View style={styles.headerView}> */}
           <CustomHeader navigation={this.props.navigation} />
           <Text style={styles.headerText}>다이어리 분석</Text>
+          {/* </View> */}
           <Separator />
-          {/* <Text style={styles.text}>{this.state.startDateString}</Text> */}
-          {/* <Icon name="calendar" size={20} color="#3143e8" /> */}
           <View style={styles.setDateText}>
-            <Text>조회 기간 : &nbsp;</Text>
+            <Text>기간 설정 : &nbsp;</Text>
             <TouchableOpacity onPress={() => this.startShowDatepicker()}>
               <Text style={styles.text}>
                 {this.state.startDateString}&nbsp;
-                <Icon name="calendar" size={15} color="#3143e8" />
+                <Icon name="calendar" size={15} color="#FF7E36" />
               </Text>
             </TouchableOpacity>
             <Text>&nbsp;&nbsp;~&nbsp;&nbsp;</Text>
@@ -321,7 +321,7 @@ class AnalysisPage extends React.Component {
             <TouchableOpacity onPress={() => this.endShowDatepicker()}>
               <Text style={styles.text}>
                 {this.state.endDateString}&nbsp;
-                <Icon name="calendar" size={15} color="#3143e8" />
+                <Icon name="calendar" size={15} color="#FF7E36" />
               </Text>
             </TouchableOpacity>
             {this.state.endShow && (
@@ -394,6 +394,9 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: StatusBar.currentHeight,
   },
+  headerView: {
+    flexDirection: 'row',
+  },
   headerText: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -421,6 +424,7 @@ const styles = StyleSheet.create({
     height: 20,
     marginRight: 0,
     borderRadius: 5,
+    marginLeft: 10,
   },
   submitButtonText: {
     color: 'white',
