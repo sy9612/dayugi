@@ -157,21 +157,7 @@ public class DiaryController {
 //                entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 //            }
 //        }
-        //파일 삭제
-        try {
-            boolean checkDeleteFile = fileService.deleteAllFile(diary.getDid());
-            if (checkDeleteFile) {
-                result.put("success", "success");
-            } else {
-                result.put("success", "fail");
-                result.put("message", "삭제할 파일 없음");
-            }
-            entity = new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.put("success", "error");
-            entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-        }
+       
 
         //파일 수정
         try {
