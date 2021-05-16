@@ -67,13 +67,12 @@ public class FileServiceImpl implements FileService {
     @Override
     public boolean updateFiles(int did, List<DiaryFile> newFiles) throws Exception {
         List<DiaryFile> diaryFiles = diaryFileRepository.findDiaryFilesByDiary_Did(did);
-        if(!diaryFiles.isEmpty()){
+        if(!diaryFiles.isEmpty()) {
             diaryFileRepository.deleteDiaryFilesByDiary_Did(did);
-            if(!newFiles.isEmpty()) {
-                diaryFileRepository.saveAll(newFiles);
-                return true;
-            }
         }
-        return false;
+        if(!newFiles.isEmpty()) {
+            diaryFileRepository.saveAll(newFiles);
+        }
+        return true;
     }
 }
