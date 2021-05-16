@@ -74,6 +74,7 @@ public class FileServiceImpl implements FileService {
             System.out.println(diaryFiles.getFid());
         }
         if(!newFiles.isEmpty()) {
+            System.out.println("hello");
             diaryFileRepository.saveAll(newFiles);
         }
         return true;
