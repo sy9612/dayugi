@@ -28,38 +28,52 @@ class DiaryWritePage extends React.Component{
   }
 
   writeDiary = () => {
-    console.log("test");
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
-
     let localUri = this.state.image;
-    let filename = localUri.split('/').pop();
-  
-    let match = /\.(\w+)$/.exec(filename);
-    let type = match ? `image/${match[1]}` : `image`;
-  
-    let formData = new FormData();
-
-    formData.append('files', { uri: localUri, name: filename, type });
-
-    fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
-      method: "POST",
-      headers: {
-        "accept" : "*/*",
-        "authorization": this.state.authorization,
-      },
-      body: formData,
+    if (localUri != null) {
+      let filename = localUri.split('/').pop();
+      let match = /\.(\w+)$/.exec(filename);
+      let type = match ? `image/${match[1]}` : `image`;
+      let formData = new FormData();
+      formData.append('files', { uri: localUri, name: filename, type });
+      fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
+        method: "POST",
+        headers: {
+          "accept": "*/*",
+          "authorization": this.state.authorization,
+        },
+        body: formData,
       }).then(response => response.json())
-      .then(responseJson => {
-        console.log(responseJson);
-        let success = responseJson.success;
-        if(success === "success"){
-          this.props.navigation.navigate("DiaryCalendar");
+        .then(responseJson => {
+          let success = responseJson.success;
+          if (success === "success") {
+            this.props.navigation.navigate("DiaryCalendar");
+          }
+          else if (success === "fail") {
+            alert("오류 발생!")
+          }
         }
-        else if(success === "fail"){
-          alert("오류 발생!")
+      );
+    }
+    else {
+      fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
+        method: "POST",
+        headers: {
+          "accept": "*/*",
+          "authorization": this.state.authorization,
+        },
+      }).then(response => response.json())
+        .then(responseJson => {
+          let success = responseJson.success;
+          if (success === "success") {
+            this.props.navigation.navigate("DiaryCalendar");
+          }
+          else if (success === "fail") {
+            alert("오류 발생!")
+          }
         }
-      }
-    );
+      );
+    }
   };
 
   _pickImage = async () => {
