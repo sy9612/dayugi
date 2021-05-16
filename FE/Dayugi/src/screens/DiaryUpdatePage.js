@@ -38,26 +38,26 @@ class DiaryUpdatePage extends React.Component{
   updateDiary = () => {
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
     let imageUri = this.state.image;
-    if (imageUri != null) {
-      let filename = localUri.split('/').pop();
+    if (imageUri != null && imageUri != undefined) {
+      let filename = imageUri.split('/').pop();
       let match = /\.(\w+)$/.exec(filename);
       let type = match ? `image/${match[1]}` : `image`;
       let formData = new FormData();
-      formData.append('files', { uri: localUri, name: filename, type });
+      formData.append('files', { uri: imageUri, name: filename, type });
       fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=${encodeURIComponent(this.state.diary.did)}&user.uid=${encodeURIComponent(this.state.uid)}`, {
         method: "PUT",
         headers: {
           "accept": "*/*",
           "authorization": this.state.authorization,
         },
-        body: formData
+        body: formData,
         }).then(response => response.json())
         .then(responseJson => {
           let success = responseJson.success;
-          if(success === "success"){
-            // ????
+          if(success == "success"){
+            this.props.navigation.navigate("DiaryCalendar");
           }
-          else if(success === "fail"){
+          else if(success == "fail"){
             this.props.navigation.navigate("DiaryCalendar");
           }
         }
@@ -73,10 +73,10 @@ class DiaryUpdatePage extends React.Component{
         }).then(response => response.json())
         .then(responseJson => {
           let success = responseJson.success;
-          if(success === "success"){
-            // ????
+          if(success == "success"){
+            this.props.navigation.navigate("DiaryCalendar");
           }
-          else if(success === "fail"){
+          else if(success == "fail"){
             this.props.navigation.navigate("DiaryCalendar");
           }
         }
@@ -161,7 +161,7 @@ class DiaryUpdatePage extends React.Component{
             </TouchableOpacity>
           </View>
 
-          <View style={this.state.diaryContent != '' ? styles.diaryUpdateButton : styles.diaryUpdateButtonDiabled }>
+          <View style={this.state.diaryContent != '' ? styles.diaryUpdateButton : styles.diaryUpdateButtonDisabled }>
             <TouchableOpacity style={styles.touchArea} onPress={() => {
                 if(this.state.diaryContent != '')
                   this.updateDiary();
