@@ -1,6 +1,5 @@
 import React, { Apploading } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
-import CustomHeader from '../components/CustomHeader';
+import { Keyboard, StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ToastAndroid, Platform, AlertIOS, BackHandler, TouchableWithoutFeedback  } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class LoginPage extends React.Component {
@@ -9,6 +8,13 @@ class LoginPage extends React.Component {
     password: "",
   };
 
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+  componentWillUnmount() {
+    this.exitApp = false;
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
   handleEmail = text => {
     this.setState({ email: text });
   };
@@ -42,49 +48,72 @@ class LoginPage extends React.Component {
         }
       }
     );
-    
   };
+  handleBackButton = () => {
+    // 2000(2초) 안에 back 버튼을 한번 더 클릭 할 경우 앱 종료
+    if (this.exitApp == undefined || !this.exitApp) {
+      if (Platform.OS === 'android') {
+        ToastAndroid.show('한번 더 누르시면 종료됩니다.', ToastAndroid.SHORT)
+      } else {
+        AlertIOS.alert('한번 더 누르시면 종료됩니다.');
+      }
+        this.exitApp = true;
+
+        this.timeout = setTimeout(
+            () => {
+                this.exitApp = false;
+            },
+            2000    // 2초
+        );
+    } else {
+        clearTimeout(this.timeout);
+
+        BackHandler.exitApp();  // 앱 종료
+    }
+    return true;
+  }
   render() {
     return (
-      <View style={styles.container}>
-        <CustomHeader navigation={this.props.navigation} />
-        <View style={styles.logoImageContainer}>
-          <Image style={styles.logoImage} source={require('../../assets/images/dayugi.png')} />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.logoImageContainer}>
+            <Image style={styles.logoImage} source={require('../../assets/images/dayugi.png')} />
+          </View>
+          <Text style={styles.logo}>Dayugi</Text>
+          <View>
+            <TextInput
+              style={styles.input}
+              underlineColorAndroid="transparent"
+              placeholder=" Email"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              onChangeText={this.handleEmail}
+            />
+            <TextInput
+              style={styles.input}
+              underlineColorAndroid="transparent"
+              placeholder=" Password"
+              autoCapitalize="none"
+              secureTextEntry = { true }
+              onChangeText={this.handlePassword}
+            />
+          </View>
+          
+          <View style={styles.Btn}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={() => this.login(this.state.email, this.state.password)}
+            >
+              <Text style={styles.submitButtonText}>로 그 인</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.signUpText}>
+            <Text>아이디가 없으신가요? </Text>
+            <Text style={styles.textLink} onPress={() => this.props.navigation.navigate("SignUp")}>회원가입</Text>
+            <Text> 하세요!</Text>
+          </View>
         </View>
-        <Text style={styles.logo}>Dayugi</Text>
-        <View>
-          <TextInput
-            style={styles.input}
-            underlineColorAndroid="transparent"
-            placeholder=" Email"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            onChangeText={this.handleEmail}
-          />
-          <TextInput
-            style={styles.input}
-            underlineColorAndroid="transparent"
-            placeholder=" Password"
-            autoCapitalize="none"
-            secureTextEntry = { true }
-            onChangeText={this.handlePassword}
-          />
-        </View>
-        
-        <View style={styles.Btn}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => this.login(this.state.email, this.state.password)}
-          >
-            <Text style={styles.submitButtonText}>로 그 인</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.signUpText}>
-          <Text>아이디가 없으신가요? </Text>
-          <Text style={styles.textLink} onPress={() => this.props.navigation.navigate("SignUp")}>회원가입</Text>
-          <Text> 하세요!</Text>
-        </View>
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -122,6 +151,7 @@ const styles = StyleSheet.create({
     flex: 1.25,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 80,
   },
   logoImage: {
     marginLeft: '7%',
