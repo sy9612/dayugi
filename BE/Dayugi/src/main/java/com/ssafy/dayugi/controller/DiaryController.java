@@ -211,6 +211,20 @@ public class DiaryController {
                 entity = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
             }
         }
+
+        //flask로 did랑 diary_content 보내기
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("did", Integer.toString(diary.getDid()));
+        parameters.put("diary", diary.getDiary_content());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<Map<String, String>>(parameters, headers);
+
+        String url = "http://k4a206.p.ssafy.io:5000/diary/";
+        ResponseEntity<String> res = new RestTemplate().postForEntity(url, request, String.class);
+
         return entity;
     }
 

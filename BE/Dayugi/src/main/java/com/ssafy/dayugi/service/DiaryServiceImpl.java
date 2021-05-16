@@ -1,13 +1,12 @@
 package com.ssafy.dayugi.service;
 
-import com.ssafy.dayugi.model.entity.Diary;
-import com.ssafy.dayugi.model.entity.DiaryEmotion;
-import com.ssafy.dayugi.model.entity.DiaryEmotionInterface;
-import com.ssafy.dayugi.model.entity.User;
+import com.ssafy.dayugi.model.entity.*;
 import com.ssafy.dayugi.repository.DiaryFileRepository;
 import com.ssafy.dayugi.repository.DiaryRepository;
 import com.ssafy.dayugi.repository.EmotionRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -21,7 +20,8 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Autowired
     private DiaryRepository diaryRepository;
-    EmotionRateRepository emotionRateRepository;
+    @Autowired
+    private EmotionRateRepository emotionRateRepository;
 
     @Override
     public int writeDiary(Diary diary) throws Exception {
@@ -88,7 +88,7 @@ public class DiaryServiceImpl implements DiaryService {
         Optional<Diary> diary = diaryRepository.findDiaryByDid(did);
 
         if (diary.isPresent()) {
-            emotionRateRepository.deleteEmotionRateByDiary_Did(diary.get().getDid());
+            emotionRateRepository.deleteEmotionRateByDiary_Did(did);
             diaryRepository.deleteDiaryByDid(did);
             return true;
         }
