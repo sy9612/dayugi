@@ -331,7 +331,8 @@ public class DiaryController {
                 result.put("success", "success");
                 result.put("diaries", diaries);
             } else {
-                result.put("success", "No Diary Data");
+                result.put("success", "fail");
+                result.put("message", "No Diary Data");
             }
             entity = new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
