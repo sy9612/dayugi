@@ -21,7 +21,8 @@ class UserInfoPage extends React.Component {
     password: '',
     nickName: '',
     birth: '',
-    visible: false,
+    checkWithdrawal: false,
+    checkDeleteAll: false,
     checkText: '',
   };
 
@@ -40,8 +41,11 @@ class UserInfoPage extends React.Component {
   handleBirth = (text) => {
     this.setState({ birth: text });
   };
-  handleVisible = (bool) => {
-    this.setState({ visible: bool });
+  handleCheckWithdrawal = (bool) => {
+    this.setState({ checkWithdrawal: bool });
+  };
+  handleCheckDeleteAll = (bool) => {
+    this.setState({ checkDeleteAll: bool });
   };
   handleCheckTest = (text) => {
     this.setState({ checkText: text });
@@ -79,8 +83,8 @@ class UserInfoPage extends React.Component {
     return body;
   };
 
-  withdraw = async (checkText, uid) => {
-    this.handleVisible(false);
+  withdrawal = async (checkText, uid) => {
+    this.handleCheckWithdrawal(false);
     if (checkText === '확인') {
       fetch('http://k4a206.p.ssafy.io:8080/dayugi/user?uid=' + uid, {
         method: 'DELETE',
@@ -103,7 +107,6 @@ class UserInfoPage extends React.Component {
   };
 
   changeInfo = async () => {
-    console.log(this.state.email);
     var dataObj = {
       birth: this.state.birth,
       email: this.state.email,
@@ -111,7 +114,6 @@ class UserInfoPage extends React.Component {
       password: this.state.password,
       uid: 0,
     };
-    console.log(dataObj);
     fetch('http://k4a206.p.ssafy.io:8080/dayugi/user', {
       method: 'PUT',
       headers: {
@@ -129,6 +131,37 @@ class UserInfoPage extends React.Component {
         } else alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       });
   };
+
+  logout = async () => {
+    await AsyncStorage.clear();
+    await AsyncStorage.setItem('keyFirstLaunch', 'true');
+    alert('다음에 다시 만나요!');
+    this.props.navigation.navigate('Login');
+  };
+
+  deleteAll = async (checkText, uid) => {
+    this.handleCheckDeleteAll(false);
+    if (checkText === '확인') {
+      fetch('http://k4a206.p.ssafy.io:8080/dayugi/diary/all?uid=' + uid, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: await AsyncStorage.getItem('Authorization'),
+        },
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          let success = responseJson.success;
+          if (success == 'success') {
+            alert('작성한 모든 다이어리가 삭제되었어요.');
+            this.props.navigation.navigate('DiaryCalendar');
+          }
+          else {
+            console.log(responseJson);
+          }
+        });
+    }
+  }
   render() {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -141,7 +174,7 @@ class UserInfoPage extends React.Component {
             />
 
             <View style={styles.buttons}>
-              <TouchableOpacity style={styles.submitButton} onPress={() => {}}>
+              <TouchableOpacity style={styles.submitButton} onPress={() => {this.handleCheckDeleteAll(true)}}>
                   <Image
                     style={styles.submitIcon}
                     source={require('../../assets/images/deleteall.png')}
@@ -159,7 +192,7 @@ class UserInfoPage extends React.Component {
                   <Text style={styles.submitButtonText}>회원정보 변경</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.submitButton} onPress={() => {}}>
+              <TouchableOpacity style={styles.submitButton} onPress={() => {this.logout()}}>
                   <Image
                     style={styles.submitIcon}
                     source={require('../../assets/images/logout.png')}
@@ -169,7 +202,7 @@ class UserInfoPage extends React.Component {
 
               <TouchableOpacity
                 style={styles.submitButton}
-                onPress={() => this.handleVisible(true)}
+                onPress={() => this.handleCheckWithdrawal(true)}
               >
                   <Image
                     style={styles.submitIcon}
@@ -178,19 +211,33 @@ class UserInfoPage extends React.Component {
                 <Text style={styles.submitButtonText}>회원탈퇴</Text>
               </TouchableOpacity>
               <DialogInput
-                isDialogVisible={this.state.visible}
+                isDialogVisible={this.state.checkWithdrawal}
                 title={'회원 탈퇴 확인'}
                 message={
-                  "정말 탈퇴를 원하실 경우 입력창에 '확인'을 입력해주세요"
+                  "정말 탈퇴하실거에요? \n진행하시려면 '확인'을 입력해주세요."
                 }
                 hintInput={'확인'}
                 submitInput={(inputText) => {
-                  this.withdraw(inputText, parseInt(this.state.uid));
+                  this.withdrawal(inputText, parseInt(this.state.uid));
                 }}
                 closeDialog={() => {
-                  this.handleVisible(false);
+                  this.handleCheckWithdrawal(false);
                 }}
-              ></DialogInput>
+              />
+              <DialogInput
+                isDialogVisible={this.state.checkDeleteAll}
+                title={'전체 삭제 확인'}
+                message={
+                  "삭제하시면 복구할수 없어요! \n진행하시려면 '확인'을 입력해주세요."
+                }
+                hintInput={'확인'}
+                submitInput={(inputText) => {
+                  this.deleteAll(inputText, parseInt(this.state.uid));
+                }}
+                closeDialog={() => {
+                  this.handleCheckDeleteAll(false);
+                }}
+              />
             </View>
           </View>
           <View style={styles.contentContainer}>

@@ -17,13 +17,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "icon": "./assets/images/ic_launcher.png"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/ic_launcher.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.ssafy.dayugi",
+      "icon": "./assets/images/ic_launcher.png"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

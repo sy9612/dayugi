@@ -51,11 +51,11 @@ class DrawerContent extends React.Component {
           },
           body: JSON.stringify(dataObj),
         }).then(response => response.json())
-        .then(responseJson => {
+        .then(async(responseJson) => {
         let success = responseJson.success;
           if (success == "success") {
             let Authorization = String(responseJson.Authorization);
-            AsyncStorage.setItem('Authorization', Authorization);
+            await AsyncStorage.setItem('Authorization', Authorization);
           }
         });
       }
