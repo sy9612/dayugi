@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     position: 'absolute',
-    top: 120,
+    top: 100,
     width: '100%',
   },
   viewAllButton: {
