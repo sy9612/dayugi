@@ -16,6 +16,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -148,21 +151,23 @@ public class UserController extends GlobalControllerAdvice{
     }
 
     @PostMapping(value = "/token")
-    private ResponseEntity tokenReissue(@RequestBody Map map, @ApiIgnore final Authentication authentication) throws Exception{
+    private ResponseEntity tokenReissue(ServletRequest request, @RequestBody Map map) throws Exception{
         ResponseEntity entity = null;
         HttpHeaders httpHeaders = new HttpHeaders();
         Map result = new HashMap();
-//        int tokenUid = jwtTokenProvider.getUserPk(authentication.getPrincipal());
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        String token2 = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+        String[] parts = token2.split("\\.");
+        String payloadJson = new String(decoder.decode(parts[1]));
+        payloadJson = payloadJson.split(",")[0];
+        payloadJson = payloadJson.split(":")[1];
+        int tokenUid = Integer.parseInt(payloadJson.replace("\"", ""));
         int uid = (Integer)map.get("uid");
-//        System.out.println(authentication.toString());
-        System.out.println(authentication);
-//        System.out.println(authentication.getPrincipal());
-//        System.out.println(jwtTokenProvider.getUserPk());
+        Optional<User> user = userService.getUserEmail(uid);
 
         try {
-            if(((User) authentication.getPrincipal()).getUid()==uid){
-                String email = ((User) authentication.getPrincipal()).getEmail();
-
+            if(tokenUid == uid && user.isPresent()){
+                String email = user.get().getEmail();
                 result.put("success", "success");
 
                 String token = jwtTokenProvider.createToken(uid);
