@@ -144,7 +144,7 @@ class DiaryWritePage extends React.Component{
         </View>
 
         <View style={this.state.diaryContent != '' ? styles.diaryNavigationButton : styles.diaryNavigationButtonDisabled }>
-          <TouchableOpacity onPress={() => {
+          <TouchableOpacity style={styles.touchArea}  onPress={() => {
               if(this.state.diaryContent != '')
                 this.writeDiary();
               else
@@ -231,8 +231,6 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#FF7E36',
     borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
     elevation:3,
   },
   diaryNavigationButtonDisabled: {
@@ -243,9 +241,13 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#aaa',
     borderRadius: 5,
+    elevation:3,
+  },
+  touchArea : {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    elevation:3,
   },
 });
 
