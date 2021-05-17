@@ -194,7 +194,6 @@ public class DiaryController {
                 boolean checkFileSuccess = fileService.updateFiles(diary.getDid(), diaryFiles);
                 if (checkFileSuccess) {
                     result.put("success", "success");
-                    result.put("diary", files);
                 } else {
                     result.put("success", "fail");
                     result.put("message", "파일 업데이트 실패");
