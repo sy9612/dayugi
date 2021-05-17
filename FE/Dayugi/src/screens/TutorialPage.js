@@ -15,7 +15,7 @@ class TutorialPage extends React.Component {
             <Image
               resizeMode='contain'
               style={styles.tinyLogo}
-              source={require('../../assets/images/tutorial1.png')}
+              source={require('../../assets/images/tutorial8.png')}
             />
           </View>
           <View style={styles.tutorialText}>
@@ -44,7 +44,7 @@ class TutorialPage extends React.Component {
           <View style={styles.tutorialImage}>
             <Image
               style={styles.tinyLogo}
-              source={require('../../assets/images/tutorial3.png')}
+              source={require('../../assets/images/tutorial0.png')}
             />
           </View>
           <View style={styles.tutorialText}>
@@ -59,7 +59,7 @@ class TutorialPage extends React.Component {
           <View style={styles.tutorialImage}>
             <Image
               style={styles.tinyLogo}
-              source={require('../../assets/images/tutorial4.png')}
+              source={require('../../assets/images/tutorial10.png')}
             />
           </View>
           <View style={styles.tutorialText}>
@@ -81,7 +81,7 @@ class TutorialPage extends React.Component {
             <Text style={{ fontSize: 16 }}>이제 일기를 작성하러 가볼까요?</Text>
           </View>
           <View style={styles.tutorialButton}>
-            <TouchableOpacity onPress={() => { this.props.navigation.navigate("DiaryCalendar") }}>
+            <TouchableOpacity onPress={() => { this.props.navigation.navigate("Login") }}>
               <Text style={{ color: 'white' }}>시작하기</Text>
             </TouchableOpacity>
           </View>

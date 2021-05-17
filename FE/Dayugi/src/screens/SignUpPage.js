@@ -120,7 +120,7 @@ class SignUpPage extends React.Component {
       return;
     }
     else{
-      let dataObj = { 'email': email, 'password':password, 'nickname':nickname, 'birth':birth, 'uid':0};
+      let dataObj = { 'email': email.trim(), 'password':password, 'nickname':nickname, 'birth':birth, 'uid':0};
       fetch('http://k4a206.p.ssafy.io:8080/dayugi/user/join', {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -25,25 +25,28 @@ class LoginPage extends React.Component {
 
 
   login = (email, password) => {
-    let dataObj= {email:email, password:password};
+    let dataObj= {email:email.trim(), password:password};
     fetch('http://k4a206.p.ssafy.io:8080/dayugi/user', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dataObj),
       }).then(response => response.json())
-      .then(responseJson => {
+      .then(async(responseJson) => {
         let success = responseJson.success;
         if(success == "success"){
           let uid = String(responseJson.data['uid']);
           let nickName = String(responseJson.data['nickname']);
           let Authorization = String(responseJson.Authorization);
-          AsyncStorage.setItem('uid', uid);
-          AsyncStorage.setItem('email', this.state.email);
-          AsyncStorage.setItem('nickName', nickName);
-          AsyncStorage.setItem('Authorization', Authorization);
+          let time = String(+ new Date());
+          await AsyncStorage.setItem('expiration', time);
+          await AsyncStorage.setItem('uid', uid);
+          await AsyncStorage.setItem('email', this.state.email);
+          await AsyncStorage.setItem('nickName', nickName);
+          await AsyncStorage.setItem('Authorization', Authorization);
           this.props.navigation.navigate("DiaryCalendar");
         }
         else {
+          console.log(responseJson);
           alert("Id 또는 비밀번호를 확인해주세요.");
         }
       }

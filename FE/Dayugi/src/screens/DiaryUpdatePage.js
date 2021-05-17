@@ -52,9 +52,10 @@ class DiaryUpdatePage extends React.Component{
           "accept": "*/*",
           "authorization": this.state.authorization,
         },
-        body: formData
+        body: formData,
         }).then(response => response.json())
         .then(responseJson => {
+          console.log(responseJson);
           let success = responseJson.success;
           this.props.navigation.navigate("DiaryCalendar");
         }
@@ -161,7 +162,7 @@ class DiaryUpdatePage extends React.Component{
             </TouchableOpacity>
           </View>
 
-          <View style={this.state.diaryContent != '' ? styles.diaryUpdateButton : styles.diaryUpdateButtonDiabled }>
+          <View style={this.state.diaryContent != '' ? styles.diaryUpdateButton : styles.diaryUpdateButtonDisabled }>
             <TouchableOpacity style={styles.touchArea} onPress={() => {
                 if(this.state.diaryContent != '')
                   this.updateDiary();
