@@ -15,7 +15,7 @@ class TutorialPage extends React.Component {
             <Image
               resizeMode='contain'
               style={styles.tinyLogo}
-              source={require('../../assets/images/tutorial1.png')}
+              source={require('../../assets/images/tutorial8.png')}
             />
           </View>
           <View style={styles.tutorialText}>
@@ -44,7 +44,7 @@ class TutorialPage extends React.Component {
           <View style={styles.tutorialImage}>
             <Image
               style={styles.tinyLogo}
-              source={require('../../assets/images/tutorial3.png')}
+              source={require('../../assets/images/tutorial0.png')}
             />
           </View>
           <View style={styles.tutorialText}>
@@ -59,7 +59,7 @@ class TutorialPage extends React.Component {
           <View style={styles.tutorialImage}>
             <Image
               style={styles.tinyLogo}
-              source={require('../../assets/images/tutorial4.png')}
+              source={require('../../assets/images/tutorial10.png')}
             />
           </View>
           <View style={styles.tutorialText}>

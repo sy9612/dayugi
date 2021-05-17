@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class App extends React.Component {
   render() {
-    // AsyncStorage.clear();
+    AsyncStorage.clear();
 
     return (
       <AppContainer />
