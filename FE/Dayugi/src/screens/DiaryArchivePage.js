@@ -13,6 +13,7 @@ class DiaryArchivePage extends React.Component {
     authorization: '',
     currentYear: '',
     currentMonth: '',
+    check: false,
     isModalOpen: false,
     contents: [],
   };
@@ -117,7 +118,7 @@ class DiaryArchivePage extends React.Component {
         <View style={styles.pickerContainer}>
           <TouchableOpacity onPress={this.openModal}>
             <Text>
-              {this.state.currentYear != '0'
+              {this.state.check != true
                 ? this.state.currentYear + '-' + this.state.currentMonth
                 : '전체보기'}
               <Ionicons name="arrow-down"></Ionicons>
@@ -137,6 +138,7 @@ class DiaryArchivePage extends React.Component {
               onMonthChange={(date) => {
                 this.state.currentYear = moment(date).format('YYYY');
                 this.state.currentMonth = moment(date).format('MM');
+                this.state.check = false;
                 this.closeModalWithMonth();
               }}
               seperatorColor="#eee"
@@ -147,7 +149,7 @@ class DiaryArchivePage extends React.Component {
             <View style={styles.viewAllButton}>
               <TouchableOpacity
                 onPress={() => {
-                  this.state.currentYear = '0';
+                  this.state.check = true;
                   this.closeModalWithAll();
                 }}
               >
