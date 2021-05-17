@@ -73,7 +73,7 @@ class DiaryDetailPage extends React.Component{
         return (
         <View style={styles.container}>
             <CustomHeader navigation = {this.props.navigation}/>
-            <ScrollView>
+            <ScrollView style={styles.scrollContainer}>
               <View style={styles.diaryContentContainer}>
                   <Text style={styles.title}>작성 날짜</Text>
                   <Separator />
@@ -129,9 +129,18 @@ class DiaryDetailPage extends React.Component{
 }
 
 const styles = StyleSheet.create({
+  scrollContainer:{
+    marginTop: 8,
+    marginLeft: 8,
+    marginRight: 8,
+    backgroundColor: '#fff',
+    elevation:2,
+    borderTopRightRadius:10,
+    borderTopLeftRadius:10,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFAF0',
     width: '100%',
     height: '100%',
   },
@@ -141,16 +150,18 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   title: {
-    fontSize: 14,
+    fontSize: 16,
     marginLeft: 8,
+    fontWeight: 'bold',
   },
   dateContent: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 8,
   },
   diaryContent: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 8,
+    marginRight: 8,
     marginBottom: 16,
   },
   diaryImageContainer: {
@@ -168,8 +179,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   reviewContent: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 8,
+    marginRight: 8,
     height: 100,
   },
   buttons: {
@@ -187,24 +199,27 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:3,
   },
   diaryDeleteButton: {
     flex: 1,
     marginLeft: 4,
-    marginRight: 8,
+    marginRight: 16,
     backgroundColor: '#FF7E36',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:3,
   },
   diaryNavigationButton: {
     flex: 1,
-    marginLeft: 8,
+    marginLeft: 16,
     marginRight: 4,
     backgroundColor: '#FF7E36',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:3,
   },
 });
 

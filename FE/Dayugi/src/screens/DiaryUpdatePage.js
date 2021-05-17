@@ -1,5 +1,5 @@
 import React from 'react';
-import { Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert } from 'react-native';
+import { Modal, Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +18,7 @@ class DiaryUpdatePage extends React.Component{
     authorization : '',
     image: null,
     imageChanged : false,
+    isModalOpen : false,
   }
 
   async componentDidMount() {
@@ -38,7 +39,8 @@ class DiaryUpdatePage extends React.Component{
   updateDiary = () => {
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
     let imageUri = this.state.image;
-    if (imageUri != null && imageUri != undefined) {
+    this.setState({isModalOpen : true});
+    if (imageUri != null) {
       let filename = imageUri.split('/').pop();
       let match = /\.(\w+)$/.exec(filename);
       let type = match ? `image/${match[1]}` : `image`;
@@ -55,12 +57,7 @@ class DiaryUpdatePage extends React.Component{
         .then(responseJson => {
           console.log(responseJson);
           let success = responseJson.success;
-          if(success == "success"){
-            this.props.navigation.navigate("DiaryCalendar");
-          }
-          else if(success == "fail"){
-            this.props.navigation.navigate("DiaryCalendar");
-          }
+          this.props.navigation.navigate("DiaryCalendar");
         }
       );
     }
@@ -74,12 +71,8 @@ class DiaryUpdatePage extends React.Component{
         }).then(response => response.json())
         .then(responseJson => {
           let success = responseJson.success;
-          if(success == "success"){
-            this.props.navigation.navigate("DiaryCalendar");
-          }
-          else if(success == "fail"){
-            this.props.navigation.navigate("DiaryCalendar");
-          }
+          this.props.navigation.navigate("DiaryCalendar");
+          
         }
       );
     }
@@ -115,6 +108,13 @@ class DiaryUpdatePage extends React.Component{
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+        <Modal transparent animationType="fade" visible={this.state.isModalOpen}>
+          <View style={styles.modalContainer}>
+            <View style={styles.uploading}>
+                <Text>업로드 중입니다...</Text>
+            </View>
+          </View>
+        </Modal>
         <CustomHeader navigation = {this.props.navigation}/>
         <View style={styles.diaryContentContainer}>
             <Text style={styles.title}>작성 날짜</Text>
@@ -182,25 +182,32 @@ class DiaryUpdatePage extends React.Component{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFAF0',
     width: '100%',
     height: '100%',
   },
   diaryContentContainer: {
     height: '100%',
-    width: '100%',
     marginTop: 8,
+    marginLeft: 8,
+    marginRight: 8,
+    backgroundColor: '#fff',
+    elevation:2,
+    borderTopRightRadius:10,
+    borderTopLeftRadius:10,
+    paddingTop: 8,
   },
   title: {
-    fontSize: 14,
+    fontSize: 16,
     marginLeft: 8,
+    fontWeight: 'bold',
   },
   dateContent: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 8,  
   },
   diaryContent: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 8,
     height: '100%',
   },
@@ -219,6 +226,7 @@ const styles = StyleSheet.create({
     height: "100%", 
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:2,
   },
   diaryImageLoadButtonAfter: {
     backgroundColor: '#000',
@@ -227,6 +235,7 @@ const styles = StyleSheet.create({
     height: "100%", 
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:2,
   },
   diaryImage: {
     width: 180,
@@ -249,26 +258,43 @@ const styles = StyleSheet.create({
   },
   diaryNavigationButton: {
     flex: 1,
-    marginLeft: 8,
+    marginLeft: 16,
     marginRight: 4,
     backgroundColor: '#FF7E36',
     borderRadius: 5,
+    elevation:3,
   },
   diaryUpdateButton: {
     flex: 1,
     marginLeft: 4,
-    marginRight: 8,
+    marginRight: 16,
     backgroundColor: '#FF7E36',
     borderRadius: 5,
+    elevation:3,
   },
   diaryUpdateButtonDisabled: {
     flex: 1,
     marginLeft: 4,
-    marginRight: 8,
+    marginRight: 16,
     backgroundColor: '#aaa',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:3,
+  },
+  modalContainer: {
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  uploading: {
+    width:200,
+    height:200,
+    backgroundColor: '#000',
+    opacity: 0.3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
   },
 });
 

@@ -70,6 +70,7 @@ class DiaryCalendarPage extends React.Component{
         <View style={styles.container}>
             <CustomHeader navigation = {this.props.navigation}/>
             <Calendar
+                style={{elevation : 3, borderBottomRightRadius: 10, borderBottomLeftRadius: 10}}
                 theme={{
                     calendarBackground: '#fff',
                     todayTextColor: '#FF7E36',
@@ -101,7 +102,6 @@ class DiaryCalendarPage extends React.Component{
                 hideExtraDays={false}
                 firstDay={1}
             />
-            <Separator />
             <View style={styles.diaryContentContainer}>
                 <Text style={styles.diaryDate}>{this.state.currentYear}{this.state.currentYear != '' ? '-' : ''}{this.state.currentMonth}{this.state.currentYear != '' ? '-' : ''}{this.state.currentDay}</Text>
                 <Separator />
@@ -126,17 +126,23 @@ class DiaryCalendarPage extends React.Component{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFAF0',
     width: '100%',
     height: '100%',
   },
   diaryContentContainer: {
     height: '100%',
     width: '100%',
+    backgroundColor: '#fff',
+    elevation: 15,
+    borderTopRightRadius: 10,
+    borderTopLeftRadius: 10,
+    marginTop: 8,
   },
   diaryDate: {
-    fontSize: 14,
+    fontSize: 18,
     marginLeft: 8,
+    marginTop: 8,
   },
   diaryContent: {
     fontSize: 16,
@@ -156,6 +162,7 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#FF7E36',
     borderRadius: 5,
+    elevation: 16,
   },
 });
 
