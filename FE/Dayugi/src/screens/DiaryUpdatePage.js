@@ -181,25 +181,32 @@ class DiaryUpdatePage extends React.Component{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFAF0',
     width: '100%',
     height: '100%',
   },
   diaryContentContainer: {
     height: '100%',
-    width: '100%',
     marginTop: 8,
+    marginLeft: 8,
+    marginRight: 8,
+    backgroundColor: '#fff',
+    elevation:2,
+    borderTopRightRadius:10,
+    borderTopLeftRadius:10,
+    paddingTop: 8,
   },
   title: {
-    fontSize: 14,
+    fontSize: 16,
     marginLeft: 8,
+    fontWeight: 'bold',
   },
   dateContent: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 8,  
   },
   diaryContent: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 8,
     height: '100%',
   },
@@ -218,6 +225,7 @@ const styles = StyleSheet.create({
     height: "100%", 
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:2,
   },
   diaryImageLoadButtonAfter: {
     backgroundColor: '#000',
@@ -226,12 +234,14 @@ const styles = StyleSheet.create({
     height: "100%", 
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:2,
   },
   diaryImage: {
     width: 180,
     height: 180, 
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:2,
   },
   touchArea:{
     width:'100%',
@@ -248,26 +258,29 @@ const styles = StyleSheet.create({
   },
   diaryNavigationButton: {
     flex: 1,
-    marginLeft: 8,
+    marginLeft: 16,
     marginRight: 4,
     backgroundColor: '#FF7E36',
     borderRadius: 5,
+    elevation:3,
   },
   diaryUpdateButton: {
     flex: 1,
     marginLeft: 4,
-    marginRight: 8,
+    marginRight: 16,
     backgroundColor: '#FF7E36',
     borderRadius: 5,
+    elevation:3,
   },
   diaryUpdateButtonDisabled: {
     flex: 1,
     marginLeft: 4,
-    marginRight: 8,
+    marginRight: 16,
     backgroundColor: '#aaa',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:3,
   },
 });
 

@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 1,
   },
   modalContainer: {
     position: 'absolute',
@@ -216,6 +217,7 @@ const styles = StyleSheet.create({
     margin: 8,
     marginTop: 0,
     borderRadius: 5,
+    elevation: 2,
   },
   drawerContentItemDiaryDate: {
     fontSize: 12,
