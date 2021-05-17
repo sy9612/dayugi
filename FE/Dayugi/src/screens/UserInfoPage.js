@@ -140,7 +140,14 @@ class UserInfoPage extends React.Component {
               source={require('../../assets/images/dayugi.png')}
             />
 
-<View style={styles.buttons}>
+            <View style={styles.buttons}>
+              <TouchableOpacity style={styles.submitButton} onPress={() => {}}>
+                  <Image
+                    style={styles.submitIcon}
+                    source={require('../../assets/images/deleteall.png')}
+                  />
+                <Text style={styles.submitButtonText}>일기 전체 삭제</Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.submitButton}
                 onPress={() => this.changeInfo()}
@@ -150,6 +157,14 @@ class UserInfoPage extends React.Component {
                     source={require('../../assets/images/wrench.png')}
                   />
                   <Text style={styles.submitButtonText}>회원정보 변경</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.submitButton} onPress={() => {}}>
+                  <Image
+                    style={styles.submitIcon}
+                    source={require('../../assets/images/logout.png')}
+                  />
+                <Text style={styles.submitButtonText}>로그아웃</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -176,22 +191,6 @@ class UserInfoPage extends React.Component {
                   this.handleVisible(false);
                 }}
               ></DialogInput>
-
-              <TouchableOpacity style={styles.submitButton} onPress={() => {}}>
-                  <Image
-                    style={styles.submitIcon}
-                    source={require('../../assets/images/deleteall.png')}
-                  />
-                <Text style={styles.submitButtonText}>다이어리 전체 삭제</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.submitButton} onPress={() => {}}>
-                  <Image
-                    style={styles.submitIcon}
-                    source={require('../../assets/images/logout.png')}
-                  />
-                <Text style={styles.submitButtonText}>로그아웃</Text>
-              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.contentContainer}>
@@ -227,6 +226,7 @@ class UserInfoPage extends React.Component {
               onChangeText={this.handlePassword}
               editable={true}
             />
+
             <Separator />
 
             <View style={styles.titlecontainer}>
@@ -245,7 +245,9 @@ class UserInfoPage extends React.Component {
               onChangeText={this.handleNickName}
               editable={true}
             />
+
             <Separator />
+
             <View style={styles.titlecontainer}>
               <Image
                 style={styles.icon}
@@ -261,6 +263,7 @@ class UserInfoPage extends React.Component {
               autoCapitalize="none"
               editable={false}
             />
+            
             <Separator />
 
             
@@ -281,28 +284,28 @@ const styles = StyleSheet.create({
   contentContainer: {
     height: '100%',
     width: '100%',
-    marginTop: 8,
+    marginTop: 16,
   },
   title: {
     fontSize: 20,
     marginLeft: 5,
+    fontWeight: 'bold',
   },
   content: {
     fontSize: 18,
     marginLeft: 20,
+    marginTop: 8,
     color: '#000',
   },
   buttons: {
-    // position: 'absolute',
-    // bottom : 88,
     flexDirection: 'row',
-    marginTop: '10%',
     width: '100%',
+    marginBottom: 16,
   },
   submitButton: {
     flexDirection: 'column',
     flex: 1,
-    backgroundColor: '#FFFAF0',
+    backgroundColor: '#fff',
     height: 100,
     marginLeft: 8,
     marginRight: 8,
@@ -310,10 +313,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
+    elevation: 3,
   },
   submitButtonText: {
-    
     color: 'black',
     fontWeight: 'bold',
   },
@@ -335,11 +337,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFAF0',
-    height: '30%',
+    height: '40%',
   },
   dayugiImg: {
     marginLeft: '2%',
     width: '70%',
+    height: '70%',
     resizeMode: 'contain',
   },
 });
