@@ -1,5 +1,5 @@
 import React from 'react';
-import { Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert } from 'react-native';
+import { Modal, Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +16,7 @@ class DiaryWritePage extends React.Component{
     authorization : '',
     status : false,
     image : null,
+    isModalOpen : false,
   }
 
   async componentDidMount() {
@@ -30,6 +31,7 @@ class DiaryWritePage extends React.Component{
   writeDiary = () => {
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
     let localUri = this.state.image;
+    this.setState({isModalOpen : true});
     if (localUri != null) {
       let filename = localUri.split('/').pop();
       let match = /\.(\w+)$/.exec(filename);
@@ -46,11 +48,11 @@ class DiaryWritePage extends React.Component{
       }).then(response => response.json())
         .then(responseJson => {
           let success = responseJson.success;
-          if (success === "success") {
-            this.props.navigation.navigate("DiaryCalendar");
-          }
-          else if (success === "fail") {
+          if (success === "fail") {
             alert("오류 발생!")
+          }
+          else{
+            this.props.navigation.navigate("DiaryCalendar");
           }
         }
       );
@@ -106,6 +108,13 @@ class DiaryWritePage extends React.Component{
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+        <Modal transparent animationType="fade" visible={this.state.isModalOpen}>
+          <View style={styles.modalContainer}>
+            <View style={styles.uploading}>
+                <Text>업로드 중입니다...</Text>
+            </View>
+          </View>
+        </Modal>
         <CustomHeader navigation = {this.props.navigation}/>
         <View style={styles.diaryContentContainer}>
             <Text style={styles.title}>작성 날짜</Text>
@@ -248,6 +257,20 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalContainer: {
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  uploading: {
+    width:200,
+    height:200,
+    backgroundColor: '#000',
+    opacity: 0.3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
   },
 });
 

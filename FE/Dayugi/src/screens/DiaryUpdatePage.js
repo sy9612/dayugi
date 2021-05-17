@@ -1,5 +1,5 @@
 import React from 'react';
-import { Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert } from 'react-native';
+import { Modal, Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +18,7 @@ class DiaryUpdatePage extends React.Component{
     authorization : '',
     image: null,
     imageChanged : false,
+    isModalOpen : false,
   }
 
   async componentDidMount() {
@@ -38,12 +39,13 @@ class DiaryUpdatePage extends React.Component{
   updateDiary = () => {
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
     let imageUri = this.state.image;
+    this.setState({isModalOpen : true});
     if (imageUri != null) {
-      let filename = localUri.split('/').pop();
+      let filename = imageUri.split('/').pop();
       let match = /\.(\w+)$/.exec(filename);
       let type = match ? `image/${match[1]}` : `image`;
       let formData = new FormData();
-      formData.append('files', { uri: localUri, name: filename, type });
+      formData.append('files', { uri: imageUri, name: filename, type });
       fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=${encodeURIComponent(this.state.diary.did)}&user.uid=${encodeURIComponent(this.state.uid)}`, {
         method: "PUT",
         headers: {
@@ -54,12 +56,7 @@ class DiaryUpdatePage extends React.Component{
         }).then(response => response.json())
         .then(responseJson => {
           let success = responseJson.success;
-          if(success === "success"){
-            // ????
-          }
-          else if(success === "fail"){
-            this.props.navigation.navigate("DiaryCalendar");
-          }
+          this.props.navigation.navigate("DiaryCalendar");
         }
       );
     }
@@ -73,12 +70,8 @@ class DiaryUpdatePage extends React.Component{
         }).then(response => response.json())
         .then(responseJson => {
           let success = responseJson.success;
-          if(success === "success"){
-            // ????
-          }
-          else if(success === "fail"){
-            this.props.navigation.navigate("DiaryCalendar");
-          }
+          this.props.navigation.navigate("DiaryCalendar");
+          
         }
       );
     }
@@ -114,6 +107,13 @@ class DiaryUpdatePage extends React.Component{
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+        <Modal transparent animationType="fade" visible={this.state.isModalOpen}>
+          <View style={styles.modalContainer}>
+            <View style={styles.uploading}>
+                <Text>업로드 중입니다...</Text>
+            </View>
+          </View>
+        </Modal>
         <CustomHeader navigation = {this.props.navigation}/>
         <View style={styles.diaryContentContainer}>
             <Text style={styles.title}>작성 날짜</Text>
@@ -241,7 +241,6 @@ const styles = StyleSheet.create({
     height: 180, 
     justifyContent: 'center',
     alignItems: 'center',
-    elevation:2,
   },
   touchArea:{
     width:'100%',
@@ -281,6 +280,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation:3,
+  },
+  modalContainer: {
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  uploading: {
+    width:200,
+    height:200,
+    backgroundColor: '#000',
+    opacity: 0.3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
   },
 });
 
