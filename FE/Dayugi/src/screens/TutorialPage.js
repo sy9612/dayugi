@@ -81,7 +81,7 @@ class TutorialPage extends React.Component {
             <Text style={{ fontSize: 16 }}>이제 일기를 작성하러 가볼까요?</Text>
           </View>
           <View style={styles.tutorialButton}>
-            <TouchableOpacity onPress={() => { this.props.navigation.navigate("DiaryCalendar") }}>
+            <TouchableOpacity onPress={() => { this.props.navigation.navigate("Login") }}>
               <Text style={{ color: 'white' }}>시작하기</Text>
             </TouchableOpacity>
           </View>

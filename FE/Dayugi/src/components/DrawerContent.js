@@ -36,10 +36,12 @@ class DrawerContent extends React.Component {
     async function reissueToken() {
       var uid = await AsyncStorage.getItem('uid');
       var token = await AsyncStorage.getItem('Authorization');
+      var isExpired = parseInt(await AsyncStorage.getItem('expiration'))
+      var curTime = + new Date()       
       if (uid == 'null' || uid == undefined || uid == '') {
         return;
       }
-      else {
+      else if (curTime - isExpired > 3540000){
         let dataObj = { uid: parseInt(uid) };
         fetch('http://k4a206.p.ssafy.io:8080/dayugi/user/token', {
           method: "POST",
@@ -49,13 +51,13 @@ class DrawerContent extends React.Component {
           },
           body: JSON.stringify(dataObj),
         }).then(response => response.json())
-          .then(responseJson => {
-            let success = responseJson.success;
-            if (success == "success") {
-              let Authorization = String(responseJson.Authorization);
-              AsyncStorage.setItem('Authorization', Authorization);
-            }
-          });
+        .then(responseJson => {
+        let success = responseJson.success;
+          if (success == "success") {
+            let Authorization = String(responseJson.Authorization);
+            AsyncStorage.setItem('Authorization', Authorization);
+          }
+        });
       }
     }
     reissueToken();
