@@ -350,8 +350,10 @@ class AnalysisPage extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <CustomHeader title="다이어리 분석" navigation={this.props.navigation} />
+        <CustomHeader navigation={this.props.navigation} />
+        <Text style={styles.headline_text}>다이어리 분석</Text>
         <ScrollView style={styles.scrollView} contentContainerStyle={{ width: '100%' }}>
+          <View style={{marginHorizontal:20}}>
           <Separator />
           <View style={styles.setDateText}>
             <Text>기간 설정 : &nbsp;</Text>
@@ -441,6 +443,7 @@ class AnalysisPage extends React.Component {
               absolute
             />
           </View> */}
+          </View>
         </ScrollView>
       </SafeAreaView>
     );
@@ -464,8 +467,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   scrollView: {
-    // backgroundColor: 'pink',
-    marginHorizontal: 20,
   },
   text: {
     color: 'dimgray',
@@ -499,11 +500,19 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: 350,
+    marginBottom: 50,
   },
   pieChartRow: {
     flex: 1,
     width: '100%',
     height: 280,
+  },
+  headline_text: {
+    color: 'black',
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginTop: 16,
+    marginLeft: 20,
   },
 });
 
