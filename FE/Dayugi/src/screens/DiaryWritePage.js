@@ -196,9 +196,11 @@ const styles = StyleSheet.create({
     marginLeft: 8,  
   },
   diaryContent: {
-    fontSize: 18,
+    fontSize: 25,
     marginLeft: 8,
     height: '100%',
+    fontFamily: '나눔손글씨_느릿느릿',
+    color: 'black'
   },
   diaryImageContainer:{
     height : 180,

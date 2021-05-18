@@ -159,10 +159,11 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   diaryContent: {
-    fontSize: 18,
+    fontSize: 25,
     marginLeft: 8,
     marginRight: 8,
     marginBottom: 16,
+    fontFamily: '나눔손글씨_느릿느릿',
   },
   diaryImageContainer: {
     backgroundColor: '#000',
@@ -179,10 +180,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   reviewContent: {
-    fontSize: 18,
+    fontSize: 25,
     marginLeft: 8,
     marginRight: 8,
     height: 100,
+    fontFamily: '나눔손글씨_느릿느릿',
   },
   buttons: {
     position: 'absolute',

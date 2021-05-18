@@ -223,7 +223,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   drawerContentItemDiaryContent: {
-    fontSize: 14,
+    fontSize: 20,
+    fontFamily: '나눔손글씨_느릿느릿'
   },
 });
 

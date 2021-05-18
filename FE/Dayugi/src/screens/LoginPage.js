@@ -82,7 +82,7 @@ class LoginPage extends React.Component {
           <View style={styles.logoImageContainer}>
             <Image style={styles.logoImage} source={require('../../assets/images/dayugi.png')} />
           </View>
-          <Text style={styles.logo}>Dayugi</Text>
+          <Text style={styles.logo}>DAYUGI</Text>
           <View>
             <TextInput
               style={styles.input}
@@ -164,9 +164,9 @@ const styles = StyleSheet.create({
   logo: {
     textAlign: 'center',
     color: '#FF7E36',
-    fontWeight: 'bold',
-    fontSize: 30,
+    fontSize: 40,
     marginBottom: '5%',
+    fontFamily: '메이플스토리'
   },
   signUpText: {
     flex: 1,
