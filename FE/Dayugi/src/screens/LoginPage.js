@@ -46,7 +46,6 @@ class LoginPage extends React.Component {
           this.props.navigation.navigate("DiaryCalendar");
         }
         else {
-          console.log(responseJson);
           alert("Id 또는 비밀번호를 확인해주세요.");
         }
       }

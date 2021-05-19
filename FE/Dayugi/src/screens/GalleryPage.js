@@ -15,7 +15,6 @@ class GalleryPage extends React.Component {
 
   async componentDidMount() {
     this.state.uid = await AsyncStorage.getItem('uid');
-    console.log(this.state.uid);
     this.state.authorization = await AsyncStorage.getItem('Authorization');
     this.getAllDiary();
   }
@@ -59,7 +58,6 @@ class GalleryPage extends React.Component {
   };
 
   render() {
-    console.log(this.state.imageList);
     let Images = null;
     if (this.state.imageList.length == 0) {
       Images = (

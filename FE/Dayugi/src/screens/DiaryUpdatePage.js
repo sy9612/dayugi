@@ -55,8 +55,6 @@ class DiaryUpdatePage extends React.Component{
         body: formData,
         }).then(response => response.json())
         .then(responseJson => {
-          console.log(responseJson);
-          let success = responseJson.success;
           this.props.navigation.navigate("DiaryCalendar");
         }
       );

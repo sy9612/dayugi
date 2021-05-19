@@ -14,7 +14,7 @@ import {
 import Separator from '../components/Separator';
 import CustomHeader from '../components/CustomHeader';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { LineChart, PieChart } from 'react-native-chart-kit';
+import { LineChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Plotly from 'react-native-plotly';

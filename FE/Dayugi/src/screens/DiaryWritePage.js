@@ -47,15 +47,10 @@ class DiaryWritePage extends React.Component{
         body: formData,
       }).then(response => response.json())
         .then(responseJson => {
-          let success = responseJson.success;
-          if (success === "fail") {
-            alert("오류 발생!")
-          }
-          else{
-            this.props.navigation.navigate("DiaryCalendar");
-          }
+          console.log(responseJson);
         }
       );
+      this.props.navigation.navigate("DiaryCalendar");
     }
     else {
       fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
@@ -66,15 +61,10 @@ class DiaryWritePage extends React.Component{
         },
       }).then(response => response.json())
         .then(responseJson => {
-          let success = responseJson.success;
-          if (success === "success") {
-            this.props.navigation.navigate("DiaryCalendar");
-          }
-          else if (success === "fail") {
-            alert("오류 발생!")
-          }
+          console.log(responseJson);
         }
       );
+      this.props.navigation.navigate("DiaryCalendar");
     }
   };
 
@@ -187,20 +177,22 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 8,
     fontWeight: 'bold',
   },
   dateContent: {
-    fontSize: 18,
-    marginLeft: 8,  
+    fontSize: 21,
+    marginLeft: 8,
+    fontFamily: '교보_손글씨',
   },
   diaryContent: {
-    fontSize: 25,
+    fontSize: 21,
     marginLeft: 8,
     height: '100%',
-    fontFamily: '나눔손글씨_느릿느릿',
-    color: 'black'
+    fontFamily: '교보_손글씨',
+    color: 'black',
+    alignSelf: 'stretch',
   },
   diaryImageContainer:{
     height : 180,

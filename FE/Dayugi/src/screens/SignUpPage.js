@@ -169,7 +169,6 @@ class SignUpPage extends React.Component {
       headers: { "Content-Type": "application/json" },
     }).then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
         let success = responseJson.success;
         if (success == "success") {
           this.setState({ authCode: responseJson.result });

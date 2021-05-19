@@ -150,20 +150,21 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 8,
     fontWeight: 'bold',
   },
   dateContent: {
-    fontSize: 18,
+    fontSize: 21,
     marginLeft: 8,
+    fontFamily: '교보_손글씨',
   },
   diaryContent: {
-    fontSize: 25,
+    fontSize: 21,
     marginLeft: 8,
     marginRight: 8,
     marginBottom: 16,
-    fontFamily: '나눔손글씨_느릿느릿',
+    fontFamily: '교보_손글씨',
   },
   diaryImageContainer: {
     backgroundColor: '#000',
@@ -180,11 +181,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   reviewContent: {
-    fontSize: 25,
+    fontSize: 21,
     marginLeft: 8,
     marginRight: 8,
     height: 100,
-    fontFamily: '나눔손글씨_느릿느릿',
+    fontFamily: '교보_손글씨',
   },
   buttons: {
     position: 'absolute',

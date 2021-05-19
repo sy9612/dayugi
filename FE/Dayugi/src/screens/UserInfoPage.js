@@ -96,11 +96,13 @@ class UserInfoPage extends React.Component {
         .then((response) => response.json())
         .then((responseJson) => {
           let success = responseJson.success;
-          console.log(success);
           if (success == 'success') {
             alert('지금까지 이용해주셔서 감사합니다.');
             AsyncStorage.clear();
             this.props.navigation.navigate('DiaryCalendar');
+          }
+          else {
+            alert('오류가 발생했어요!');
           }
         });
     }
@@ -157,7 +159,7 @@ class UserInfoPage extends React.Component {
             this.props.navigation.navigate('DiaryCalendar');
           }
           else {
-            console.log(responseJson);
+            alert('오류가 발생했어요!');
           }
         });
     }

@@ -147,9 +147,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   diaryContent: {
-    fontSize: 25,
+    fontSize: 21,
     marginLeft: 8,
-    fontFamily: '나눔손글씨_느릿느릿'
+    fontFamily: '교보_손글씨',
   },
   touchArea : {
     width: '100%',
