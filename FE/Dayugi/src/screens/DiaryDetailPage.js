@@ -86,7 +86,7 @@ class DiaryDetailPage extends React.Component{
                     <Image source={{ uri: this.state.image }} style={this.state.image != undefined ? styles.diaryImage : null}/>
                   </View>
                   <Separator />
-                  <Text style={styles.title}>한줄평</Text>
+                  <Text style={styles.title}>코멘트</Text>
                   <Separator />
                   <Text style={styles.reviewContent}>{this.state.diary.review_content}</Text>
               </View>
