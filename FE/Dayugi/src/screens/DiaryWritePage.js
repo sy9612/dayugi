@@ -1,5 +1,5 @@
 import React from 'react';
-import { Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert } from 'react-native';
+import { Modal, Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +16,7 @@ class DiaryWritePage extends React.Component{
     authorization : '',
     status : false,
     image : null,
+    isModalOpen : false,
   }
 
   async componentDidMount() {
@@ -28,38 +29,41 @@ class DiaryWritePage extends React.Component{
   }
 
   writeDiary = () => {
-    console.log("test");
     let date = this.state.year + '-' + this.state.month + '-' + this.state.day;
-
     let localUri = this.state.image;
-    let filename = localUri.split('/').pop();
-  
-    let match = /\.(\w+)$/.exec(filename);
-    let type = match ? `image/${match[1]}` : `image`;
-  
-    let formData = new FormData();
-
-    formData.append('files', { uri: localUri, name: filename, type });
-
-    fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
-      method: "POST",
-      headers: {
-        "accept" : "*/*",
-        "authorization": this.state.authorization,
-      },
-      body: formData,
+    this.setState({isModalOpen : true});
+    if (localUri != null) {
+      let filename = localUri.split('/').pop();
+      let match = /\.(\w+)$/.exec(filename);
+      let type = match ? `image/${match[1]}` : `image`;
+      let formData = new FormData();
+      formData.append('files', { uri: localUri, name: filename, type });
+      fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
+        method: "POST",
+        headers: {
+          "accept": "*/*",
+          "authorization": this.state.authorization,
+        },
+        body: formData,
       }).then(response => response.json())
-      .then(responseJson => {
-        console.log(responseJson);
-        let success = responseJson.success;
-        if(success === "success"){
+        .then(responseJson => {
           this.props.navigation.navigate("DiaryCalendar");
         }
-        else if(success === "fail"){
-          alert("오류 발생!")
+      );
+    }
+    else {
+      fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
+        method: "POST",
+        headers: {
+          "accept": "*/*",
+          "authorization": this.state.authorization,
+        },
+      }).then(response => response.json())
+        .then(responseJson => {
+          this.props.navigation.navigate("DiaryCalendar");
         }
-      }
-    );
+      );
+    }
   };
 
   _pickImage = async () => {
@@ -92,6 +96,13 @@ class DiaryWritePage extends React.Component{
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+        <Modal transparent animationType="fade" visible={this.state.isModalOpen}>
+          <View style={styles.modalContainer}>
+            <View style={styles.uploading}>
+                <Text>업로드 중입니다...</Text>
+            </View>
+          </View>
+        </Modal>
         <CustomHeader navigation = {this.props.navigation}/>
         <View style={styles.diaryContentContainer}>
             <Text style={styles.title}>작성 날짜</Text>
@@ -130,7 +141,7 @@ class DiaryWritePage extends React.Component{
         </View>
 
         <View style={this.state.diaryContent != '' ? styles.diaryNavigationButton : styles.diaryNavigationButtonDisabled }>
-          <TouchableOpacity onPress={() => {
+          <TouchableOpacity style={styles.touchArea}  onPress={() => {
               if(this.state.diaryContent != '')
                 this.writeDiary();
               else
@@ -148,27 +159,38 @@ class DiaryWritePage extends React.Component{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFAF0',
     width: '100%',
     height: '100%',
   },
   diaryContentContainer: {
     height: '100%',
-    width: '100%',
     marginTop: 8,
+    marginLeft: 8,
+    marginRight: 8,
+    backgroundColor: '#fff',
+    elevation:2,
+    borderTopRightRadius:10,
+    borderTopLeftRadius:10,
+    paddingTop: 8,
   },
   title: {
-    fontSize: 14,
+    fontSize: 18,
     marginLeft: 8,
+    fontWeight: 'bold',
   },
   dateContent: {
-    fontSize: 16,
-    marginLeft: 8,  
+    fontSize: 21,
+    marginLeft: 8,
+    fontFamily: '교보_손글씨',
   },
   diaryContent: {
-    fontSize: 16,
+    fontSize: 21,
     marginLeft: 8,
     height: '100%',
+    fontFamily: '교보_손글씨',
+    color: 'black',
+    alignSelf: 'stretch',
   },
   diaryImageContainer:{
     height : 180,
@@ -185,6 +207,7 @@ const styles = StyleSheet.create({
     height: "100%", 
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:2,
   },
   diaryImageLoadButtonAfter: {
     backgroundColor: '#000',
@@ -193,6 +216,7 @@ const styles = StyleSheet.create({
     height: "100%", 
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:2,
   },
   diaryImage: {
     width: 180,
@@ -203,24 +227,42 @@ const styles = StyleSheet.create({
   diaryNavigationButton: {
     position: 'absolute',
     bottom: 8,
-    left: 8,
-    right: 8,
+    left: 16,
+    right: 16,
     height: 40,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#FF7E36',
     borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+    elevation:3,
   },
   diaryNavigationButtonDisabled: {
     position: 'absolute',
     bottom: 8,
-    left: 8,
-    right: 8,
+    left: 16,
+    right: 16,
     height: 40,
     backgroundColor: '#aaa',
     borderRadius: 5,
+    elevation:3,
+  },
+  touchArea : {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalContainer: {
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  uploading: {
+    width:200,
+    height:200,
+    backgroundColor: '#000',
+    opacity: 0.3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
   },
 });
 

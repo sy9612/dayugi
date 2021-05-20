@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image }  from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,6 +12,7 @@ class DiaryDetailPage extends React.Component{
       diary : {},
       dialogVisible : false,
       authorization : '',
+      image : null,
     }
 
     async componentDidMount() {
@@ -32,11 +33,16 @@ class DiaryDetailPage extends React.Component{
         .then(responseJson => {
           let success = responseJson.success;
           if(success === "success"){
-            
+            if(responseJson.diary != undefined)
+              this.setState({diary : responseJson.diary});
+            if(responseJson.diaryFiles != undefined)
+              this.setState({image : "http://k4a206.p.ssafy.io/" + responseJson.diaryFiles[0].file_name + ".jpg"});
           }
           else if(success === "fail"){
             if(responseJson.diary != undefined)
               this.setState({diary : responseJson.diary});
+            if(responseJson.diaryFiles != undefined)
+              this.setState({image : "http://k4a206.p.ssafy.io/" + responseJson.diaryFiles[0].file_name + ".jpg"});
           }
         }
       );
@@ -67,20 +73,24 @@ class DiaryDetailPage extends React.Component{
         return (
         <View style={styles.container}>
             <CustomHeader navigation = {this.props.navigation}/>
-            <View style={styles.diaryContentContainer}>
-                <Text style={styles.title}>작성 날짜</Text>
-                <Separator />
-                <Text style={styles.dateContent}>{moment(this.state.diary.diary_date).format('YYYY-MM-DD')}</Text>
-                <Separator />
-                <Text style={styles.title}>내용</Text>
-                <Separator />
-                <Text style={styles.diaryContent}>{this.state.diary.diary_content}</Text>
-                <Separator />
-                <Text style={styles.title}>한줄평</Text>
-                <Separator />
-                <Text style={styles.reviewContent}>{this.state.diary.review_content}</Text>
-            </View>
-
+            <ScrollView style={styles.scrollContainer}>
+              <View style={styles.diaryContentContainer}>
+                  <Text style={styles.title}>작성 날짜</Text>
+                  <Separator />
+                  <Text style={styles.dateContent}>{moment(this.state.diary.diary_date).format('YYYY-MM-DD')}</Text>
+                  <Separator />
+                  <Text style={styles.title}>내용</Text>
+                  <Separator />
+                  <Text style={styles.diaryContent}>{this.state.diary.diary_content}</Text>
+                  <View style={this.state.image != null ? styles.diaryImageContainer : null}>
+                    <Image source={{ uri: this.state.image }} style={this.state.image != undefined ? styles.diaryImage : null}/>
+                  </View>
+                  <Separator />
+                  <Text style={styles.title}>코멘트</Text>
+                  <Separator />
+                  <Text style={styles.reviewContent}>{this.state.diary.review_content}</Text>
+              </View>
+            </ScrollView>
             <View style={styles.buttons}>
               <View style={styles.diaryNavigationButton}>
                 <TouchableOpacity onPress={() => {
@@ -92,7 +102,7 @@ class DiaryDetailPage extends React.Component{
 
               <View style={styles.diaryUpdateButton}>
                 <TouchableOpacity onPress={() => {
-                    this.props.navigation.navigate("DiaryUpdate", {diary : this.state.diary});
+                    this.props.navigation.navigate("DiaryUpdate", {diary : this.state.diary, image : this.state.image});
                   }}>
                   <Text style={{color: 'white'}}>수정하기</Text>
                 </TouchableOpacity>
@@ -119,9 +129,18 @@ class DiaryDetailPage extends React.Component{
 }
 
 const styles = StyleSheet.create({
+  scrollContainer:{
+    marginTop: 8,
+    marginLeft: 8,
+    marginRight: 8,
+    backgroundColor: '#fff',
+    elevation:2,
+    borderTopRightRadius:10,
+    borderTopLeftRadius:10,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFAF0',
     width: '100%',
     height: '100%',
   },
@@ -131,22 +150,42 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   title: {
-    fontSize: 14,
+    fontSize: 18,
     marginLeft: 8,
+    fontWeight: 'bold',
   },
   dateContent: {
-    fontSize: 16,
+    fontSize: 21,
     marginLeft: 8,
+    fontFamily: '교보_손글씨',
   },
   diaryContent: {
-    fontSize: 16,
+    fontSize: 21,
     marginLeft: 8,
-    height: 200,
+    marginRight: 8,
+    marginBottom: 16,
+    fontFamily: '교보_손글씨',
+  },
+  diaryImageContainer: {
+    backgroundColor: '#000',
+    borderRadius : 5,
+    height: 180, 
+    margin : 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  diaryImage: {
+    width: 180,
+    height: 180, 
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   reviewContent: {
-    fontSize: 16,
+    fontSize: 21,
     marginLeft: 8,
+    marginRight: 8,
     height: 100,
+    fontFamily: '교보_손글씨',
   },
   buttons: {
     position: 'absolute',
@@ -159,28 +198,31 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 4,
     marginRight: 4,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#FF7E36',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:3,
   },
   diaryDeleteButton: {
     flex: 1,
     marginLeft: 4,
-    marginRight: 8,
-    backgroundColor: '#FF4343',
+    marginRight: 16,
+    backgroundColor: '#FF7E36',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:3,
   },
   diaryNavigationButton: {
     flex: 1,
-    marginLeft: 8,
+    marginLeft: 16,
     marginRight: 4,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#FF7E36',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:3,
   },
 });
 

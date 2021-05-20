@@ -1,5 +1,6 @@
 import React from 'react';
 import { Header, Text } from 'react-native-elements';
+import { MaterialIcons } from '@expo/vector-icons';
 
 class CustomHeader extends React.Component {
   handleText = (text) => {
