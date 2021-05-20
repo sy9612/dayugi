@@ -10,17 +10,8 @@ class App extends React.Component {
   }
   async componentDidMount() {
     await Font.loadAsync({
-      빙그레: require('./assets/fonts/BinggraeSamanco-Bold.ttf'),
-      나눔손글씨_느릿느릿: require('./assets/fonts/nanum_nurit.ttf'),
-      나눔손글씨_동화또박: require('./assets/fonts/nanum_ddobbak.ttf'),
       메이플스토리: require('./assets/fonts/Maplestory_Bold.ttf'),
       교보_손글씨: require('./assets/fonts/Kyobo_Handwriting_2019.ttf'),
-      나눔손글씨_장미: require('./assets/fonts/nanum_rose.ttf'),
-      나눔손글씨_중학생: require('./assets/fonts/nanum_middleSchool.ttf'),
-      나눔손글씨_하나손글씨: require('./assets/fonts/nanum_hanaHandWriting.ttf'),
-      나눔손글씨_고딩: require('./assets/fonts/nanum_highSchool.ttf'),
-      어비_푸딩: require('./assets/fonts/UhBee_puding.ttf'),
-      어비_융디: require('./assets/fonts/UhBee_yoongdi.ttf'),
     });
     this.handleIsReady(true);
   }
