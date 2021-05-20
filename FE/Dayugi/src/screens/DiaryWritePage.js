@@ -47,10 +47,9 @@ class DiaryWritePage extends React.Component{
         body: formData,
       }).then(response => response.json())
         .then(responseJson => {
-          console.log(responseJson);
+          this.props.navigation.navigate("DiaryCalendar");
         }
       );
-      this.props.navigation.navigate("DiaryCalendar");
     }
     else {
       fetch(`http://k4a206.p.ssafy.io:8080/dayugi/diary?diary_content=${encodeURIComponent(this.state.diaryContent)}&diary_date=${encodeURIComponent(date)}&did=0&user.uid=${encodeURIComponent(this.state.uid)}`, {
@@ -61,10 +60,9 @@ class DiaryWritePage extends React.Component{
         },
       }).then(response => response.json())
         .then(responseJson => {
-          console.log(responseJson);
+          this.props.navigation.navigate("DiaryCalendar");
         }
       );
-      this.props.navigation.navigate("DiaryCalendar");
     }
   };
 
