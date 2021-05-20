@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert, KeyboardAvoidingView } from 'react-native';
+import { Modal, Keyboard, StyleSheet, View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, ScrollView, Image, Alert } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
 import Separator from '../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -95,7 +95,7 @@ class DiaryWritePage extends React.Component{
   render(){
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.KeyboardAvoidingView}>
+      <View style={styles.container}>
         <Modal transparent animationType="fade" visible={this.state.isModalOpen}>
           <View style={styles.modalContainer}>
             <View style={styles.uploading}>
