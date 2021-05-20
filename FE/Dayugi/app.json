@@ -25,6 +25,7 @@
         "foregroundImage": "./assets/images/ic_launcher.png",
         "backgroundColor": "#FFFFFF"
       },
+      "softwareKeyboardLayoutMode": "pan",
       "package": "com.ssafy.dayugi",
       "icon": "./assets/images/ic_launcher.png"
     },
