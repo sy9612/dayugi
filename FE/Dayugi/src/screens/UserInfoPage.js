@@ -181,7 +181,7 @@ class UserInfoPage extends React.Component {
                     style={styles.submitIcon}
                     source={require('../../assets/images/deleteall.png')}
                   />
-                <Text style={styles.submitButtonText}>일기 전체 삭제</Text>
+                <Text style={styles.submitButtonText}>일기 전체삭제</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.submitButton}
