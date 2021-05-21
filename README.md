@@ -1,5 +1,3 @@
-# Readme.md
-
 # 🌵Dayugi?
 
 **머신러닝을 활용한 다이어리 분석과 감정 분석을 활용한 감성 다이어리 서비스**
@@ -12,7 +10,7 @@
 
 1. 이 저장소를 fork한 후 로컬 장치에 clone 하세요.
 
-   git clone [https://lab.ssafy.com/s04-final/s04p31a206.git](https://lab.ssafy.com/s04-final/s04p31a206.git)
+   git clone https://lab.ssafy.com/s04-final/s04p31a206.git
 
 2. FE
 
@@ -25,67 +23,21 @@
 
 # 기술 스택
 
-1. FE
-
-   - JavaScript
-
-    ![javascript](/uploads/5bd8f534b8b020c21fb4966fc2d7661f/javascript.png)
-
-   - React-Native
-
-    ![reactnative](/uploads/2071aaaa228365bce981eb218ded5727/reactnative.png)
-
-2. BE
-
-   - Java
-
-    ![java](/uploads/9dacf5b14ec55a8446bd1c677455d385/java.png)
-   - Spring-Boot
-
-    ![springboot](/uploads/059d5aedd47839276cf85871c4405c06/springboot.png)
-
-   - JPA
-
-    ![JPA](/uploads/b739d1267f6cba2f83232fa905d83496/JPA.png)
-   - Maven
-
-    ![maven](/uploads/333a6dadd7d543f2116b6d02e2219fb2/maven.png)
-
-3. ML
-
-   - Python
-
-    ![python](/uploads/ac15f2ee3b9ed99ec30f19e233304c3f/python.png)
-
-   - Flask
-
-    ![flask](/uploads/22399c263b0465c1f7b8ce013a4d3e31/flask.png)
-
-   - PyTorch
-
-    ![pytorch](/uploads/932cbd954a5b2d3d3e712ed6d3d09f8a/pytorch.png)
-
-4. DevOps
-
-   - Docker
-
-    ![docker](/uploads/33cec25c9e28cbed780c2c3b09626b86/docker.png)
-
-   - Jenkins
-
-    ![Jenkins](/uploads/1fcc2387429f47e07db9b79a08b767b7/Jenkins.png)
-
-5. Database
-
-   - MySQL
-
-    ![mysql](/uploads/9d41b2de25eafa2c5b1223ff7e1a1fdc/mysql.png)
+| 분류     | 사용 기술 스택                                               |
+| -------- | ------------------------------------------------------------ |
+| FE       | <img src="https://img.shields.io/badge/ReactNative-0.64.4-green?logo=vue.js"> |
+| BE       | <img src="https://img.shields.io/badge/Java-1.8-blue?logo=java"><img src="https://img.shields.io/badge/Python-3.8.5-blue?logo=python"><img src="https://img.shields.io/badge/Flask-1.1.2-blue?logo=flask"><img src="https://img.shields.io/badge/SpringBoot-2.4.3-green?logo=spring"> |
+| ML       | <img src="https://img.shields.io/badge/Pytorch-1.8.1-red?logo=pytorch"><img src="https://img.shields.io/badge/Python-3.8.5-blue?logo=python"> |
+| DevOps   | <img src="https://img.shields.io/badge/Jenkins-lightgrey?logo=jenkins"><img src="https://img.shields.io/badge/Docker-blue?logo=docker"> |
+| Database | <img src="https://img.shields.io/badge/MySQL-v8.0-blue?logo=mysql"> |
+| etc      | <img src="https://img.shields.io/badge/Mattermost-blue?logo=mattermost"><img src="https://img.shields.io/badge/Discord-lightgrey?logo=discord"> |
 
 # 시스템 아키텍쳐
 
-    ![architecture](/uploads/f01843f98f54a6c4ac7973e568969071/architecture.png)
+![](README.assets/system_diagram.png)
+
 # ERD
 
-    ![erd](/uploads/69bd2a572b263bf72f6f08341e24e51f/erd.png)
+![](README.assets/erd.png)
 
 # About Us
