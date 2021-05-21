@@ -46,8 +46,7 @@
 
    - JPA
 
-   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%204.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%204.png)
-
+    ![JPA](/uploads/b739d1267f6cba2f83232fa905d83496/JPA.png)
    - Maven
 
     ![maven](/uploads/333a6dadd7d543f2116b6d02e2219fb2/maven.png)
@@ -84,10 +83,9 @@
 
 # 시스템 아키텍쳐
 
-    ![architecture](/uploads/012c4ee3b2fce1e73266c4c069bc3b6c/architecture.png)
-
+    ![architecture](/uploads/f01843f98f54a6c4ac7973e568969071/architecture.png)
 # ERD
 
-    ![erd](/uploads/9cebf3182f867810e61d2f5b6417e677/erd.png)
+    ![erd](/uploads/69bd2a572b263bf72f6f08341e24e51f/erd.png)
 
 # About Us
