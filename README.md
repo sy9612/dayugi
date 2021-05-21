@@ -1,80 +1,94 @@
+# Readme.md
 
+# 🌵Dayugi?
 
-# DAYUGI
+**머신러닝을 활용한 다이어리 분석과 감정 분석을 활용한 감성 다이어리 서비스**
 
-> 감정분석 다이어리 서비스
->
-> 인공지능을 활용해 감정을 분석하고 코멘트를 달아주는 다이어리 서비스
+- 머신러닝을 통해 구현한 모델이 한줄평을 통해서 위로의 한마디를 건내줍니다.
+- 모델을 통해 작성한 다이어리에서 감정을 추출하여 선택한 기간의 감정변화를 그래프로 한눈에 확인할 수 있습니다.
+- 다이어리에 올린 사진을 갤러리를 통해서 한눈에 볼 수 있습니다.
 
-![image-20210423144834848](README.assets/image-20210423144834848.png)
+# Download and Setup
 
+1. 이 저장소를 fork한 후 로컬 장치에 clone 하세요.
 
+   git clone [https://lab.ssafy.com/s04-final/s04p31a206.git](https://lab.ssafy.com/s04-final/s04p31a206.git)
 
-![image-20210423144849582](README.assets/image-20210423144849582.png)
+2. FE
 
-팀 소개:
+   1. yarn install
+   2. npm start
+   3. CONNECTION LAN → Tunnel
+   4. 접속
+      1. 휴대폰 or 앱 플레이어에 Expo Go 앱 설치
+      2. QR코드 스캔을 통한 접속
 
-- 박영창
-- 노태훈
-- 홍진표
-- 이소영
-- 우희정
+# 기술 스택
 
+1. FE
 
+   - JavaScript
 
-![image-20210423144854913](README.assets/image-20210423144854913.png)
+     ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled.png)
 
-대한민국 청년들의 안타까운 소식들을 우리가 해결하겠습니다!
+   - React-Native
 
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%201.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%201.png)
 
+2. BE
 
-![image-20210423144900532](README.assets/image-20210423144900532.png)
+   - Java
 
-마치 어릴적 담임선생님이 써주시던 코멘트!
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%202.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%202.png)
 
+   - Spring-Boot
 
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%203.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%203.png)
 
-![image-20210423144906219](README.assets/image-20210423144906219.png)
+   - JPA
 
-다양한 식물 파트너들과의 교감!
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%204.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%204.png)
 
+   - Maven
 
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%205.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%205.png)
 
-![image-20210423144910401](README.assets/image-20210423144910401.png)
+3. ML
 
-나의 감정을 그래프로 본다고?? 놀라워!
+   - Python
 
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%206.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%206.png)
 
+   - Flask
 
-![image-20210423144914694](README.assets/image-20210423144914694.png)
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%207.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%207.png)
 
-나의 일기에 인공지능이 코멘트를 달아준다고?? 진짜 짱이야!
+   - PyTorch
 
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%208.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%208.png)
 
+4. DevOps
 
-![image-20210423144919515](README.assets/image-20210423144919515.png)
+   - Docker
 
-뷰 네이티브를 활용해 어플리케이션과 웹서비스 모두를 이용할 수 있다고!
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%209.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%209.png)
 
+   - Jenkins
 
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%2010.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%2010.png)
 
-![image-20210423144924014](README.assets/image-20210423144924014.png)
+5. Database
 
-탄탄한 DB!!
+   - MySQL
 
+   ![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%2011.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%2011.png)
 
+# 시스템 아키텍쳐
 
-![image-20210423144927936](README.assets/image-20210423144927936.png)
+![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%2012.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%2012.png)
 
-손쉽게 따라할 수 있도록 듀토리얼까지!!
+# ERD
 
+![Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%2013.png](Readme%20md%20a4d2c67fef364815bea410b65233e0fd/Untitled%2013.png)
 
-
-![image-20210423144934097](README.assets/image-20210423144934097.png)
-
-예쁘고 감성적인 UI/UX
-
-
-
-![image-20210423144938152](README.assets/image-20210423144938152.png)
-
+# About Us
