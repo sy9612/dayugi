@@ -8,13 +8,8 @@
 
 # Download and Setup
 
-1. 이 저장소를 fork한 후 로컬 장치에 clone 하세요.
-
-   git clone https://lab.ssafy.com/s04-final/s04p31a206.git
-
-2. FE
-
-   1. yarn install
+   1. git clone https://lab.ssafy.com/s04-final/s04p31a206.git
+   2. yarn install
    2. npm start
    3. CONNECTION LAN → Tunnel
    4. 접속
