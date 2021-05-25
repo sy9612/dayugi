@@ -54,6 +54,7 @@ class AnalysisPage extends React.Component {
       fillShadowGradientOpacity: 0,
       color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
       strokeWidth: 2,
+  
     },
     radarData: [
       {
@@ -269,7 +270,8 @@ class AnalysisPage extends React.Component {
                 break
               } else {
                 values.push(null)
-                excludeIndex.push(i);
+                if(i != index)
+                  excludeIndex.push(i);
               }
               i++
             }
@@ -370,9 +372,11 @@ class AnalysisPage extends React.Component {
                 width={this.state.screenWidth}
                 height={256}
                 fromZero='true'
-                hidePointsAtIndex={this.state.excludeIndex}
                 yAxisInterval='365'
                 chartConfig={this.state.chartConfig}
+                getDotColor={(datapoint) => {
+                  return 'transparent';
+                }}
               />
             </View>
           </View>
