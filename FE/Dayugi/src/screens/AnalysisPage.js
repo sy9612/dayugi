@@ -85,6 +85,7 @@ class AnalysisPage extends React.Component {
       },
       showlegend: false,
     },
+    excludeIndex : [],
   };
 
   componentDidMount() {
@@ -121,6 +122,7 @@ class AnalysisPage extends React.Component {
       this.handleEndDate(Date);
     }
   };
+
 
   onStartChange = (event, selectedDate) => {
     const currentDate = selectedDate || this.state.startDate;
@@ -257,6 +259,7 @@ class AnalysisPage extends React.Component {
             day.push(month + '-' + days)
           }
           let i = 0
+          let excludeIndex = [];
           for (let index = 0; index < data.length; index++) {
             const d = data[index];
             while (true) {
@@ -266,10 +269,12 @@ class AnalysisPage extends React.Component {
                 break
               } else {
                 values.push(null)
+                excludeIndex.push(i);
               }
               i++
             }
           }
+          this.setState({excludeIndex : excludeIndex })
           let l = 1 + parseInt(day.length / 8)
           for (let index = 0; index < day.length; index++) {
             if (index % l != 0) {
@@ -365,6 +370,7 @@ class AnalysisPage extends React.Component {
                 width={this.state.screenWidth}
                 height={256}
                 fromZero='true'
+                hidePointsAtIndex={this.state.excludeIndex}
                 yAxisInterval='365'
                 chartConfig={this.state.chartConfig}
               />
