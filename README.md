@@ -32,6 +32,18 @@
 | Database | <img src="https://img.shields.io/badge/MySQL-v8.0-blue?logo=mysql"> |
 | etc      | <img src="https://img.shields.io/badge/Mattermost-blue?logo=mattermost"><img src="https://img.shields.io/badge/Discord-lightgrey?logo=discord"> |
 
+
+
+# About Us
+
+| 이름   | 역할       |
+| ------ | ---------- |
+| 홍진표 | 팀장, ML   |
+| 노태훈 | BE, FE     |
+| 박영창 | FE         |
+| 우희정 | BE, FE     |
+| 이소영 | FE, DevOps |
+
 # 시스템 아키텍쳐
 
 ![](README.assets/system_diagram.png)
@@ -40,4 +52,33 @@
 
 ![](README.assets/erd.png)
 
-# About Us
+# 시연
+
+### 튜토리얼
+
+
+
+### 로그인
+
+
+
+### 다이어리 작성
+
+
+
+### 다이어리 조회 - Home
+
+
+
+### 다이어리 조회 - 모아보기
+
+
+
+### 마이페이지
+
+
+
+### 분석페이지
+
+
+
