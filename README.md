@@ -12,12 +12,12 @@
 
 1. 이 저장소를 fork한 후 로컬 장치에 clone 하세요.
 
-   git clone https://lab.ssafy.com/s04-final/s04p31a206.git
+   `git clone https://lab.ssafy.com/s04-final/s04p31a206.git`
 
 2. FE
 
-   1. yarn install
-   2. npm start
+   1. `yarn install`
+   2. `npm start`
    3. CONNECTION LAN → Tunnel
    4. 접속
       1. 휴대폰 or 앱 플레이어에 Expo Go 앱 설치
@@ -62,29 +62,25 @@
 
 ### 튜토리얼
 
-
-
-### 로그인
-
-
+![](README.assets/tutorial.gif)
 
 ### 다이어리 작성
 
-
+![](README.assets/diaryedit.gif)
 
 ### 다이어리 조회 - Home
 
-
+![](README.assets/diary_view.gif)
 
 ### 다이어리 조회 - 모아보기
 
-
+![](README.assets/moabogi.gif)
 
 ### 마이페이지
 
-
+![](README.assets/mypage.gif)
 
 ### 분석페이지
 
-
+![](README.assets/analysis.gif)
 
