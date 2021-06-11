@@ -44,7 +44,7 @@
 | 노태훈 | BE, FE     |
 | 박영창 | FE         |
 | 우희정 | BE, FE     |
-| 이소영 | FE, DevOps |
+| 이소영 | BE, DevOps |
 
 # 시스템 아키텍쳐
 
